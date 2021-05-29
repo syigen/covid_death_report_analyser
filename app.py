@@ -22,7 +22,7 @@ db = SQLAlchemy(app)
 
 class CovidDeathReport(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.String(80), unique=True, nullable=False)
+    date = db.Column(db.Date, unique=True, nullable=False)
     images = db.relationship("ReportImage", backref="covid_death_report", lazy=True)
     death_records = db.relationship("DeathRecord", backref="covid_death_report", lazy=True)
 
@@ -35,7 +35,12 @@ class ReportImage(db.Model):
 
 
 class DeathRecord(db.Model):
+    __table_args__ = (
+        # this can be db.PrimaryKeyConstraint if you want it to be a primary key
+        db.UniqueConstraint('record_number', 'report_date'),
+    )
     id = db.Column(db.Integer, primary_key=True)
+    record_number = db.Column(db.Integer, nullable=False)
     report_date = db.Column(db.Date, nullable=False)
     reason = db.Column(db.Text, nullable=False)
     gender = db.Column(db.String(10), nullable=False)
@@ -65,8 +70,8 @@ def create_press_release_recode():
         if 'file1' not in request.files:
             return 'there is no file1 in form!'
         uploaded_files = request.files.getlist("file1")
-        report_date = request.form["report_date"]
-        death_report = CovidDeathReport(date=report_date)
+        report_date = datetime.datetime.strptime(request.form["report_date"], '%Y-%m-%d')
+        death_report = CovidDeathReport(date=report_date.date())
         for file in uploaded_files:
             filename = file.filename
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -105,6 +110,7 @@ def save_death_record():
     form = request.form
 
     report_date = datetime.datetime.strptime(form["report_date"], '%Y-%m-%d')
+    record_number = form["record_number"]
     reason = form["reason"]
     gender = form["gender"]
     age = form["age"]
@@ -113,6 +119,7 @@ def save_death_record():
     reported_at = form["reported_at"]
 
     death_record = DeathRecord(
+        record_number=record_number,
         report_date=report_date.date(),
         reason=reason,
         gender=gender,
