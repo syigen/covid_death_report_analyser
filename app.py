@@ -1,6 +1,9 @@
+import csv
 import datetime
 import os
-from flask import Flask, request, render_template, send_from_directory, redirect, url_for
+from io import StringIO
+
+from flask import Flask, request, render_template, send_from_directory, redirect, url_for, Response
 from flask_assets import Environment
 from flask_sqlalchemy import SQLAlchemy
 from webassets import Bundle
@@ -135,6 +138,49 @@ def save_death_record():
     db.session.commit()
 
     return redirect(url_for("death_report_view", date=report.date))
+
+
+@app.route("/download")
+def download_report():
+    reports = CovidDeathReport.query.all()
+    csv_data = []
+    for report in reports:
+        for dr in report.death_records:
+            csv_data.append((
+                report.date,
+                dr.record_number,
+                dr.report_date,
+                dr.reason,
+                dr.gender,
+                dr.age,
+                dr.residence_location,
+                dr.death_location,
+                dr.reported_at,
+            ))
+
+    def generate():
+        data = StringIO()
+        w = csv.writer(data)
+
+        # write header
+        w.writerow(('report_date', 'record_index', 'death_record_date', 'reason', 'gender', 'age', 'residence_location',
+                    'death_location', 'reported_at'))
+        yield data.getvalue()
+        data.seek(0)
+        data.truncate(0)
+
+        # write each log item
+        for item in csv_data:
+            w.writerow(item)
+            yield data.getvalue()
+            data.seek(0)
+            data.truncate(0)
+        # stream the response as the data is generated
+
+    response = Response(generate(), mimetype='text/csv')
+    # add a filename
+    response.headers.set("Content-Disposition", "attachment", filename="report.csv")
+    return response
 
 
 if __name__ == '__main__':
