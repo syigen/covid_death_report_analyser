@@ -1,3 +1,4 @@
+import datetime
 import os
 from flask import Flask, request, render_template, send_from_directory, redirect, url_for
 from flask_assets import Environment
@@ -94,6 +95,37 @@ def all_reports():
 @app.route('/uploads/<filename>')
 def upload(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+
+@app.route("/save_death_recode", methods=["POST"])
+def save_death_record():
+    report_id = request.form["report_id"]
+    report = CovidDeathReport.query.filter_by(id=report_id).first()
+
+    form = request.form
+
+    report_date = datetime.datetime.strptime(form["report_date"], '%Y-%m-%d')
+    reason = form["reason"]
+    gender = form["gender"]
+    age = form["age"]
+    residence_location = form["residence_location"]
+    death_location = form["death_location"]
+    reported_at = form["reported_at"]
+
+    death_record = DeathRecord(
+        report_date=report_date.date(),
+        reason=reason,
+        gender=gender,
+        age=age,
+        residence_location=residence_location,
+        death_location=death_location,
+        reported_at=reported_at
+    )
+    report.death_records.append(death_record)
+    db.session.add(report)
+    db.session.commit()
+
+    return redirect(url_for("death_report_view", date=report.date))
 
 
 if __name__ == '__main__':

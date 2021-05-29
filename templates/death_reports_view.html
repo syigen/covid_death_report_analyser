@@ -13,7 +13,22 @@
             {% include "forms/death_recode_add_form/index.html" %}
         </div>
         <div class="flex-1 ...">
-           Total Count -
+            Total Count - {{ death_report.death_records|length }}
+
+            <ul>
+                {% for death_record in death_report.death_records %}
+                    <li>
+                        {{ death_record.report_date }}
+                        {{ death_record.reason }}
+                        {{ death_record.gender }}
+                        {{ death_record.age }}
+                        {{ death_record.residence_location }}
+                        {{ death_record.death_location }}
+                        {{ death_record.reported_at }}
+                    </li>
+                {% endfor %}
+            </ul>
+
         </div>
     </div>
 

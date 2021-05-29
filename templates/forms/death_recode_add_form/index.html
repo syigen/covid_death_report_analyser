@@ -1,5 +1,6 @@
 <div class="mt-5 md:mt-0 md:col-span-2">
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" action="{{ url_for("save_death_record") }}" enctype="multipart/form-data">
+        <input name="report_id" id="report_id" type="hidden" value="{{ death_report.id }}">
         <div class="shadow overflow-hidden sm:rounded-md">
             <div class="px-4 py-5 bg-white sm:p-6">
                 <div class="grid grid-cols-6 gap-6">
