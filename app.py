@@ -2,11 +2,13 @@ import csv
 import datetime
 import os
 from io import StringIO
+from uuid import uuid4
 
 from flask import Flask, request, render_template, send_from_directory, redirect, url_for, Response
 from flask_assets import Environment
 from flask_sqlalchemy import SQLAlchemy
 from webassets import Bundle
+from werkzeug.utils import secure_filename
 
 UPLOAD_FOLDER = './upload'
 
@@ -58,6 +60,11 @@ class DeathRecord(db.Model):
 db.create_all()
 
 
+def make_unique(string):
+    ident = uuid4().__str__()[:8]
+    return f"{ident}-{string}"
+
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -68,16 +75,16 @@ def create_press_release_recode():
     if request.method == 'POST':
         if 'report_date' not in request.form:
             return "Please select report date"
-        if 'file1' not in request.files:
-            return 'there is no file1 in form!'
+        if 'report_images' not in request.files:
+            return 'there is no report_images in form!'
 
-        uploaded_files = request.files.getlist("file1")
+        uploaded_files = request.files.getlist("report_images")
         report_date = datetime.datetime.strptime(request.form["report_date"], '%Y-%m-%d')
 
         death_report = CovidDeathReport(date=report_date.date())
 
         for file in uploaded_files:
-            filename = file.filename
+            filename = make_unique(secure_filename(file.filename))
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(path)
             report_image = ReportImage(image_location=filename)
@@ -144,9 +151,12 @@ def save_death_record():
 def delete_report(id):
     report = CovidDeathReport.query.get(id)
     for img in report.images:
-        filename = img.image_location
-        path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        os.remove(path)
+        try:
+            filename = img.image_location
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            os.remove(path)
+        except:
+            pass
         db.session.delete(img)
     for re in report.death_records:
         db.session.delete(re)
