@@ -55,14 +55,7 @@ def create_press_release_recode():
             death_report.images.append(report_image)
         db.session.add(death_report)
         db.session.commit()
-    return '''
-        <h1>Save Corona Death Report</h1>
-        <form method="post" enctype="multipart/form-data">
-            <p>Report Date : <input type="date" name="report_date"> </p>            
-            <p>Report Files:<input type="file" name="file1" multiple> </p>
-            <p><input type="submit" value="Save"> </p>
-        </form>
-        '''
+    return render_template("add_report_form.html")
 
 
 @app.route("/death_report/<date>")

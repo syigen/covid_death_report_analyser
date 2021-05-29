@@ -1,15 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Death Report {{ death_report.date }}</title>
-</head>
-<body>
-<h3>{{ death_report.date }}</h3>
+{% extends "parts/master.html" %}
 
-{% for img in death_report.images %}
-    <img src="{{ url_for('upload', filename=img.image_location) }}">
-{% endfor %}
+{% block body %}
+    <h3>{{ death_report.date }}</h3>
 
-</body>
-</html>
+    {% for img in death_report.images %}
+        <img src="{{ url_for('upload', filename=img.image_location) }}" alt="Report Image"/>
+    {% endfor %}
+
+{% endblock %}
