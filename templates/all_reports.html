@@ -30,7 +30,7 @@
                                     -
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="/death_report/{{ report.date }}"> View /Edit </a>
+                                    <a href="{{ url_for("death_report_view",date=report.date) }}"> View /Edit </a>
                                 </td>
                             </tr>
                         {% endfor %}
