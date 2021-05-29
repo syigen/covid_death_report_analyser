@@ -1,34 +1,52 @@
 import os
 from flask import Flask, request
+from flask_sqlalchemy import SQLAlchemy
 
 UPLOAD_FOLDER = './upload'
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123456@localhost/covid_death_reports'
+
+db = SQLAlchemy(app)
 
 
-class User(db.Model):
+class CovidDeathReport(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
+    date = db.Column(db.String(80), unique=True, nullable=False)
+    images = db.relationship("ReportImage", backref="covid_death_report", lazy=True)
 
-    def __repr__(self):
-        return '<User %r>' % self.username
+
+class ReportImage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    image_location = db.Column(db.Text())
+    report_id = db.Column(db.Integer, db.ForeignKey('covid_death_report.id'),
+                          nullable=False)
+
+
+db.create_all()
 
 
 @app.route('/', methods=['GET', 'POST'])
 def create_press_release_recode():
     if request.method == 'POST':
-        if 'report_data' not in request.form:
-            return "Please select report data"
+        if 'report_date' not in request.form:
+            return "Please select report date"
 
         if 'file1' not in request.files:
             return 'there is no file1 in form!'
         uploaded_files = request.files.getlist("file1")
+        report_date = request.form["report_date"]
+
+        death_report = CovidDeathReport(date=report_date)
         for file in uploaded_files:
-            path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+            filename = file.filename
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(path)
-            # return path
+            report_image = ReportImage(image_location=filename)
+            death_report.images.append(report_image)
+        db.session.add(death_report)
+        db.session.commit()
     return '''
         <h1>Save Corona Death Report</h1>
         <form method="post" enctype="multipart/form-data">
