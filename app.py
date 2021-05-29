@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request
+from flask import Flask, request, render_template, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 
 UPLOAD_FOLDER = './upload'
@@ -55,6 +55,17 @@ def create_press_release_recode():
             <p><input type="submit" value="Save"> </p>
         </form>
         '''
+
+
+@app.route("/death_report/<date>")
+def death_report_view(date):
+    death_report = CovidDeathReport.query.filter_by(date=date).first()
+    return render_template("death_reports_view.html", death_report=death_report)
+
+
+@app.route('/uploads/<filename>')
+def upload(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
 if __name__ == '__main__':

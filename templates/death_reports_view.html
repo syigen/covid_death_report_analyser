@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Death Report {{ death_report.date }}</title>
+</head>
+<body>
+<h3>{{ death_report.date }}</h3>
+
+{% for img in death_report.images %}
+    <img src="{{ url_for('upload', filename=img.image_location) }}">
+{% endfor %}
+
+</body>
+</html>
