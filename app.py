@@ -36,7 +36,6 @@ class ReportImage(db.Model):
 
 class DeathRecord(db.Model):
     __table_args__ = (
-        # this can be db.PrimaryKeyConstraint if you want it to be a primary key
         db.UniqueConstraint('record_number', 'report_date'),
     )
     id = db.Column(db.Integer, primary_key=True)
@@ -66,12 +65,14 @@ def create_press_release_recode():
     if request.method == 'POST':
         if 'report_date' not in request.form:
             return "Please select report date"
-
         if 'file1' not in request.files:
             return 'there is no file1 in form!'
+
         uploaded_files = request.files.getlist("file1")
         report_date = datetime.datetime.strptime(request.form["report_date"], '%Y-%m-%d')
+
         death_report = CovidDeathReport(date=report_date.date())
+
         for file in uploaded_files:
             filename = file.filename
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -105,6 +106,7 @@ def upload(filename):
 @app.route("/save_death_recode", methods=["POST"])
 def save_death_record():
     report_id = request.form["report_id"]
+
     report = CovidDeathReport.query.filter_by(id=report_id).first()
 
     form = request.form
