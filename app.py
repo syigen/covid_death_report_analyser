@@ -1,12 +1,20 @@
 import os
 from flask import Flask, request, render_template, send_from_directory
+from flask_assets import Environment
 from flask_sqlalchemy import SQLAlchemy
+from webassets import Bundle
 
 UPLOAD_FOLDER = './upload'
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123456@localhost/covid_death_reports'
+
+assets = Environment(app)
+css = Bundle("src/main.css", output="dist/main.css", filters="postcss")
+
+assets.register("css", css)
+css.build()
 
 db = SQLAlchemy(app)
 
