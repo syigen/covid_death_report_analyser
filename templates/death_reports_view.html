@@ -3,8 +3,19 @@
 {% block body %}
     <h3>{{ death_report.date }}</h3>
 
-    {% for img in death_report.images %}
-        <img src="{{ url_for('upload', filename=img.image_location) }}" alt="Report Image"/>
-    {% endfor %}
+    <div class="flex">
+        <div class="flex-1 ...">
+            {% for img in death_report.images %}
+                <img src="{{ url_for('upload', filename=img.image_location) }}" alt="Report Image"/>
+            {% endfor %}
+        </div>
+        <div class="flex-1 ...">
+            {% include "forms/death_recode_add_form/index.html" %}
+        </div>
+        <div class="flex-1 ...">
+           Total Count - 
+        </div>
+    </div>
+
 
 {% endblock %}
