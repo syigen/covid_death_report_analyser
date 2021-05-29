@@ -4,3 +4,4 @@ __pycache__
 upload/
 node_modules
 dist
+.webassets-cache
