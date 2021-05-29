@@ -140,6 +140,30 @@ def save_death_record():
     return redirect(url_for("death_report_view", date=report.date))
 
 
+@app.route("/report/delete/<id>", methods=["POST"])
+def delete_report(id):
+    report = CovidDeathReport.query.get(id)
+    for img in report.images:
+        filename = img.image_location
+        path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        os.remove(path)
+        db.session.delete(img)
+    for re in report.death_records:
+        db.session.delete(re)
+    db.session.delete(report)
+    db.session.commit()
+    return redirect(url_for("all_reports"))
+
+
+@app.route("/record/delete/<id>", methods=["POST"])
+def delete_recode(id):
+    record = DeathRecord.query.get(id)
+    report = CovidDeathReport.query.get(record.report_id)
+    db.session.delete(record)
+    db.session.commit()
+    return redirect(url_for("death_report_view", date=report.date))
+
+
 @app.route("/download")
 def download_report():
     reports = CovidDeathReport.query.all()

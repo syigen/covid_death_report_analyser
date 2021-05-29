@@ -31,6 +31,9 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <a href="{{ url_for("death_report_view",date=report.date) }}"> View /Edit </a>
+                                    <form action="{{ url_for("delete_report",id=report.id) }}" method="post">
+                                        <button type="submit">Delete</button>
+                                    </form>
                                 </td>
                             </tr>
                         {% endfor %}

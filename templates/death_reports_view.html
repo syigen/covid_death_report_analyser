@@ -25,6 +25,10 @@
                         {{ death_record.residence_location }}
                         {{ death_record.death_location }}
                         {{ death_record.reported_at }}
+
+                        <form action="{{ url_for("delete_recode",id=death_record.id) }}" method="post">
+                            <button type="submit">Delete</button>
+                        </form>
                     </li>
                 {% endfor %}
             </ul>
