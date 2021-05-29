@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Reports</title>
+</head>
+<body>
+
+<ul>
+
+    {% for report in reports %}
+        <li>
+
+            <a href="/death_report/{{ report.date }}">
+
+                {{ report.date }}
+
+            </a>
+
+        </li>
+    {% endfor %}
+
+
+</ul>
+
+</body>
+</html>

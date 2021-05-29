@@ -63,6 +63,12 @@ def death_report_view(date):
     return render_template("death_reports_view.html", death_report=death_report)
 
 
+@app.route("/death_reports")
+def all_reports():
+    reports = CovidDeathReport.query.all()
+    return render_template("all_reports.html", reports=reports)
+
+
 @app.route('/uploads/<filename>')
 def upload(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
