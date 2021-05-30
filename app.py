@@ -99,7 +99,11 @@ def create_press_release_recode():
 @app.route("/report/<date>")
 def death_report_view(date):
     death_report = CovidDeathReport.query.filter_by(date=date).first()
-    return render_template("death_reports_view.html", death_report=death_report)
+    record_images = [{
+        "id": idx + 1,
+        "image_location": url_for("upload", filename=img.image_location)
+    } for idx, img in enumerate(death_report.images)]
+    return render_template("death_reports_view.html", death_report=death_report, record_images=record_images)
 
 
 @app.route("/all")
