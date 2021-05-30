@@ -124,8 +124,8 @@ def save_death_record():
     report = CovidDeathReport.query.filter_by(id=report_id).first()
 
     form = request.form
-
-    report_date = datetime.datetime.strptime(form["report_date"], '%Y-%m-%d')
+    year, date, month = form["report_date_year"], form["report_date_date"], form["report_date_month"]
+    report_date = datetime.datetime.strptime(f"{year}-{month}-{date}", '%Y-%m-%d')
     record_number = form["record_number"]
     reason = form["reason"]
     gender = form["gender"]
@@ -219,6 +219,11 @@ def download_report():
     # add a filename
     response.headers.set("Content-Disposition", "attachment", filename="report.csv")
     return response
+
+
+@app.context_processor
+def inject_today_date():
+    return {'today_date': datetime.date.today()}
 
 
 if __name__ == '__main__':

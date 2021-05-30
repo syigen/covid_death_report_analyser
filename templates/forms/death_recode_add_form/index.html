@@ -1,9 +1,15 @@
+{% set this_year = today_date.year %}
+{% set this_month = today_date.month %}
+{% set this_date = today_date.day %}
+{% set max_year = today_date.year + 1 %}
+{% set max_month = today_date.month + 1 %}
+{% set max_date = today_date.day + 1 %}
 <div class="mt-5 md:mt-0 md:col-span-2">
     <form method="post" action="{{ url_for("save_death_record") }}" enctype="multipart/form-data">
         <input name="report_id" id="report_id" type="hidden" value="{{ death_report.id }}">
         <div class="shadow overflow-hidden sm:rounded-md">
             <div class="px-4 py-5 bg-white sm:p-6">
-                <div class="grid grid-cols-6 gap-6">
+                <div class="grid grid-cols-12 gap-6">
 
                     <div class="col-span-3">
                         <label for="age" class="block text-sm font-medium text-gray-700">
@@ -11,12 +17,51 @@
                         <input type="number" name="record_number" id="record_number"
                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
                     </div>
-                    <div class="col-span-5">
-                        <label for="report_date" class="block text-sm font-medium text-gray-700">
+                    <div class="col-span-3">
+                        <label for="report_date_year" class="block text-sm font-medium text-gray-700">
+                            Year</label>
+                        <select name="report_date_year" id="report_date_year"
+                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            {% for year in range(2019,max_year) %}
+                                <option value="{{ year }}" {% if this_year==year %}
+                                        selected
+                                {% endif %}  >{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-span-3">
+                        <label for="report_date_month" class="block text-sm font-medium text-gray-700">
+                            Month</label>
+                        <select name="report_date_month" id="report_date_month"
+                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            {% for month in range(1,max_month) %}
+                                <option value="{{ month }}"{% if this_month==month %}
+                                        selected
+                                {% endif %} >{{ month }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-span-3">
+                        <label for="report_date_date" class="block text-sm font-medium text-gray-700">
                             Date</label>
-                        <input type="date" name="report_date" id="report_date"
+                        <select name="report_date_date" id="report_date_date"
+                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            {% for date in range(1,max_date) %}
+                                <option value="{{ date }}"{% if this_date==date %}
+                                        selected
+                                {% endif %}  >{{ date }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-span-12">
+                        <label for="reason" class="block text-sm font-medium text-gray-700">
+                            Reason</label>
+                        <input type="text" name="reason" id="reason"
                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
                     </div>
+
                     <div class="col-span-4">
                         <label for="reported_at" class="block text-sm font-medium text-gray-700">
                             Death Reported At</label>
@@ -27,13 +72,7 @@
                             <option value="home">Home</option>
                         </select>
                     </div>
-                    <div class="col-span-12">
-                        <label for="reason" class="block text-sm font-medium text-gray-700">
-                            Reason</label>
-                        <input type="text" name="reason" id="reason"
-                               class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
-                    </div>
-                    <div class="col-span-8">
+                    <div class="col-span-4">
                         <label for="gender" class="block text-sm font-medium text-gray-700">
                             Gender</label>
                         <select name="gender" name="gender"
