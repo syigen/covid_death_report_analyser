@@ -65,6 +65,7 @@
             <ul>
                 {% for death_record in death_report.death_records %}
                     <li>
+                        {{ death_record.record_number }}.)&nbsp;&nbsp;
                         {{ death_record.report_date }}
                         {{ death_record.reason }}
                         {{ death_record.gender }}
