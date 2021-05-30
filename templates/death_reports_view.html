@@ -4,7 +4,7 @@
     <h3>{{ death_report.date }}</h3>
 
     <div class="flex">
-        <div class="flex-1 ...">
+        <div class="flex-1 ..." style="overflow: scroll;height: 90vh;">
             {% for img in death_report.images %}
                 <img src="{{ url_for('upload', filename=img.image_location) }}" alt="Report Image"/>
             {% endfor %}
