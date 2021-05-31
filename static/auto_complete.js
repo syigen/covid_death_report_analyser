@@ -54,7 +54,12 @@ function selectConfigs(searchUrl) {
             const query = this.filter;
             fetch(`${_searchUrl}?query=${query}`)
                 .then(response => response.json())
-                .then(data => this.options = data);
+                .then(data => {
+                    if (data) {
+                        this.show = true;
+                    }
+                    this.options = data
+                });
         },
         filteredOptions() {
             return this.options
