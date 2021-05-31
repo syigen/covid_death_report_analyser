@@ -4,7 +4,7 @@ import os
 from io import StringIO
 from uuid import uuid4
 
-from flask import Flask, request, render_template, send_from_directory, redirect, url_for, Response, jsonify
+from flask import Flask, request, render_template, send_from_directory, redirect, url_for, Response, jsonify, flash
 from flask_assets import Environment
 from flask_sqlalchemy import SQLAlchemy
 from webassets import Bundle
@@ -13,6 +13,7 @@ from werkzeug.utils import secure_filename
 UPLOAD_FOLDER = './upload'
 
 app = Flask(__name__)
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123456@localhost/covid_death_reports'
 
@@ -91,7 +92,7 @@ def create_press_release_recode():
             death_report.images.append(report_image)
         db.session.add(death_report)
         db.session.commit()
-        return redirect(url_for("all_reports"))
+        return redirect(url_for("death_report_view", date=report_date))
 
     return render_template("add_report_form.html")
 
@@ -133,6 +134,13 @@ def save_death_record():
     residence_location = form["residence_location"]
     death_location = form["death_location"]
     reported_at = form["reported_at"]
+
+    rec = DeathRecord.query.filter(
+        (DeathRecord.record_number == record_number) & (DeathRecord.report_date == report_date.date())).first()
+
+    if rec:
+        flash('Index number already in')
+        return redirect(request.referrer)
 
     death_record = DeathRecord(
         record_number=record_number,
