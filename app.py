@@ -28,6 +28,10 @@ db = SQLAlchemy(app)
 
 class CovidDeathReport(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.Text, nullable=True)
+    report_link = db.Column(db.Text, nullable=True)
+    report_total = db.Column(db.Integer, default=0)
+    release_number = db.Column(db.String(50), nullable=True)
     date = db.Column(db.Date, unique=True, nullable=False)
     images = db.relationship("ReportImage", backref="covid_death_report", lazy=True)
     death_records = db.relationship("DeathRecord", backref="covid_death_report", lazy=True)
@@ -81,8 +85,19 @@ def create_press_release_recode():
 
         uploaded_files = request.files.getlist("report_images")
         report_date = datetime.datetime.strptime(request.form["report_date"], '%Y-%m-%d')
+        report_total = request.form["report_total"]
+        report_link = request.form["report_link"]
+        title, number = None, None
+        if "report_title" in request.form:
+            title = request.form["report_title"]
+        if "release_number" in request.form:
+            number = request.form["release_number"]
 
-        death_report = CovidDeathReport(date=report_date.date())
+        death_report = CovidDeathReport(date=report_date.date(),
+                                        title=title,
+                                        release_number=number,
+                                        report_link=report_link,
+                                        report_total=report_total)
 
         for file in uploaded_files:
             filename = make_unique(secure_filename(file.filename))
