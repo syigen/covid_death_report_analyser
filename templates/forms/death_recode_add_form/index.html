@@ -6,7 +6,7 @@
 {% set max_date = today_date.day + 1 %}
 
 {% macro searchComponent(name,query) %}
-    <div class="flex flex-col items-center">
+    <div class="flex flex-col items-center ">
         <div class="w-full  flex flex-col items-center">
             <div class="w-full">
                 <div x-data="selectConfigs('{{ query }}')" x-init="init()"
@@ -71,8 +71,8 @@
 {% endmacro %}
 
 
-<div class="mt-5">
-    <h4 class="text-primary">Enter Death Record</h4>
+<div class="mt-5 shadow-sm bg-gray-50 my-2">
+    <h4 class="text-xl mt-2">Enter Death Record</h4>
     <form method="post" action="{{ url_for("save_death_record") }}" enctype="multipart/form-data"
           id="death_record_form">
         <input name="report_id" id="report_id" type="hidden" value="{{ death_report.id }}">
@@ -84,7 +84,8 @@
                         <label for="age" class="block text-sm font-medium text-gray-700">
                             Index</label>
                         <input
-                                data-rules='["required","minimum:1]' type="number" name="record_number" id="record_number"
+                                data-rules='["required","minimum:1]' type="number" name="record_number"
+                                id="record_number"
                                 class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
                     </div>
                     <div class="col-span-3">
@@ -159,7 +160,7 @@
                         <label for="age" class="block text-sm font-medium text-gray-700">
                             Age</label>
                         <input
-                                data-rules='["required","minimum:1]' type="number" name="age" id="age"
+                                data-rules='["required","isNumeric","minimum:1]' type="text" name="age" id="age"
                                 class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
                     </div>
 
