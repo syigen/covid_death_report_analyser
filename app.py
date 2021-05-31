@@ -173,6 +173,7 @@ def save_death_record():
     residence_location = form["residence_location"]
     death_location = form["death_location"]
     reported_at = form["reported_at"]
+    note = form["note"]
 
     rec = DeathRecord.query.filter(
         (DeathRecord.record_number == record_number) & (DeathRecord.report_id == report.id)).first()
@@ -189,7 +190,8 @@ def save_death_record():
             age=age,
             residence_location=residence_location,
             death_location=death_location,
-            reported_at=reported_at
+            reported_at=reported_at,
+            note=note,
         )
         report.death_records.append(death_record)
         db.session.add(report)
@@ -208,6 +210,7 @@ def save_death_record():
         death_record.residence_location = residence_location
         death_record.death_location = death_location
         death_record.reported_at = reported_at
+        death_record.note = note
 
     db.session.commit()
 

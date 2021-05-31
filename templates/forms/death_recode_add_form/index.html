@@ -276,6 +276,16 @@
                         {% endif %}
                         {{ searchComponent("death_location",url_for("get_location_auto_complete"),death_location) }}
                     </div>
+                    <div class="col-span-12">
+                        <label for="death_location" class="block text-sm font-medium text-gray-700">
+                            Extra Note</label>
+                        <input
+                                {% if selected_record %}
+                                    value="{{ selected_record.note }}"
+                                {% endif %}
+                                    type="text" name="note" id="note"
+                                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                    </div>
                     <div class="col-span-12 bg-gray-50 text-right">
                         <button type="submit"
                                 class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
