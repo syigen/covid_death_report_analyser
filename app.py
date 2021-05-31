@@ -225,7 +225,7 @@ def download_report():
 def get_reason_auto_complete():
     query = request.args.get("query")
     search = "%{}%".format(query)
-    records = DeathRecord.query.filter(DeathRecord.reason.like(search)).all()
+    records = DeathRecord.query.filter(DeathRecord.reason.ilike(search)).all()
     reasons = [r.reason for r in records]
     reasons = list(dict.fromkeys(reasons))
     return jsonify(reasons)
@@ -235,9 +235,9 @@ def get_reason_auto_complete():
 def get_location_auto_complete():
     query = request.args.get("query")
     search = "%{}%".format(query)
-    records = DeathRecord.query.filter(DeathRecord.residence_location.like(search)).all()
+    records = DeathRecord.query.filter(DeathRecord.residence_location.ilike(search)).all()
     reasons = [r.residence_location for r in records]
-    records = DeathRecord.query.filter(DeathRecord.death_location.like(search)).all()
+    records = DeathRecord.query.filter(DeathRecord.death_location.ilike(search)).all()
     reasons += [r.death_location for r in records]
     reasons = list(dict.fromkeys(reasons))
     return jsonify(reasons)
