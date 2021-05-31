@@ -201,6 +201,7 @@ def save_death_record():
             return redirect(request.referrer)
 
         death_record.record_number = record_number
+        death_record.report_date = report_date
         death_record.reason = reason
         death_record.gender = gender
         death_record.age = age
@@ -238,7 +239,7 @@ def delete_recode(id):
     # report = CovidDeathReport.query.get(record.report_id)
     # db.session.delete(record)
     # db.session.commit()
-    return redirect(url_for("death_report_view", id=report.id))
+    return redirect(url_for("death_report_view", id=-1))
 
 
 @app.route("/download")
