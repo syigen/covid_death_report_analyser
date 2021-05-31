@@ -4,6 +4,72 @@
 {% set max_year = today_date.year + 1 %}
 {% set max_month = today_date.month + 1 %}
 {% set max_date = today_date.day + 1 %}
+
+{% macro searchComponent(name,query) %}
+    <div class="flex flex-col items-center">
+        <div class="w-full  flex flex-col items-center">
+            <div class="w-full">
+                <div x-data="selectConfigs('{{ query }}')"
+                     class="flex flex-col items-center relative">
+                    <div class="w-full">
+                        <div @click.away="close()"
+                             class="my-2 p-1 bg-white flex border border-gray-200 rounded">
+                            <input
+                                    autocomplete="off"
+                                    id="{{ name }}"
+                                    name="{{ name }}"
+                                    x-model="filter"
+                                    x-transition:leave="transition ease-in duration-100"
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                    @keydown="fetchOptions()"
+                                    @mousedown="open()"
+                                    @keydown.enter.stop.prevent="selectOption()"
+                                    @keydown.arrow-up.prevent="focusPrevOption()"
+                                    @keydown.arrow-down.prevent="focusNextOption()"
+                                    class="p-1 px-2 appearance-none outline-none w-full text-gray-800">
+                            <div class="text-gray-300 w-8 py-1 pl-2 pr-1 border-l flex items-center border-gray-200">
+                                <div @click="toggle()"
+                                     class="cursor-pointer w-6 h-6 text-gray-600 outline-none focus:outline-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%"
+                                         height="100%" fill="none" viewBox="0 0 24 24"
+                                         stroke="currentColor" stroke-width="2"
+                                         stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline x-show="!isOpen()"
+                                                  points="18 15 12 20 6 15"></polyline>
+                                        <polyline x-show="isOpen()"
+                                                  points="18 15 12 9 6 15"></polyline>
+                                    </svg>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div x-show="isOpen()"
+                         class="absolute shadow bg-white top-100 z-40 w-full lef-0 rounded max-h-select overflow-y-auto mt-12">
+                        <div class="flex flex-col w-full">
+                            <template x-for="(option, index) in filteredOptions()" :key="index">
+                                <div @click="onOptionClick(index)"
+                                     :class="classOption(option, index)"
+                                     :aria-selected="focusedOptionIndex === index">
+                                    <div class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative hover:border-teal-100">
+                                        <div class="w-full items-center flex">
+                                            <div class="mx-2 -mt-1"><span
+                                                    x-text="option"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+
 <div class="mt-5 md:mt-0 md:col-span-2">
     <form method="post" action="{{ url_for("save_death_record") }}" enctype="multipart/form-data">
         <input name="report_id" id="report_id" type="hidden" value="{{ death_report.id }}">
@@ -58,8 +124,7 @@
                     <div class="col-span-12">
                         <label for="reason" class="block text-sm font-medium text-gray-700">
                             Reason</label>
-                        <input type="text" name="reason" id="reason"
-                               class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                        {{ searchComponent("reason",url_for("get_reason_auto_complete")) }}
                     </div>
 
                     <div class="col-span-4">
@@ -88,18 +153,17 @@
                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
                     </div>
 
+
                     <div class="col-span-6">
                         <label for="residence_location" class="block text-sm font-medium text-gray-700">
                             Residence Location</label>
-                        <input type="text" name="residence_location" id="residence_location"
-                               class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                        {{ searchComponent("residence_location",url_for("get_location_auto_complete")) }}
                     </div>
 
                     <div class="col-span-6">
                         <label for="death_location" class="block text-sm font-medium text-gray-700">
                             Death Location</label>
-                        <input type="text" name="death_location" id="death_location"
-                               class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                        {{ searchComponent("death_location",url_for("get_location_auto_complete")) }}
                     </div>
 
 
@@ -115,3 +179,5 @@
         </div>
     </form>
 </div>
+
+<script src="{{ url_for("static",filename="auto_complete.js") }}" type="application/javascript"></script>

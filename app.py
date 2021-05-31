@@ -4,7 +4,7 @@ import os
 from io import StringIO
 from uuid import uuid4
 
-from flask import Flask, request, render_template, send_from_directory, redirect, url_for, Response
+from flask import Flask, request, render_template, send_from_directory, redirect, url_for, Response, jsonify
 from flask_assets import Environment
 from flask_sqlalchemy import SQLAlchemy
 from webassets import Bundle
@@ -219,6 +219,28 @@ def download_report():
     # add a filename
     response.headers.set("Content-Disposition", "attachment", filename="report.csv")
     return response
+
+
+@app.route("/reason_auto_complete", methods=["GET"])
+def get_reason_auto_complete():
+    query = request.args.get("query")
+    search = "%{}%".format(query)
+    records = DeathRecord.query.filter(DeathRecord.reason.like(search)).all()
+    reasons = [r.reason for r in records]
+    reasons = list(dict.fromkeys(reasons))
+    return jsonify(reasons)
+
+
+@app.route("/location_auto_complete", methods=["GET"])
+def get_location_auto_complete():
+    query = request.args.get("query")
+    search = "%{}%".format(query)
+    records = DeathRecord.query.filter(DeathRecord.residence_location.like(search)).all()
+    reasons = [r.residence_location for r in records]
+    records = DeathRecord.query.filter(DeathRecord.death_location.like(search)).all()
+    reasons += [r.death_location for r in records]
+    reasons = list(dict.fromkeys(reasons))
+    return jsonify(reasons)
 
 
 @app.context_processor
