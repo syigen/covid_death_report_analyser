@@ -55,28 +55,48 @@
                         </template>
                     </div>
                 </div>
-
             </div>
         </div>
-        <div class="flex-1 ...">
+        <div class="flex-1 max-h-screen">
             {% include "forms/death_recode_add_form/index.html" %}
-            Total Count - {{ death_report.death_records|length }}
-
-            <ul>
-                {% for death_record in death_report.death_records %}
-                    <li>
-                        {{ death_record.record_number }}.)&nbsp;&nbsp;
-                        {{ death_record.report_date }}
-                        {{ death_record.reason }}
-                        {{ death_record.gender }}
-                        {{ death_record.age }}
-                        {{ death_record.residence_location }}
-                        {{ death_record.death_location }}
-                        {{ death_record.reported_at }}
-
-                        <form action="{{ url_for("delete_recode",id=death_record.id) }}" method="post">
-                            <button type="submit">Delete</button>
-                        </form>
+            <span class="p-4 text-2xl mt-2">Total Count <strong>{{ death_report.death_records|length }}</strong></span>
+            <ul class="h-1/3  overflow-y-auto">
+                {% for death_record in death_report.death_records|sort(attribute='record_number', reverse = True)%}
+                    <li class="mb-3">
+                        <div class="flex flex-col p-8 bg-white shadow-md hover:shodow-lg rounded-2xl">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="text-white font-extrabold rounded-lg bg-blue-500 flex justify-center items-center w-8">
+                                        {{ death_record.record_number }}
+                                    </div>
+                                    <div class="flex flex-col ml-3">
+                                        <div class="font-medium leading-none"> {{ death_record.reason }}</div>
+                                        <p class="text-sm text-gray-600 leading-none mt-1">
+                                            Died at
+                                            <strong>
+                                                {% if death_record.age - death_record.age|int ==0 %}
+                                                    {{ death_record.age|int }}
+                                                {% else %}
+                                                    {{ death_record.age }}
+                                                {% endif %}
+                                            </strong>,
+                                            In <strong> {{ death_record.death_location }} </strong>,
+                                            Form <strong>{{ death_record.residence_location }} </strong>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="flex-no-shrink ">
+                                    {{ death_record.report_date }}
+                                    <span class="bg-white px-5 ml-4 py-2 text-sm shadow-sm font-medium tracking-wider border-2 border-green-400 text-green-800 rounded-full">
+                                        {% if death_record.gender == "male" %}
+                                            M
+                                        {% elif death_record.gender == "female" %}
+                                            F
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </li>
                 {% endfor %}
             </ul>
