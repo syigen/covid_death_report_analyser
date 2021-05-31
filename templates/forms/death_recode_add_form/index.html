@@ -72,15 +72,7 @@
 
 
 <div class="mt-5 shadow-sm bg-gray-50 my-2">
-    <h4 class="text-xl mt-2">
 
-        {% if selected_record %}
-            Edit
-        {% else %}
-            Add
-        {% endif %}
-
-        Death Record</h4>
     <form method="post" action="{{ url_for("save_death_record") }}" enctype="multipart/form-data"
           id="death_record_form">
         <input name="report_id" id="report_id" type="hidden" value="{{ death_report.id }}">
@@ -91,6 +83,18 @@
         <div class="shadow overflow-hidden sm:rounded-md">
             <div class="px-4 py-5 bg-white sm:p-6">
                 <div class="grid grid-cols-12 gap-4">
+
+                    <div class="col-span-12">
+                        <h4 class="text-xl">
+
+                            {% if selected_record %}
+                                Edit
+                            {% else %}
+                                Add a
+                            {% endif %}
+
+                            Death Record</h4>
+                    </div>
 
                     <div class="col-span-3">
                         <label for="age" class="block text-sm font-medium text-gray-700">
@@ -272,9 +276,7 @@
                         {% endif %}
                         {{ searchComponent("death_location",url_for("get_location_auto_complete"),death_location) }}
                     </div>
-
-
-                    <div class="col-span-12">
+                    <div class="col-span-12 bg-gray-50 text-right">
                         <button type="submit"
                                 class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Save

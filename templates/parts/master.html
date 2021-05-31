@@ -1,5 +1,28 @@
 {% include "parts/header.html" %}
 
+<nav class="mb-2 font-sans flex flex-col text-center content-center sm:flex-row sm:text-left sm:justify-between py-2 px-6 bg-white shadow sm:items-baseline w-full">
+    <div class="mb-2 sm:mb-0 inner">
+
+        <a href="/" class="text-2xl no-underline text-grey-darkest hover:text-blue-dark font-sans font-bold">SYIGEN-COVID-ANALYZER</a><br>
+        <span class="text-xs text-grey-dark">Death Record Inspection Tool</span>
+
+    </div>
+
+    {% block title %}
+    {% endblock %}
+
+    <div class="sm:mb-0 self-center">
+        <!-- <div class="h-10" style="display: table-cell, vertical-align: middle;"> -->
+        <a href="{{ url_for("all_reports") }}" class="text-md no-underline text-black hover:text-blue-dark ml-2 px-1">All</a>
+        <a href="{{ url_for("create_press_release_recode") }}"
+           class="text-md no-underline text-grey-darker hover:text-blue-dark ml-2 px-1">Add</a>
+        <!-- <a href="/two" class="text-lg no-underline text-grey-darkest hover:text-blue-dark ml-2">About Us</a> -->
+        <a href="{{ url_for("download_report") }}"
+           class="text-md no-underline text-grey-darker hover:text-blue-dark ml-2 px-1">Download</a>
+        <!-- </div> -->
+
+    </div>
+</nav>
 {% block body %} {% endblock %}
 
 {% include "parts/footer.html" %}

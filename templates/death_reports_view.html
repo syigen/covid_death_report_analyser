@@ -1,9 +1,14 @@
 {% extends "parts/master.html" %}
 
-{% block body %}
+{% block title %}
     <div class="text-center mb-3">
-        <h3 class="text-2xl items-center">Report Date <strong>{{ death_report.date }}</strong></h3>
+        <h3 class="text-xl items-center">Report Date <strong>{{ death_report.date }}</strong></h3>
     </div>
+
+{% endblock %}
+
+{% block body %}
+
 
     <div class="flex gap-x-2">
         <div class="flex-1" x-data="{ activeSlide: {{ record_images[0].id }}, slides: {{ record_images|safe }} }">
@@ -96,9 +101,9 @@
                                     </span>
                                 </div>
                             </div>
- <a class="text-blue-500"
-                                   href="{{ url_for("death_report_view",id=death_report.id) }}?recode_id={{ death_record.id }}">Edit</a>
-{#                            <form class="mt-2 justify-items-end"#}
+                            <a class="text-blue-500"
+                               href="{{ url_for("death_report_view",id=death_report.id) }}?recode_id={{ death_record.id }}">Edit</a>
+                            {#                            <form class="mt-2 justify-items-end"#}
                             {#                                  action="{{ url_for("delete_recode",id=death_record.id) }}" method="post">#}
                             {#                                <a class="text-blue-500"#}
                             {#                                   href="{{ url_for("death_report_view",id=death_report.id) }}?recode_id={{ death_record.id }}">Edit</a>#}
