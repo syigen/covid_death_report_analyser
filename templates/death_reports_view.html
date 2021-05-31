@@ -75,41 +75,45 @@
                                         {{ death_record.record_number }}
                                     </div>
                                     <div class="flex flex-col ml-3">
+                                        <div class="font-medium leading-none">
+                                            <strong>{{ death_record.report_date }}</strong></div>
                                         <div class="font-medium leading-none"> {{ death_record.reason }}</div>
                                         <p class="text-sm text-gray-600 leading-none mt-1">
-                                            Died at
                                             <strong>
                                                 {% if death_record.age - death_record.age|int ==0 %}
                                                     {{ death_record.age|int }}
                                                 {% else %}
                                                     {{ death_record.age }}
                                                 {% endif %}
-                                            </strong>,
-                                            In <strong> {{ death_record.death_location }} </strong>,
-                                            Form <strong>{{ death_record.residence_location }} </strong>
+                                            </strong>
+                                            year old,
+                                            <strong>
+                                                {% if death_record.gender == "male" %}
+                                                    Male
+                                                {% elif death_record.gender == "female" %}
+                                                    Female
+                                                {% endif %}
+                                            </strong>
+                                            died in <strong> {% if death_record.reported_at == "pvt_hospital" %}
+                                            PVT Hos.
+                                        {% elif death_record.reported_at == "gov_hospital" %}
+                                            GOV Hos.
+                                        {% elif death_record.reported_at == "home" %}
+                                            Home
+                                        {% endif %}
+                                            ({{ death_record.death_location }})
+                                        </strong>
+
+                                        </p>
+                                        <p class="text-sm text-gray-600 leading-none">
+                                            Lived in <strong>{{ death_record.residence_location }} </strong>
                                         </p>
                                     </div>
                                 </div>
-                                <div class="flex-no-shrink ">
-                                    {{ death_record.report_date }}
-                                    <span class="bg-white px-5 ml-4 py-2 text-sm shadow-sm font-medium tracking-wider border-2 border-green-400 text-green-800 rounded-full">
-                                        {% if death_record.gender == "male" %}
-                                            M
-                                        {% elif death_record.gender == "female" %}
-                                            F
-                                        {% endif %}
-                                    </span>
-                                </div>
+
                             </div>
                             <a class="text-blue-500"
                                href="{{ url_for("death_report_view",id=death_report.id) }}?recode_id={{ death_record.id }}">Edit</a>
-                            {#                            <form class="mt-2 justify-items-end"#}
-                            {#                                  action="{{ url_for("delete_recode",id=death_record.id) }}" method="post">#}
-                            {#                                <a class="text-blue-500"#}
-                            {#                                   href="{{ url_for("death_report_view",id=death_report.id) }}?recode_id={{ death_record.id }}">Edit</a>#}
-                            {#                                |#}
-                            {#                                <button class="text-red-500" type="submit">Delete</button>#}
-                            {#                            </form>#}
                         </div>
                     </li>
                 {% endfor %}

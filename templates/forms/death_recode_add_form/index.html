@@ -145,9 +145,6 @@
                                 class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                             {% for month in range(1,max_month) %}
                                 <option value="{{ month }}"
-
-
-
                                         {% if selected_record %}
                                             {% if selected_record.report_date.month == month %}
                                         selected
@@ -157,9 +154,6 @@
                                         selected
                                             {% endif %}
                                         {% endif %}
-
-
-
                                 >{{ month }}</option>
                             {% endfor %}
                         </select>
