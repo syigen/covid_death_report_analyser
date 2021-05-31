@@ -6,7 +6,9 @@ function selectConfigs(searchUrl) {
         selected: null,
         focusedOptionIndex: null,
         options: [],
-        init() {
+        init(filter) {
+            console.log(filter);
+            this.filter = filter;
             // this.fetchOptions();
         },
         close() {
@@ -16,7 +18,6 @@ function selectConfigs(searchUrl) {
         },
         open() {
             this.show = true;
-            this.filter = '';
         },
         toggle() {
             if (this.show) {

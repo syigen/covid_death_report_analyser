@@ -5,11 +5,11 @@
 {% set max_month = today_date.month + 1 %}
 {% set max_date = today_date.day + 1 %}
 
-{% macro searchComponent(name,query) %}
+{% macro searchComponent(name,query,value) %}
     <div class="flex flex-col items-center ">
         <div class="w-full  flex flex-col items-center">
             <div class="w-full">
-                <div x-data="selectConfigs('{{ query }}')" x-init="init()"
+                <div x-data="selectConfigs('{{ query }}')" x-init="init('{{ value }}')"
                      class="flex flex-col items-center relative">
                     <div class="w-full">
                         <div @click.away="close()"
@@ -72,10 +72,22 @@
 
 
 <div class="mt-5 shadow-sm bg-gray-50 my-2">
-    <h4 class="text-xl mt-2">Enter Death Record</h4>
+    <h4 class="text-xl mt-2">
+
+        {% if selected_record %}
+            Edit
+        {% else %}
+            Add
+        {% endif %}
+
+        Death Record</h4>
     <form method="post" action="{{ url_for("save_death_record") }}" enctype="multipart/form-data"
           id="death_record_form">
         <input name="report_id" id="report_id" type="hidden" value="{{ death_report.id }}">
+        {% if selected_record %}
+            <input name="record_id" id="record_id" type="hidden" value="{{ selected_record.id }}">
+        {% endif %}
+
         <div class="shadow overflow-hidden sm:rounded-md">
             <div class="px-4 py-5 bg-white sm:p-6">
                 <div class="grid grid-cols-12 gap-4">
@@ -84,9 +96,13 @@
                         <label for="age" class="block text-sm font-medium text-gray-700">
                             Index</label>
                         <input
-                                data-rules='["required","minimum:1]' type="number" name="record_number"
-                                id="record_number"
-                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+
+                                {% if selected_record %}
+                                    value="{{ selected_record.record_number }}"
+                                {% endif %}
+                                    data-rules='["required","minimum:1]' type="number" name="record_number"
+                                    id="record_number"
+                                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
                     </div>
                     <div class="col-span-3">
                         <label for="report_date_year" class="block text-sm font-medium text-gray-700">
@@ -95,9 +111,24 @@
                                 data-rules='["required"]' name="report_date_year" id="report_date_year"
                                 class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                             {% for year in range(2019,max_year) %}
-                                <option value="{{ year }}" {% if this_year==year %}
+
+
+
+                                <option value="{{ year }}"
+
+                                        {% if selected_record %}
+                                            {% if selected_record.report_date.year == year %}
                                         selected
-                                {% endif %}  >{{ year }}</option>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if this_year==year %}
+                                        selected
+                                            {% endif %}
+                                        {% endif %}
+
+
+
+                                >{{ year }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -109,9 +140,23 @@
                                 data-rules='["required"]' name="report_date_month" id="report_date_month"
                                 class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                             {% for month in range(1,max_month) %}
-                                <option value="{{ month }}"{% if this_month==month %}
+                                <option value="{{ month }}"
+
+
+
+                                        {% if selected_record %}
+                                            {% if selected_record.report_date.month == month %}
                                         selected
-                                {% endif %} >{{ month }}</option>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if this_month==month %}
+                                        selected
+                                            {% endif %}
+                                        {% endif %}
+
+
+
+                                >{{ month }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -123,16 +168,31 @@
                                 data-rules='["required"]' name="report_date_date" id="report_date_date"
                                 class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                             {% for date in range(1,max_date) %}
-                                <option value="{{ date }}"{% if this_date==date %}
+                                <option value="{{ date }}"
+
+                                        {% if selected_record %}
+                                            {% if selected_record.report_date.day==date %}
                                         selected
-                                {% endif %}  >{{ date }}</option>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if this_date==date %}
+                                        selected
+                                            {% endif %}
+                                        {% endif %}
+
+                                >{{ date }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="col-span-12">
                         <label for="reason" class="block text-sm font-medium text-gray-700">
                             Cause of death</label>
-                        {{ searchComponent("reason",url_for("get_reason_auto_complete")) }}
+                        {% if selected_record %}
+                            {% set reason = selected_record.reason %}
+                        {% else %}
+                            {% set reason = "" %}
+                        {% endif %}
+                        {{ searchComponent("reason",url_for("get_reason_auto_complete"),reason) }}
                     </div>
 
                     <div class="col-span-4">
@@ -141,9 +201,24 @@
                         <select
                                 data-rules='["required"]' name="reported_at" id="reported_at"
                                 class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                            <option value="gov_hospital">Government Hospital</option>
-                            <option value="pvt_hospital">Private Hospital</option>
-                            <option value="home">Home</option>
+                            <option value="gov_hospital"
+
+                                    {% if selected_record and selected_record.report_date.reported_at == 'gov_hospital' %}
+                                    selected
+                                    {% endif %}
+
+                            >Government Hospital
+                            </option>
+                            <option value="pvt_hospital"
+                                    {% if selected_record and selected_record.report_date.reported_at == 'pvt_hospital' %}
+                                    selected
+                                    {% endif %}>Private Hospital
+                            </option>
+                            <option value="home"
+                                    {% if selected_record and selected_record.report_date.reported_at == 'home' %}
+                                    selected
+                                    {% endif %}>Home
+                            </option>
                         </select>
                     </div>
                     <div class="col-span-4">
@@ -152,29 +227,50 @@
                         <select
                                 data-rules='["required"]' name="gender" name="gender"
                                 class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                            <option value="male">Male</option>
-                            <option value="female">FeMale</option>
+                            <option value="male"
+                                    {% if selected_record and selected_record.report_date.gender == 'male' %}
+                                    selected
+                                    {% endif %}>Male
+                            </option>
+                            <option value="female"
+                                    {% if selected_record and selected_record.report_date.gender == 'female' %}
+                                    selected
+                                    {% endif %}>FeMale
+                            </option>
                         </select>
                     </div>
                     <div class="col-span-4">
                         <label for="age" class="block text-sm font-medium text-gray-700">
                             Age</label>
                         <input
-                                data-rules='["required","isNumeric","minimum:1]' type="text" name="age" id="age"
-                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                                {% if selected_record %}
+                                    value="{{ selected_record.age }}"
+                                {% endif %}
+                                    data-rules='["required","isNumeric","minimum:1]' type="text" name="age" id="age"
+                                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
                     </div>
 
 
                     <div class="col-span-6">
                         <label for="residence_location" class="block text-sm font-medium text-gray-700">
                             Residence Location</label>
-                        {{ searchComponent("residence_location",url_for("get_location_auto_complete")) }}
+                        {% if selected_record %}
+                            {% set residence_location = selected_record.residence_location %}
+                        {% else %}
+                            {% set residence_location = "" %}
+                        {% endif %}
+                        {{ searchComponent("residence_location",url_for("get_location_auto_complete"),residence_location) }}
                     </div>
 
                     <div class="col-span-6">
                         <label for="death_location" class="block text-sm font-medium text-gray-700">
                             Death Location</label>
-                        {{ searchComponent("death_location",url_for("get_location_auto_complete")) }}
+                        {% if selected_record %}
+                            {% set death_location = selected_record.death_location %}
+                        {% else %}
+                            {% set death_location = "" %}
+                        {% endif %}
+                        {{ searchComponent("death_location",url_for("get_location_auto_complete"),death_location) }}
                     </div>
 
 
