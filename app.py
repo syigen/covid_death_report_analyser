@@ -46,7 +46,7 @@ class ReportImage(db.Model):
 
 class DeathRecord(db.Model):
     __table_args__ = (
-        db.UniqueConstraint('record_number', 'report_date'),
+        db.UniqueConstraint('record_number', 'report_date', 'report_id'),
     )
     id = db.Column(db.Integer, primary_key=True)
     record_number = db.Column(db.Integer, nullable=False)
