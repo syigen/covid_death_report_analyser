@@ -207,19 +207,19 @@
                                 class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                             <option value="gov_hospital"
 
-                                    {% if selected_record and selected_record.report_date.reported_at == 'gov_hospital' %}
+                                    {% if selected_record and selected_record.reported_at == 'gov_hospital' %}
                                     selected
                                     {% endif %}
 
                             >Government Hospital
                             </option>
                             <option value="pvt_hospital"
-                                    {% if selected_record and selected_record.report_date.reported_at == 'pvt_hospital' %}
+                                    {% if selected_record and selected_record.reported_at == 'pvt_hospital' %}
                                     selected
                                     {% endif %}>Private Hospital
                             </option>
                             <option value="home"
-                                    {% if selected_record and selected_record.report_date.reported_at == 'home' %}
+                                    {% if selected_record and selected_record.reported_at == 'home' %}
                                     selected
                                     {% endif %}>Home
                             </option>
@@ -232,12 +232,12 @@
                                 data-rules='["required"]' name="gender" name="gender"
                                 class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                             <option value="male"
-                                    {% if selected_record and selected_record.report_date.gender == 'male' %}
+                                    {% if selected_record and selected_record.gender == 'male' %}
                                     selected
                                     {% endif %}>Male
                             </option>
                             <option value="female"
-                                    {% if selected_record and selected_record.report_date.gender == 'female' %}
+                                    {% if selected_record and selected_record.gender == 'female' %}
                                     selected
                                     {% endif %}>FeMale
                             </option>
