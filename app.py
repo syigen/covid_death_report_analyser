@@ -148,7 +148,7 @@ def death_report_view(id):
 
 @app.route("/all")
 def all_reports():
-    reports = CovidDeathReport.query.all()
+    reports = CovidDeathReport.query.order_by(CovidDeathReport.date.desc()).all()
     return render_template("all_reports.html", reports=reports)
 
 
