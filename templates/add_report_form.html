@@ -1,10 +1,25 @@
 {% extends "parts/master.html" %}
 {% block body %}
+
     <div class="grid grid-cols-12 gap-4">
         <div class="col-start-5 col-span-4">
-            <h2 class="text-xl">Save Corona Death Report</h2>
+            <h2 class="text-xl">
+                {% if death_report %}
+                    Edit
+                {% else %}
+                    Create
+                {% endif %}
+
+                Corona Death Report  {% if death_report %}
+                {{ death_report.date }}
+            {% endif %}</h2>
             <div class="mt-5 md:mt-0 md:col-span-2">
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" enctype="multipart/form-data" action="{{ url_for("create_press_release_recode") }}">
+
+                    {% if death_report %}
+                        <input type="hidden" value="{{ death_report.id }}" name="death_report_id">
+                    {% endif %}
+
                     <div class="shadow overflow-hidden sm:rounded-md">
                         <div class="px-4 py-5 bg-white sm:p-6">
                             <div class="grid grid-cols-6 gap-6">
@@ -12,29 +27,45 @@
                                     <label for="report_date" class="block text-sm font-medium text-gray-700">Release
                                         Date</label>
                                     <input type="date" name="report_date" id="report_date"
+                                            {% if death_report %}
+                                           value="{{ death_report.date }}"
+                                            {% endif %}
                                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                 </div>
                                 <div class="col-span-3">
-                                    <label for="report_total" class="block text-sm font-medium text-gray-700">Total Count</label>
+                                    <label for="report_total" class="block text-sm font-medium text-gray-700">Total
+                                        Count</label>
                                     <input type="text" name="report_total" id="report_total"
+                                            {% if death_report %}
+                                           value="{{ death_report.report_total }}"
+                                            {% endif %}
                                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                 </div>
                                 <div class="col-span-3">
                                     <label for="release_number" class="block text-sm font-medium text-gray-700">Release
                                         Number</label>
                                     <input type="text" name="release_number" id="release_number"
+                                            {% if death_report %}
+                                           value="{{ death_report.release_number }}"
+                                            {% endif %}
                                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                 </div>
                                 <div class="col-span-12">
                                     <label for="report_title" class="block text-sm font-medium text-gray-700">Report
                                         Link</label>
                                     <input type="text" name="report_link" id="report_link"
+                                            {% if death_report %}
+                                           value="{{ death_report.report_link }}"
+                                            {% endif %}
                                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                 </div>
                                 <div class="col-span-12">
                                     <label for="report_title" class="block text-sm font-medium text-gray-700">Report
                                         Title</label>
                                     <input type="text" name="report_title" id="report_title"
+                                            {% if death_report %}
+                                           value="{{ death_report.title }}"
+                                            {% endif %}
                                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                 </div>
 

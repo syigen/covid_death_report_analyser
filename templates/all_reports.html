@@ -9,11 +9,15 @@
                         <tr>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Title
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Date
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Total
+                                Status
                             </th>
                             <th scope="col" class="relative px-6 py-3">
                                 <span class="sr-only">Edit</span>
@@ -24,15 +28,27 @@
                         {% for report in reports %}
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    {{ report.date }}
+                                    <a href="{{ report.report_link }}" target="{{ report.id }}">{{ report.title }}</a>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    -
+                                    {{ report.date }} / {{ report.release_number }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    {{ report.death_records|length }}/{{ report.report_total }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="{{ url_for("death_report_view",date=report.date) }}"> View /Edit </a>
-                                    <form action="{{ url_for("delete_report",id=report.id) }}" method="post">
-                                        <button type="submit">Delete</button>
+                                    <a
+                                            class="mb-2 md:mb-0 bg-green-600 px-5 py-2 mr-2 shadow-sm tracking-wider text-white rounded-sm hover:bg-gray-800"
+                                            href="{{ url_for("death_report_view",id=report.id) }}"> View </a>
+                                    <a
+                                            class="mb-2 md:mb-0 bg-blue-900 px-5 py-2 shadow-sm tracking-wider text-white rounded-sm hover:bg-gray-800"
+                                            href="{{ url_for("death_report_edit",id=report.id) }}"> Edit </a>
+                                    <form class="m-4" action="{{ url_for("delete_report",id=report.id) }}"
+                                          method="post">
+                                        <button
+
+                                                type="submit">Delete
+                                        </button>
                                     </form>
                                 </td>
                             </tr>

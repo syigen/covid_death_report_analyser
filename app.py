@@ -93,11 +93,22 @@ def create_press_release_recode():
         if "release_number" in request.form:
             number = request.form["release_number"]
 
-        death_report = CovidDeathReport(date=report_date.date(),
-                                        title=title,
-                                        release_number=number,
-                                        report_link=report_link,
-                                        report_total=report_total)
+        if "death_report_id" in request.form and request.form["death_report_id"]:
+            death_report_id = request.form["death_report_id"]
+            death_report = CovidDeathReport.query.get(death_report_id)
+            death_report.title = title
+            death_report.number = number
+            death_report.report_link = report_link
+            death_report.report_total = report_total
+            if uploaded_files and len(uploaded_files):
+                for img in death_report.images:
+                    db.session.delete(img)
+        else:
+            death_report = CovidDeathReport(date=report_date.date(),
+                                            title=title,
+                                            release_number=number,
+                                            report_link=report_link,
+                                            report_total=report_total)
 
         for file in uploaded_files:
             filename = make_unique(secure_filename(file.filename))
@@ -105,21 +116,33 @@ def create_press_release_recode():
             file.save(path)
             report_image = ReportImage(image_location=filename)
             death_report.images.append(report_image)
-        db.session.add(death_report)
+        if death_report.id is None:
+            db.session.add(death_report)
         db.session.commit()
-        return redirect(url_for("death_report_view", date=report_date))
+        return redirect(url_for("death_report_view", id=report_date.id))
 
     return render_template("add_report_form.html")
 
 
-@app.route("/report/<date>")
-def death_report_view(date):
-    death_report = CovidDeathReport.query.filter_by(date=date).first()
+@app.route("/report/edit/<id>")
+def death_report_edit(id):
+    death_report = CovidDeathReport.query.get(id)
+    return render_template("add_report_form.html", death_report=death_report)
+
+
+@app.route("/report/<id>")
+def death_report_view(id):
+    death_report = CovidDeathReport.query.get(id)
     record_images = [{
         "id": idx + 1,
         "image_location": url_for("upload", filename=img.image_location)
     } for idx, img in enumerate(death_report.images)]
-    return render_template("death_reports_view.html", death_report=death_report, record_images=record_images)
+    selected_record = None
+    if "recode_id" in request.args:
+        selected_record = DeathRecord.query.get(request.args.get("recode_id"))
+
+    return render_template("death_reports_view.html", death_report=death_report, record_images=record_images,
+                           selected_record=selected_record)
 
 
 @app.route("/all")
@@ -151,27 +174,42 @@ def save_death_record():
     reported_at = form["reported_at"]
 
     rec = DeathRecord.query.filter(
-        (DeathRecord.record_number == record_number) & (DeathRecord.report_date == report_date.date())).first()
+        (DeathRecord.record_number == record_number) & (DeathRecord.report_id == report.id)).first()
 
-    if rec:
-        flash('Index number already in')
-        return redirect(request.referrer)
+    if "record_id" not in request.form:
+        if rec:
+            flash('Index number already in')
+            return redirect(request.referrer)
+        death_record = DeathRecord(
+            record_number=record_number,
+            report_date=report_date.date(),
+            reason=reason,
+            gender=gender,
+            age=age,
+            residence_location=residence_location,
+            death_location=death_location,
+            reported_at=reported_at
+        )
+        report.death_records.append(death_record)
+        db.session.add(report)
+    elif "record_id" in request.form:
+        death_record = DeathRecord.query.get(request.form["record_id"])
 
-    death_record = DeathRecord(
-        record_number=record_number,
-        report_date=report_date.date(),
-        reason=reason,
-        gender=gender,
-        age=age,
-        residence_location=residence_location,
-        death_location=death_location,
-        reported_at=reported_at
-    )
-    report.death_records.append(death_record)
-    db.session.add(report)
+        if rec and death_record.id != rec.id:
+            flash('Index number already in')
+            return redirect(request.referrer)
+
+        death_record.record_number = record_number
+        death_record.reason = reason
+        death_record.gender = gender
+        death_record.age = age
+        death_record.residence_location = residence_location
+        death_record.death_location = death_location
+        death_record.reported_at = reported_at
+
     db.session.commit()
 
-    return redirect(url_for("death_report_view", date=report.date))
+    return redirect(url_for("death_report_view", id=report.id))
 
 
 @app.route("/report/delete/<id>", methods=["POST"])
@@ -198,7 +236,7 @@ def delete_recode(id):
     report = CovidDeathReport.query.get(record.report_id)
     db.session.delete(record)
     db.session.commit()
-    return redirect(url_for("death_report_view", date=report.date))
+    return redirect(url_for("death_report_view", id=report.id))
 
 
 @app.route("/download")

@@ -61,7 +61,7 @@
             {% include "forms/death_recode_add_form/index.html" %}
             <span class="p-4 text-2xl mt-2">Total Count <strong>{{ death_report.death_records|length }}</strong></span>
             <ul class="h-1/3  overflow-y-auto">
-                {% for death_record in death_report.death_records|sort(attribute='record_number', reverse = True)%}
+                {% for death_record in death_report.death_records|sort(attribute='record_number', reverse = True) %}
                     <li class="mb-3">
                         <div class="flex flex-col p-8 bg-white shadow-md hover:shodow-lg rounded-2xl">
                             <div class="flex items-center justify-between">
@@ -96,6 +96,14 @@
                                     </span>
                                 </div>
                             </div>
+
+                            <form class="mt-2 justify-items-end"
+                                  action="{{ url_for("delete_recode",id=death_record.id) }}" method="post">
+                                <a class="text-blue-500"
+                                   href="{{ url_for("death_report_view",id=death_report.id) }}?recode_id={{ death_record.id }}">Edit</a>
+                                |
+                                <button class="text-red-500" type="submit">Delete</button>
+                            </form>
                         </div>
                     </li>
                 {% endfor %}
