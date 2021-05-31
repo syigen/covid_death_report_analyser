@@ -1,16 +1,3 @@
-// function onTypeLoad(searchUrl) {
-//     const _searchUrl = searchUrl;
-//     return {
-//         selections: [],
-//         selected: null,
-//         search: async function (e) {
-//             const query = e.target.value;
-//             this.selected = query;
-//             const res = await fetch(`${_searchUrl}?query=${query}`);
-//             this.selections = await res.json();
-//         },
-//     }
-// }
 function selectConfigs(searchUrl) {
     const _searchUrl = searchUrl;
     return {
@@ -19,6 +6,9 @@ function selectConfigs(searchUrl) {
         selected: null,
         focusedOptionIndex: null,
         options: [],
+        init() {
+            // this.fetchOptions();
+        },
         close() {
             this.show = false;
             this.filter = this.selectedName();
@@ -55,18 +45,16 @@ function selectConfigs(searchUrl) {
             fetch(`${_searchUrl}?query=${query}`)
                 .then(response => response.json())
                 .then(data => {
-                    if (data) {
-                        this.show = true;
-                    }
                     this.options = data
                 });
         },
         filteredOptions() {
-            return this.options
+            const results = this.options
                 ? this.options.filter(option => {
-                    return (option.toLowerCase().indexOf(this.filter) > -1)
+                    return (option.toLowerCase().indexOf(this.filter.toLowerCase()) > -1)
                 })
-                : {}
+                : ""
+            return results
         },
         onOptionClick(index) {
             this.focusedOptionIndex = index;
