@@ -96,14 +96,15 @@
                                     </span>
                                 </div>
                             </div>
-
-                            <form class="mt-2 justify-items-end"
-                                  action="{{ url_for("delete_recode",id=death_record.id) }}" method="post">
-                                <a class="text-blue-500"
+ <a class="text-blue-500"
                                    href="{{ url_for("death_report_view",id=death_report.id) }}?recode_id={{ death_record.id }}">Edit</a>
-                                |
-                                <button class="text-red-500" type="submit">Delete</button>
-                            </form>
+{#                            <form class="mt-2 justify-items-end"#}
+                            {#                                  action="{{ url_for("delete_recode",id=death_record.id) }}" method="post">#}
+                            {#                                <a class="text-blue-500"#}
+                            {#                                   href="{{ url_for("death_report_view",id=death_report.id) }}?recode_id={{ death_record.id }}">Edit</a>#}
+                            {#                                |#}
+                            {#                                <button class="text-red-500" type="submit">Delete</button>#}
+                            {#                            </form>#}
                         </div>
                     </li>
                 {% endfor %}

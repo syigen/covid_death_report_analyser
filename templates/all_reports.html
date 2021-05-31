@@ -13,7 +13,7 @@
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Date
+                                Record ID
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -31,10 +31,19 @@
                                     <a href="{{ report.report_link }}" target="{{ report.id }}">{{ report.title }}</a>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    {{ report.date }} / {{ report.release_number }}
+                                    {{ report.date }}
+                                    <p>
+                                        <small> {{ report.release_number }}</small>
+                                    </p>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     {{ report.death_records|length }}/{{ report.report_total }}
+
+                                    {% if report.death_records|length == report.report_total %}
+                                        <span class="bg-green-500  text-white rounded-full py-1 px-3 ml-4">Completed</span>
+                                    {% else %}
+                                        <span class="bg-red-500 text-white rounded-full py-1 px-3  ml-4">Pending</span>
+                                    {% endif %}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <a
@@ -43,13 +52,13 @@
                                     <a
                                             class="mb-2 md:mb-0 bg-blue-900 px-5 py-2 shadow-sm tracking-wider text-white rounded-sm hover:bg-gray-800"
                                             href="{{ url_for("death_report_edit",id=report.id) }}"> Edit </a>
-                                    <form class="m-4" action="{{ url_for("delete_report",id=report.id) }}"
-                                          method="post">
-                                        <button
-
-                                                type="submit">Delete
-                                        </button>
-                                    </form>
+                                    {#                                    <form class="m-4" action="{{ url_for("delete_report",id=report.id) }}"#}
+                                    {#                                          method="post">#}
+                                    {#                                        <button#}
+                                    {##}
+                                    {#                                                type="submit">Delete#}
+                                    {#                                        </button>#}
+                                    {#                                    </form>#}
                                 </td>
                             </tr>
                         {% endfor %}

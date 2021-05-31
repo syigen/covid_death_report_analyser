@@ -72,7 +72,7 @@ def make_unique(string):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return redirect(url_for("all_reports"))
 
 
 @app.route('/add', methods=['GET', 'POST'])
@@ -96,6 +96,7 @@ def create_press_release_recode():
         if "death_report_id" in request.form and request.form["death_report_id"]:
             death_report_id = request.form["death_report_id"]
             death_report = CovidDeathReport.query.get(death_report_id)
+            death_report.date = report_date.date()
             death_report.title = title
             death_report.number = number
             death_report.report_link = report_link
@@ -119,7 +120,7 @@ def create_press_release_recode():
         if death_report.id is None:
             db.session.add(death_report)
         db.session.commit()
-        return redirect(url_for("death_report_view", id=report_date.id))
+        return redirect(url_for("death_report_view", id=death_report.id))
 
     return render_template("add_report_form.html")
 
@@ -214,28 +215,29 @@ def save_death_record():
 
 @app.route("/report/delete/<id>", methods=["POST"])
 def delete_report(id):
-    report = CovidDeathReport.query.get(id)
-    for img in report.images:
-        try:
-            filename = img.image_location
-            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            os.remove(path)
-        except:
-            pass
-        db.session.delete(img)
-    for re in report.death_records:
-        db.session.delete(re)
-    db.session.delete(report)
-    db.session.commit()
+    # report = CovidDeathReport.query.get(id)
+    # for img in report.images:
+    #     try:
+    #         filename = img.image_location
+    #         path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    #         os.remove(path)
+    #     except:
+    #         pass
+    #     db.session.delete(img)
+    # for re in report.death_records:
+    #     db.session.delete(re)
+    # db.session.delete(report)
+    # db.session.commit()
+    # return redirect(url_for("all_reports"))
     return redirect(url_for("all_reports"))
 
 
 @app.route("/record/delete/<id>", methods=["POST"])
 def delete_recode(id):
-    record = DeathRecord.query.get(id)
-    report = CovidDeathReport.query.get(record.report_id)
-    db.session.delete(record)
-    db.session.commit()
+    # record = DeathRecord.query.get(id)
+    # report = CovidDeathReport.query.get(record.report_id)
+    # db.session.delete(record)
+    # db.session.commit()
     return redirect(url_for("death_report_view", id=report.id))
 
 
