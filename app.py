@@ -152,7 +152,12 @@ def death_report_view(id):
 @app.route("/all")
 def all_reports():
     reports = CovidDeathReport.query.order_by(CovidDeathReport.date.desc()).all()
-    return render_template("all_reports.html", reports=reports)
+
+    report_death_count = sum([r.report_total for r in reports])
+    saved_death_count = DeathRecord.query.count()
+
+    return render_template("all_reports.html", reports=reports, report_total=report_death_count,
+                           saved_total=saved_death_count)
 
 
 @app.route('/uploads/<filename>')

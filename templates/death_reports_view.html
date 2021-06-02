@@ -2,10 +2,12 @@
 
 {% block title %}
     <div class="text-center mb-3">
-        <h3 class="text-xl items-center">Report Date <strong>{{ death_report.date }}</strong></h3>
+        <h3 class="text-xl items-center">Report Date
+            <strong>{{ death_report.date }}</strong>
+            <small>({{ death_report.release_number }})</small>
+        </h3>
     </div>
     {{ death_report.death_records|length }}/{{ death_report.report_total }}
-
     {% if death_report.death_records|length == death_report.report_total %}
         <span class="bg-green-500  text-white rounded-full py-1 px-3 ml-4">Completed</span>
     {% else %}
