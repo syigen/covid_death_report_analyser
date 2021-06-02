@@ -27,12 +27,15 @@ db = SQLAlchemy(app)
 
 
 class CovidDeathReport(db.Model):
+    __table_args__ = (
+        db.UniqueConstraint('date', 'release_number'),
+    )
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.Text, nullable=True)
     report_link = db.Column(db.Text, nullable=True)
     report_total = db.Column(db.Integer, default=0)
     release_number = db.Column(db.String(50), nullable=True)
-    date = db.Column(db.Date, unique=True, nullable=False)
+    date = db.Column(db.Date, nullable=False)
     images = db.relationship("ReportImage", backref="covid_death_report", lazy=True)
     death_records = db.relationship("DeathRecord", backref="covid_death_report", lazy=True)
 
