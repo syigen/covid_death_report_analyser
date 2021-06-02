@@ -292,7 +292,7 @@ def download_report():
 
     response = Response(generate(), mimetype='text/csv')
     # add a filename
-    report_time = datetime.datetime.now().strftime(" '%Y_%m_%d_%H_%M'")
+    report_time = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M")
 
     response.headers.set("Content-Disposition", "attachment", filename=f"report_{report_time}.csv")
     return response
