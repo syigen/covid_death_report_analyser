@@ -346,9 +346,9 @@ def download_backup():
     sql_file_path = os.path.join(temp_dir, 'file.sql')
     try:
         with open(sql_file_path, 'w') as output:
-            c = c = subprocess.Popen(
-                'mysqldump -h %s -P 3306 -u%s -p%s %s'.format(db_host, db_username, db_password, db_name),
-                stdout=output, shell=True)
+            command_s = 'mysqldump -h%s -P 3306 -u%s -p%s %s'.format(db_host, db_username, db_password, db_name)
+            print(command_s)
+            c = c = subprocess.Popen(command_s, stdout=output, shell=True)
             print(c)
             c.wait()
     except Exception as e:
