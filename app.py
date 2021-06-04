@@ -349,8 +349,8 @@ def download_backup():
             c = subprocess.Popen(['mysqldump', '-u', db_username, '-p%s' % db_password, db_name],
                                  stdout=output, shell=True)
             print(c)
-    except:
-        pass
+    except Exception as e:
+        print(e)
     backup_file = os.path.join(base_dir, "backup.zip")
     zf = zipfile.ZipFile(backup_file, "w")
     for dirname, subdirs, files in os.walk(temp_dir):
