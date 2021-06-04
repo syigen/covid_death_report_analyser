@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 
-const PieChartReport = ({ title = "", x = [], y = [] }) => {
+const PieChartReport = ({ title = "", data = [] }) => {
     const chartRef = useRef();
     const [chart, setChart] = useState();
 
@@ -24,13 +24,12 @@ const PieChartReport = ({ title = "", x = [], y = [] }) => {
                 },
                 series: [
                     {
-                        name: 'Gender',
+                        name: `${title}`,
                         type: 'pie',
-                        radius: ['40%', '70%'],
-                        avoidLabelOverlap: false,
+                        avoidLabelOverlap: true,
                         label: {
                             show: false,
-                            position: 'center'
+                            position: 'left'
                         },
                         emphasis: {
                             label: {
@@ -40,18 +39,15 @@ const PieChartReport = ({ title = "", x = [], y = [] }) => {
                             }
                         },
                         labelLine: {
-                            show: false
+                            show: true
                         },
-                        data: [
-                            { value: 1048, name: 'Male' },
-                            { value: 735, name: 'Female' },
-                        ]
+                        data: data
                     }
                 ]
             };
             chart.setOption(option);
         }
-    }, [chart, title, x, y]);
+    }, [chart, title, data]);
     return (
         <div ref={chartRef} className="w-auto h-full" />
     );
