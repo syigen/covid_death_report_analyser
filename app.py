@@ -1,6 +1,9 @@
 import csv
 import datetime
 import os
+import subprocess
+import tempfile
+from distutils.dir_util import copy_tree
 from io import StringIO
 from uuid import uuid4
 
@@ -9,13 +12,20 @@ from flask_assets import Environment
 from flask_sqlalchemy import SQLAlchemy
 from webassets import Bundle
 from werkzeug.utils import secure_filename
+import zipfile
 
 UPLOAD_FOLDER = './upload'
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123456@localhost/covid_death_reports'
+
+db_username = "root"
+db_password = "123456"
+db_host = "localhost"
+db_name = "covid_death_reports"
+
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://{db_username}:{db_password}@{db_host}/{db_name}'
 
 assets = Environment(app)
 css = Bundle("src/main.css", output="dist/main.css", filters="postcss")
@@ -323,6 +333,32 @@ def get_location_auto_complete():
 @app.context_processor
 def inject_today_date():
     return {'today_date': datetime.date.today()}
+
+
+@app.route("/download_backup")
+def download_backup():
+    base_dir = tempfile.mkdtemp()
+    temp_dir = os.path.join(base_dir, "backup")
+    upload_path = os.path.join(temp_dir, 'uploads')
+    os.makedirs(upload_path)
+    path = os.path.join(app.config['UPLOAD_FOLDER'], "")
+    copy_tree(path, upload_path)
+    sql_file_path = os.path.join(temp_dir, 'file.sql')
+    try:
+        with open(sql_file_path, 'w') as output:
+            c = subprocess.Popen(['mysqldump', '-u', db_username, '-p%s' % db_password, db_name],
+                                 stdout=output, shell=True)
+            print(c)
+    except:
+        pass
+    backup_file = os.path.join(base_dir, "backup.zip")
+    zf = zipfile.ZipFile(backup_file, "w")
+    for dirname, subdirs, files in os.walk(temp_dir):
+        zf.write(dirname)
+        for filename in files:
+            zf.write(os.path.join(dirname, filename))
+    zf.close()
+    return send_from_directory(base_dir, "backup.zip")
 
 
 if __name__ == '__main__':
