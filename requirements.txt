@@ -8,3 +8,5 @@ Werkzeug==2.0.1
 mysqlclient
 Flask-SQLAlchemy
 Flask-Assets
+flask-cors
+pandas
