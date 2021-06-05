@@ -1,6 +1,6 @@
 import React from 'react';
 import HistogramReport from '../../components/charts/histogram_chart';
-import DeathReportGenderWise from '../../components/reports/death_report_gender_wise';
+import DeathReportAgeGroupWise from '../../components/reports/age_group_report';
 import TotalDeathReport from '../../components/reports/total_death_report';
 const Dashboard = () => {
 
@@ -21,7 +21,7 @@ const Dashboard = () => {
 
             <div className={"col-span-12 md:col-span-4 h-full w-full bg-red-400"}>
 
-                <DeathReportGenderWise />
+                <DeathReportAgeGroupWise />
 
             </div>
 
