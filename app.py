@@ -263,8 +263,8 @@ def delete_recode(id):
     return redirect(url_for("death_report_view", id=-1))
 
 
-@app.route("/download")
-def download_report():
+@app.route("/gen_summary")
+def summary_report_generate():
     reports = CovidDeathReport.query.all()
     csv_data = []
     for report in reports:
@@ -280,32 +280,22 @@ def download_report():
                 dr.death_location,
                 dr.reported_at,
             ))
-
-    def generate():
-        data = StringIO()
-        w = csv.writer(data)
-
+    with open('data_summary.csv', mode='w') as csv_file:
+        w = csv.writer(csv_file)
         # write header
         w.writerow(('report_date', 'record_index', 'death_record_date', 'reason', 'gender', 'age', 'residence_location',
                     'death_location', 'reported_at'))
-        yield data.getvalue()
-        data.seek(0)
-        data.truncate(0)
 
         # write each log item
         for item in csv_data:
             w.writerow(item)
-            yield data.getvalue()
-            data.seek(0)
-            data.truncate(0)
-        # stream the response as the data is generated
+        csv_file.close()
+    return "success"
 
-    response = Response(generate(), mimetype='text/csv')
-    # add a filename
-    report_time = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M")
 
-    response.headers.set("Content-Disposition", "attachment", filename=f"report_{report_time}.csv")
-    return response
+@app.route("/download")
+def download_report():
+    return send_from_directory("./", 'data_summary.csv')
 
 
 @app.route("/reason_auto_complete", methods=["GET"])
