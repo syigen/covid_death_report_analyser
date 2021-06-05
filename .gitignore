@@ -5,3 +5,4 @@ upload/
 node_modules
 dist
 .webassets-cache
+*.csv

@@ -12,7 +12,7 @@ const Dashboard = () => {
                 <h1 className={"text-xl"}>Summary by record date</h1>
             </div>
 
-            <div className={"col-span-12 w-screen h-full bg-red-400"}>
+            <div className={"col-span-12 w-screen  bg-red-400"}>
 
                 <TotalDeathReport />
 
