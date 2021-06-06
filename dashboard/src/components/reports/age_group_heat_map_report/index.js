@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import * as echarts from 'echarts';
+import echarts from '../../../chart_theme';
 
 const DeathReportAgeGroupHeatMap = () => {
     const chartRef = useRef();
@@ -8,7 +8,7 @@ const DeathReportAgeGroupHeatMap = () => {
 
     useEffect(() => {
         if (chartRef) {
-            const myChart = echarts.init(chartRef.current, 'dark');
+            const myChart = echarts.init(chartRef.current, 'chalk');
             setChart(myChart);
         }
     }, [chartRef]);
@@ -42,6 +42,11 @@ const DeathReportAgeGroupHeatMap = () => {
 
 
             const option = {
+
+             
+                title: {
+                    text: 'Age groups',
+                },
 
                 tooltip: {
                     position: 'top'
@@ -91,7 +96,7 @@ const DeathReportAgeGroupHeatMap = () => {
         }
     }, [chart, dataMap]);
     return (
-        <div ref={chartRef} className="w-auto" style={{ "height": "600px" }} />
+        <div ref={chartRef} className="w-auto h-full" />
     );
 }
 

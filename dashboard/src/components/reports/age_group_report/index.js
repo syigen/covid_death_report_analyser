@@ -8,7 +8,7 @@ const DeathReportAgeGroupWise = () => {
 
     useEffect(() => {
         if (chartRef) {
-            const myChart = echarts.init(chartRef.current, 'dark');
+            const myChart = echarts.init(chartRef.current, 'chalk');
             setChart(myChart);
         }
     }, [chartRef]);
@@ -76,7 +76,7 @@ const DeathReportAgeGroupWise = () => {
         }
     }, [chart, dataMap]);
     return (
-        <div ref={chartRef} className="w-auto" style={{ "height": "600px" }} />
+        <div ref={chartRef}  className="w-auto h-full" />
     );
 }
 
