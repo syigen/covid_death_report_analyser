@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Api from '../../../api';
 import echarts from '../../../chart_theme';
 
-const TotalDeathReport = ({ title = "", data = [] }) => {
+const TotalDeathOccuredReport = ({ title = "", data = [] }) => {
     const chartRef = useRef();
     const [chart, setChart] = useState();
     const [dataMap, setDataMap] = useState();
@@ -29,17 +29,19 @@ const TotalDeathReport = ({ title = "", data = [] }) => {
             const option = {
                 timeline: {
                     axisType: 'category',
+                    // realtime: false,
                     loop: false,
                     autoPlay: true,
                     currentIndex: dates.length - 1,
-                    playInterval: 100,
+                    playInterval: 500,
                     controlStyle: {
                         position: 'left'
                     },
                     data: dates,
                     label: {
                         formatter: function (s) {
-                            return s;
+                            // (new Date(s))
+                            return s;//.getDay();
                         }
                     }
                 },
@@ -88,7 +90,7 @@ const TotalDeathReport = ({ title = "", data = [] }) => {
                 ],
                 series: [
                     {
-                        name: 'Publication Date', type: 'line', itemStyle: {
+                        name: 'Incident Date', type: 'bar', itemStyle: {
                             color: '#a75252'
                         },
                         markPoint: {
@@ -125,11 +127,6 @@ const TotalDeathReport = ({ title = "", data = [] }) => {
                                 }
                             ]
                         }
-                    },
-                    {
-                        name: 'Incident Date', type: 'bar', itemStyle: {
-                            color: '#a75252'
-                        },
                     },
                     {
                         name: 'Gender',
@@ -171,10 +168,12 @@ const TotalDeathReport = ({ title = "", data = [] }) => {
                     return {
                         title: { text: `${d}` },
                         series: [
-                            { data: dataMap.data.report_date_count[`${d}`] },
-                            { data: dataMap.data.record_date[`${d}`] },
                             {
-                                data: dataMap.data.gender[`${d}`]
+                                data: dataMap.data.record_date[`${d}`],
+                            },
+                            {
+                                data: dataMap.data.gender[`${d}`],
+
                             }
                         ]
                     }
@@ -188,4 +187,4 @@ const TotalDeathReport = ({ title = "", data = [] }) => {
     );
 }
 
-export default TotalDeathReport;
+export default TotalDeathOccuredReport;
