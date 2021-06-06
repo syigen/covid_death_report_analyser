@@ -36,7 +36,7 @@ const DeathReportLocationReport = () => {
             const option = {
 
                 title: {
-                    text: 'Death locations',
+                    text: 'Incident occured place',
                 },
                 tooltip: {
                     trigger: 'item'
