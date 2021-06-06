@@ -89,9 +89,9 @@ const TotalDeathReport = ({ title = "", data = [] }) => {
                     }
                 ],
                 series: [
-                    { name: 'Reported', type: 'line' },
-                    { name: 'Reported & Recorded', type: 'bar' },
-                    { name: 'Recorded', type: 'bar' },
+                    { name: 'Publication Date', type: 'line' },
+                    { name: 'Publication Date & Occured Date', type: 'bar' },
+                    { name: 'Occured Date', type: 'bar' },
                     {
                         name: 'Gender',
                         type: 'pie',
