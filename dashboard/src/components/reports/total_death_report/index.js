@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import * as echarts from 'echarts';
+import echarts from '../../../chart_theme';
 
 const TotalDeathReport = ({ title = "", data = [] }) => {
     const chartRef = useRef();
@@ -8,7 +8,7 @@ const TotalDeathReport = ({ title = "", data = [] }) => {
 
     useEffect(() => {
         if (chartRef) {
-            const myChart = echarts.init(chartRef.current, 'dark');
+            const myChart = echarts.init(chartRef.current, 'chalk');
             setChart(myChart);
         }
     }, [chartRef]);

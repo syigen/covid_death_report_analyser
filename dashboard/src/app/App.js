@@ -6,7 +6,7 @@ const App = () => {
 
 
     return (
-        <div className="App h-screen">
+        <div className="w-screen h-full dark:bg-gray-800">
             <Dashboard />
         </div>
     );

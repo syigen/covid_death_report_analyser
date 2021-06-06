@@ -1,7 +1,7 @@
 import React from 'react';
-import HistogramReport from '../../components/charts/histogram_chart';
 import DeathReportAgeGroupHeatMap from '../../components/reports/age_group_heat_map_report';
 import DeathReportAgeGroupWise from '../../components/reports/age_group_report';
+import DeathReportLocationReport from '../../components/reports/death_report_location_report';
 import TotalDeathReport from '../../components/reports/total_death_report';
 const Dashboard = () => {
 
@@ -13,14 +13,14 @@ const Dashboard = () => {
                 <h1 className={"text-xl"}>Summary by record date</h1>
             </div>
 
-            <div className={"col-span-12 w-screen  bg-red-400"}>
+            <div className={"col-span-12 w-screen  "}>
 
                 <TotalDeathReport />
 
             </div>
 
 
-            <div className={"col-span-12 md:col-span-4 h-full w-full bg-red-400"}>
+            <div className={"col-span-12 md:col-span-4 h-full w-full "}>
 
                 <DeathReportAgeGroupWise />
 
@@ -28,7 +28,7 @@ const Dashboard = () => {
 
 
 
-            <div className={"col-span-12  md:col-span-4  h-full bg-red-400"}>
+            <div className={"col-span-12  md:col-span-4  h-full "}>
 
                 <DeathReportAgeGroupHeatMap />
 
@@ -38,15 +38,7 @@ const Dashboard = () => {
 
             <div className={"col-span-12 sm:col-span-12 md:col-span-4  h-96"}>
 
-                <HistogramReport />
-
-            </div>
-
-
-
-            <div className={"col-span-12 md:col-span-4  h-96"}>
-
-                <HistogramReport />
+                <DeathReportLocationReport />
 
             </div>
 

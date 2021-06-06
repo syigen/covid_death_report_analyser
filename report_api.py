@@ -11,9 +11,16 @@ def daily_summary_report():
     data = reg.generate_summary_report()
     return jsonify(data=data)
 
+
 @app.route("/age_group_summary_report")
 def age_group_summary_report():
     data = reg.age_group_summary_report()
+    return jsonify(data=data)
+
+
+@app.route("/death_report_location_report")
+def death_report_location_report():
+    data = reg.get_death_report_location_summary()
     return jsonify(data=data)
 
 

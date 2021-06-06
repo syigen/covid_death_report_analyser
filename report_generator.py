@@ -172,3 +172,20 @@ def age_group_summary_report():
         "male": group_summary_male,
         "female": group_summary_female,
     }
+
+
+def get_death_report_location_summary():
+    """
+    Get Place of death report
+    :return:
+    """
+    df = pd.read_csv('data_summary.csv')
+    reported_at_df = df.groupby("reported_at").count()
+    death_location_summary = []
+    for v in reported_at_df.itertuples():
+        death_location_summary.append({
+            "name": f"{v.Index}".replace("_", " ").title(),
+            "value": int(v.report_date)
+        })
+
+    return death_location_summary
