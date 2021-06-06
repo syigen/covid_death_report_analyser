@@ -1,9 +1,21 @@
+import json
+
 from flask import Flask, jsonify
 from flask_cors import CORS
 import report_generator as reg
 
 app = Flask(__name__)
 CORS(app)
+
+
+@app.route("/get_json_report")
+def save_summery_reports():
+    data = {
+        "daily_summary_report": reg.generate_summary_report(),
+        "age_group_summary_report": reg.age_group_summary_report(),
+        "death_report_location_report": reg.get_death_report_location_summary()
+    }
+    return jsonify(data)
 
 
 @app.route("/daily_summary_report")
