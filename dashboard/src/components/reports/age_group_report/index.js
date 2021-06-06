@@ -13,23 +13,34 @@ const DeathReportAgeGroupWise = () => {
         }
     }, [chartRef]);
 
-    // useEffect(() => {
-    //     const getData = async () => {
-    //         const res = await fetch("http://127.0.0.1:7878/daily_summary_report")
-    //         const data = await res.json();
-    //         console.log(data);
-    //         setDataMap(data.data)
-    //     }
-    //     getData();
-    // }, [])
+    useEffect(() => {
+        const getData = async () => {
+            const res = await fetch("http://127.0.0.1:7878/age_group_summary_report")
+            const data = await res.json();
+            // console.log(data);
+            setDataMap(data.data)
+        }
+        getData();
+    }, [])
 
     useEffect(() => {
-        if (chart) {
-            // const dates = dataMap.dates;
-            // console.log(dates);
+        if (chart && dataMap) {
+
+            const all = dataMap.all;
+            const male = dataMap.male;
+            const female = dataMap.female;
+
+            const indicator = dataMap.indicator.map((i, idx) => {
+                return { name: i, max: all[idx] };
+            });
+
+
             const option = {
+                tooltip: {
+                    position: 'top'
+                },
                 title: {
-                    text:  'Age groups',
+                    text: 'Age groups',
                 },
                 legend: {
                     data: ['Total', 'Male', 'Female']
@@ -37,16 +48,7 @@ const DeathReportAgeGroupWise = () => {
                 radar: {
                     // shape: 'circle',
                     indicator: [
-                        { name: '0-10' },
-                        { name: '10-20' },
-                        { name: '20-30' },
-                        { name: '30-40' },
-                        { name: '40-50' },
-                        { name: '50-60' },
-                        { name: '60-70' },
-                        { name: '70-80' },
-                        { name: '80-90' },
-                        { name: '90' },
+                        ...indicator
                     ]
                 },
                 series: [{
@@ -54,17 +56,17 @@ const DeathReportAgeGroupWise = () => {
                     type: 'radar',
                     data: [
                         {
-                            value: [20, 30, 40, 50, 60, 10, 80, 40, 50, 26, 10, 90, 5],
+                            value: all,
                             name: 'Total'
                         },
 
                         {
-                            value: [20, 30, 40, 20, 60, 50, 80, 40, 9, 70, 10, 90, 5],
+                            value: male,
                             name: 'Male'
                         },
 
                         {
-                            value: [20, 30, 40, 50, 30, 5, 8, 40, 50, 70, 10, 90, 5],
+                            value: female,
                             name: 'Female'
                         }
                     ]
