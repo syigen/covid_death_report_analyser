@@ -17,7 +17,6 @@ const TotalDeathReport = ({ title = "", data = [] }) => {
         const getData = async () => {
             const res = await fetch("http://127.0.0.1:7878/daily_summary_report")
             const data = await res.json();
-            console.log(data);
             setDataMap(data.data)
         }
         getData();
@@ -26,7 +25,6 @@ const TotalDeathReport = ({ title = "", data = [] }) => {
     useEffect(() => {
         if (chart && dataMap) {
             const dates = dataMap.dates;
-            console.log(dates);
             const option = {
                 timeline: {
                     axisType: 'category',
