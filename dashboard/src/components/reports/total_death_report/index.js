@@ -32,7 +32,7 @@ const TotalDeathReport = ({ title = "", data = [] }) => {
                     loop: false,
                     autoPlay: true,
                     currentIndex: dates.length - 1,
-                    playInterval: 1000,
+                    playInterval: 100,
                     controlStyle: {
                         position: 'left'
                     },
@@ -117,7 +117,7 @@ const TotalDeathReport = ({ title = "", data = [] }) => {
         }
     }, [chart, dataMap]);
     return (
-        <div ref={chartRef} className="w-auto" style={{ "height": "600px" }} />
+        <div ref={chartRef} className="w-full" style={{ "height": "600px" }} />
     );
 }
 

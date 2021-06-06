@@ -56,8 +56,6 @@ const DeathReportLocationReport = () => {
                         emphasis: {
                             label: {
                                 show: true,
-                                fontSize: '40',
-                                fontWeight: 'bold'
                             }
                         },
                         labelLine: {
@@ -71,7 +69,7 @@ const DeathReportLocationReport = () => {
         }
     }, [chart, dataMap]);
     return (
-        <div ref={chartRef} className="w-auto h-full" />
+        <div ref={chartRef}  className="w-auto h-full" />
     );
 }
 export default DeathReportLocationReport;

@@ -7,39 +7,44 @@ const Dashboard = () => {
 
     return (
 
-        <div className={"grid grid-cols-12 gap-4 h-full"}>
+        <div className={"grid grid-cols-12 gap-2 min-h-screen"}>
 
             <div className={"col-span-12"}>
                 <h1 className={"text-xl"}>Summary by record date</h1>
             </div>
 
-            <div className={"col-span-12 w-screen  "}>
+            <div className={"col-span-12 w-full"}>
 
-                <TotalDeathReport />
-
-            </div>
-
-
-            <div className={"col-span-12 md:col-span-4 h-full w-full "}>
-
-                <DeathReportAgeGroupWise />
+                <div className={"w-full p-2"}>
+                    <TotalDeathReport />
+                </div>
 
             </div>
 
 
+            <div className={"col-span-12 md:col-span-4"}>
 
-            <div className={"col-span-12  md:col-span-4  h-full "}>
-
-                <DeathReportAgeGroupHeatMap />
-
+                <div className={"p-2  h-full w-full"}>
+                    <DeathReportAgeGroupWise />
+                </div>
             </div>
 
 
 
-            <div className={"col-span-12 sm:col-span-12 md:col-span-4  h-96"}>
+            <div className={"col-span-12  md:col-span-4"}>
 
-                <DeathReportLocationReport />
+                <div className={"p-2  h-full w-full"}>
+                    <DeathReportAgeGroupHeatMap />
+                </div>
+            </div>
 
+
+
+            <div className={"col-span-12  md:col-span-4"} style={{ "height": "30rem" }}>
+
+                <div className={"p-2 h-full w-full"}>
+                    <DeathReportLocationReport />
+                </div>
             </div>
 
         </div>

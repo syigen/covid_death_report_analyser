@@ -6,7 +6,7 @@ const App = () => {
 
 
     return (
-        <div className="w-screen h-full dark:bg-gray-800">
+        <div className="w-full h-full dark:bg-gray-800">
             <Dashboard />
         </div>
     );
