@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Api from '../../../api';
 import echarts from '../../../chart_theme';
 
 const TotalDeathReport = ({ title = "", data = [] }) => {
@@ -15,9 +16,9 @@ const TotalDeathReport = ({ title = "", data = [] }) => {
 
     useEffect(() => {
         const getData = async () => {
-            const res = await fetch("http://127.0.0.1:7878/daily_summary_report")
-            const data = await res.json();
-            setDataMap(data.data)
+            const data_raw = await Api();
+            const data = data_raw.daily_summary_report;
+            setDataMap(data)
         }
         getData();
     }, [])

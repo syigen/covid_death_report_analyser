@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
+import Api from '../../../api';
 
 const DeathReportAgeGroupWise = () => {
     const chartRef = useRef();
@@ -15,10 +16,9 @@ const DeathReportAgeGroupWise = () => {
 
     useEffect(() => {
         const getData = async () => {
-            const res = await fetch("http://127.0.0.1:7878/age_group_summary_report")
-            const data = await res.json();
-            // console.log(data);
-            setDataMap(data.data)
+            const data_raw = await Api();
+            const data = data_raw.age_group_summary_report;
+            setDataMap(data)
         }
         getData();
     }, [])
