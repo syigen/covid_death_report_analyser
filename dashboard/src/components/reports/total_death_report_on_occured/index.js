@@ -29,7 +29,7 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                     // realtime: false,
                     loop: false,
                     autoPlay: true,
-                    currentIndex: dates.length - 1,
+                    currentIndex: parseInt((dates.length - 1) * 7 / 8),
                     playInterval: 500,
                     controlStyle: {
                         position: 'left'
@@ -147,7 +147,43 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                                 },
                                 textStyle: {
                                     color: '#000'
-                                }
+                                },
+                                color: (item) => {
+
+                                    let colorStops = [];
+
+                                    if (item.name === "Male") {
+                                        colorStops = [
+                                            { offset: 0, color: 'rgba(55, 162, 255)' },
+                                            { offset: 1, color: 'rgba(116, 21, 219)' }
+                                        ]
+                                    } else if (item.name === "Female") {
+                                        colorStops = [
+                                            { offset: 0, color: 'rgba(255, 0, 135)' },
+                                            { offset: 1, color: 'rgba(135, 0, 157)' }
+                                        ]
+                                    }
+
+                                    return {
+                                        type: 'linear',
+                                        x: 0,
+                                        y: 0,
+                                        x2: 0,
+                                        y2: 1,
+                                        colorStops: colorStops
+                                    }
+                                },
+                            },
+
+                            areaStyle: {
+                                opacity: 0.8,
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                    offset: 0,
+                                    color: 'rgba(255, 0, 135)'
+                                }, {
+                                    offset: 1,
+                                    color: 'rgba(135, 0, 157)'
+                                }])
                             },
                             emphasis: {
                                 label: {
@@ -170,7 +206,6 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                             },
                             {
                                 data: dataMap.data.gender[`${d}`],
-
                             }
                         ]
                     }

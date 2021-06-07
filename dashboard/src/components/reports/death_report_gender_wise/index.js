@@ -73,14 +73,15 @@ const DeathReportGenderWise = ({ rawData }) => {
                             width: 0
                         },
                         showSymbol: false,
+                       
                         areaStyle: {
                             opacity: 0.8,
                             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                                 offset: 0,
-                                color: 'rgba(55, 162, 255)'
+                                color: 'rgba(255, 0, 135)'
                             }, {
                                 offset: 1,
-                                color: 'rgba(116, 21, 219)'
+                                color: 'rgba(135, 0, 157)'
                             }])
                         },
                         emphasis: {
@@ -101,10 +102,10 @@ const DeathReportGenderWise = ({ rawData }) => {
                             opacity: 0.8,
                             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                                 offset: 0,
-                                color: 'rgba(255, 0, 135)'
+                                color: 'rgba(55, 162, 255)'
                             }, {
                                 offset: 1,
-                                color: 'rgba(135, 0, 157)'
+                                color: 'rgba(116, 21, 219)'
                             }])
                         },
                         emphasis: {
