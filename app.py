@@ -1,18 +1,18 @@
 import csv
 import datetime
+import enum
 import os
 import subprocess
 import tempfile
+import zipfile
 from distutils.dir_util import copy_tree
-from io import StringIO
 from uuid import uuid4
 
-from flask import Flask, request, render_template, send_from_directory, redirect, url_for, Response, jsonify, flash
+from flask import Flask, request, render_template, send_from_directory, redirect, url_for, jsonify, flash
 from flask_assets import Environment
 from flask_sqlalchemy import SQLAlchemy
 from webassets import Bundle
 from werkzeug.utils import secure_filename
-import zipfile
 
 UPLOAD_FOLDER = './upload'
 
@@ -36,6 +36,12 @@ css.build()
 db = SQLAlchemy(app)
 
 
+class GenderType(enum.Enum):
+    Any = "Any"
+    Male = "Male"
+    Female = "Female"
+
+
 class CovidDeathReport(db.Model):
     __table_args__ = (
         db.UniqueConstraint('date', 'release_number'),
@@ -46,6 +52,8 @@ class CovidDeathReport(db.Model):
     report_total = db.Column(db.Integer, default=0)
     release_number = db.Column(db.String(50), nullable=True)
     date = db.Column(db.Date, nullable=False)
+    has_full_detail_report = db.Column(db.Boolean, default=True)
+    has_summery_detail_report = db.Column(db.Boolean, default=False)
     images = db.relationship("ReportImage", backref="covid_death_report", lazy=True)
     death_records = db.relationship("DeathRecord", backref="covid_death_report", lazy=True)
 
@@ -100,6 +108,16 @@ def create_press_release_recode():
         report_date = datetime.datetime.strptime(request.form["report_date"], '%Y-%m-%d')
         report_total = request.form["report_total"]
         report_link = request.form["report_link"]
+        has_full_detail_report = False
+        if "has_full_detail_report" in request.form:
+            has_full_detail_report = request.form["has_full_detail_report"]
+            has_full_detail_report = True if has_full_detail_report == "true" else False
+
+        has_summery_detail_report = False
+        if "has_summery_detail_report" in request.form:
+            has_summery_detail_report = request.form["has_summery_detail_report"]
+            has_summery_detail_report = True if has_summery_detail_report == "true" else False
+
         title, number = None, None
         if "report_title" in request.form:
             title = request.form["report_title"]
@@ -114,6 +132,8 @@ def create_press_release_recode():
             death_report.number = number
             death_report.report_link = report_link
             death_report.report_total = report_total
+            death_report.has_full_detail_report = has_full_detail_report
+            death_report.has_summery_detail_report = has_summery_detail_report
             if uploaded_files and len(uploaded_files):
                 for img in death_report.images:
                     db.session.delete(img)
@@ -122,7 +142,10 @@ def create_press_release_recode():
                                             title=title,
                                             release_number=number,
                                             report_link=report_link,
-                                            report_total=report_total)
+                                            report_total=report_total,
+                                            has_summery_detail_report=has_summery_detail_report,
+                                            has_full_detail_report=has_full_detail_report
+                                            )
 
         for file in uploaded_files:
             filename = make_unique(secure_filename(file.filename))
@@ -285,8 +308,9 @@ def summary_report_generate():
     with open('data_summary.csv', mode='w') as csv_file:
         w = csv.writer(csv_file)
         # write header
-        w.writerow(('report_date', 'record_index', 'death_record_date', 'reason', 'gender', 'age', 'residence_location',
-                    'death_location', 'reported_at'))
+        w.writerow(
+            ('report_date', 'record_index', 'death_record_date', 'reason', 'gender', 'age', 'residence_location',
+             'death_location', 'reported_at'))
 
         # write each log item
         for item in csv_data:
