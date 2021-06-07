@@ -69,6 +69,32 @@
                                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                 </div>
 
+                                <div class="col-span-6">
+                                    <label for="has_full_detail_report" class="block text-sm font-medium text-gray-700">Has
+                                        Full
+                                        details</label>
+                                    <input type="checkbox" name="has_full_detail_report" id="has_full_detail_report"
+                                           value="true"
+                                            {% if death_report and death_report.has_full_detail_report %}
+                                           checked="checked"
+                                            {% else %}
+                                           checked="checked"
+                                            {% endif %}
+                                           class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block shadow-sm sm:text-sm border-blue-500 rounded-md">
+                                </div>
+                                <div class="col-span-6">
+                                    <label for="has_summery_detail_report"
+                                           class="block text-sm font-medium text-gray-700">Has
+                                        Summery details</label>
+                                    <input type="checkbox" name="has_summery_detail_report"
+                                           id="has_summery_detail_report"
+                                           value="true"
+                                            {% if death_report and death_report.has_summery_detail_report %}
+                                           checked="checked"
+                                            {% endif %}
+                                           class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block shadow-sm sm:text-sm border-blue-500 rounded-md">
+                                </div>
+
                                 <div class="col-span-12">
                                     <label class="block text-sm font-medium text-gray-700">
                                         Report Photos
