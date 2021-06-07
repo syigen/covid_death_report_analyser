@@ -1,6 +1,7 @@
 import csv
 import datetime
 import enum
+import json
 import os
 import subprocess
 import tempfile
@@ -56,6 +57,8 @@ class CovidDeathReport(db.Model):
     has_summery_detail_report = db.Column(db.Boolean, default=False)
     images = db.relationship("ReportImage", backref="covid_death_report", lazy=True)
     death_records = db.relationship("DeathRecord", backref="covid_death_report", lazy=True)
+    death_report_summary = db.relationship("PressReleaseSummary", uselist=False, backref="covid_death_report",
+                                           lazy=True)
 
 
 class ReportImage(db.Model):
@@ -63,6 +66,44 @@ class ReportImage(db.Model):
     image_location = db.Column(db.Text())
     report_id = db.Column(db.Integer, db.ForeignKey('covid_death_report.id'),
                           nullable=False)
+
+
+class PressReleaseSummary(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    total_count_so_far = db.Column(db.Integer, default=0)
+    total_count_today = db.Column(db.Integer, default=0)
+    total_count_male = db.Column(db.Integer, default=0)
+    total_count_female = db.Column(db.Integer, default=0)
+    total_count_home = db.Column(db.Integer, default=0)
+    total_count_hospital = db.Column(db.Integer, default=0)
+    total_count_on_admission = db.Column(db.Integer, default=0)
+    total_count_on_gov_hospital = db.Column(db.Integer, default=0)
+    place_of_deaths = db.Column(db.Text)
+    cause_of_deaths = db.Column(db.Text)
+    death_records = db.relationship("MiniDeathRecord", backref="press_release_summary", lazy=True)
+    age_groups = db.relationship("AgeGroup", backref="press_release_summary", lazy=True)
+    report_id = db.Column(db.Integer, db.ForeignKey('covid_death_report.id'),
+                          nullable=False)
+
+
+#
+#
+class MiniDeathRecord(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    report_date = db.Column(db.Date, nullable=False)
+    count = db.Column(db.Integer)
+    gender = db.Column(db.Enum(GenderType), default=GenderType.Any)
+    report_summary_id = db.Column(db.Integer, db.ForeignKey('press_release_summary.id'), nullable=False)
+
+
+class AgeGroup(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    start = db.Column(db.Integer)
+    end = db.Column(db.Integer)
+    count = db.Column(db.Integer)
+    gender = db.Column(db.Enum(GenderType), default=GenderType.Any)
+    report_summary_id = db.Column(db.Integer, db.ForeignKey('press_release_summary.id'),
+                                  nullable=False)
 
 
 class DeathRecord(db.Model):
@@ -161,6 +202,85 @@ def create_press_release_recode():
     return render_template("add_report_form.html")
 
 
+@app.route("/save_death_report_summary", methods=['POST'])
+def save_death_report_summary():
+    content = request.get_json()
+
+    report_id = content["report_id"]
+    total_count_so_far = content["total_count_so_far"]
+    total_count_today = content["total_count_today"]
+    total_count_male = content["total_count_male"]
+    total_count_female = content["total_count_female"]
+    total_count_home = content["total_count_home"]
+    total_count_hospital = content["total_count_hospital"]
+    total_count_on_admission = content["total_count_on_admission"]
+    total_count_on_gov_hospital = content["total_count_on_gov_hospital"]
+    place_of_deaths = content["place_of_deaths"]
+    cause_of_deaths = content["cause_of_deaths"]
+
+    total_by_date = content["deaths_total_by_date"]
+    total_by_age_group = content["deaths_total_by_age_group"]
+    report: CovidDeathReport = CovidDeathReport.query.get(report_id)
+    if report and report.has_summery_detail_report and report.death_report_summary:
+        release_summary = report.death_report_summary
+        release_summary.total_count_so_far = total_count_so_far,
+        release_summary.total_count_today = total_count_today,
+        release_summary.place_of_deaths = place_of_deaths,
+        release_summary.cause_of_deaths = cause_of_deaths,
+        release_summary.total_count_male = total_count_male,
+        release_summary.total_count_female = total_count_female,
+        release_summary.total_count_home = total_count_home,
+        release_summary.total_count_hospital = total_count_hospital,
+        release_summary.total_count_on_admission = total_count_on_admission,
+        release_summary.total_count_on_gov_hospital = total_count_on_gov_hospital,
+    else:
+        release_summary = PressReleaseSummary(
+            total_count_so_far=total_count_so_far,
+            total_count_today=total_count_today,
+            place_of_deaths=place_of_deaths,
+            cause_of_deaths=cause_of_deaths,
+            total_count_male=total_count_male,
+            total_count_female=total_count_female,
+            total_count_home=total_count_home,
+            total_count_hospital=total_count_hospital,
+            total_count_on_admission=total_count_on_admission,
+            total_count_on_gov_hospital=total_count_on_gov_hospital,
+            report_id=report_id
+        )
+
+    report.death_report_summary = release_summary
+    for re in release_summary.death_records:
+        db.session.delete(re)
+
+    for re in release_summary.age_groups:
+        db.session.delete(re)
+
+    for tot_date in total_by_date:
+        report_date = tot_date["date"]
+        report_date = datetime.datetime.strptime(report_date, '%Y-%m-%d')
+        number_of_deaths = tot_date["count"]
+        release_summary.death_records.append(MiniDeathRecord(
+            report_date=report_date,
+            count=number_of_deaths
+        ))
+    release_summary.age_groups.clear()
+    for tot_age in total_by_age_group:
+        _from = tot_age["from"]
+        _to = tot_age["to"]
+        _count = tot_age["count"]
+
+        release_summary.age_groups.append(AgeGroup(
+            start=_from,
+            end=_to,
+            count=_count
+        ))
+    # release_summary.age_groups = age_groups
+    # release_summary.death_records = death_records
+    db.session.add(report)
+    db.session.commit()
+    return jsonify(content)
+
+
 @app.route("/report/edit/<id>")
 def death_report_edit(id):
     death_report = CovidDeathReport.query.get(id)
@@ -170,6 +290,38 @@ def death_report_edit(id):
 @app.route("/report/<id>")
 def death_report_view(id):
     death_report = CovidDeathReport.query.get(id)
+    summary_report = None
+    if death_report.has_summery_detail_report and death_report.death_report_summary:
+        summary: PressReleaseSummary = death_report.death_report_summary
+        summary_report = {
+            "report_id": death_report.id,
+            'total_count_today': summary.total_count_today,
+            'total_count_so_far': summary.total_count_so_far,
+            'total_count_male': summary.total_count_male,
+            'total_count_female': summary.total_count_female,
+            'total_count_home': summary.total_count_home,
+            'total_count_hospital': summary.total_count_hospital,
+            'total_count_on_admission': summary.total_count_on_admission,
+            'total_count_on_gov_hospital': summary.total_count_on_gov_hospital,
+            'cause_of_deaths': summary.cause_of_deaths,
+            'place_of_deaths': summary.place_of_deaths,
+        }
+
+        death_records = summary.death_records
+        age_groups = summary.age_groups
+
+        summary_report["deaths_total_by_date"] = [{
+            "date": dr.report_date.strftime('%Y-%m-%d'),
+            "count": dr.count
+        } for dr in death_records]
+        summary_report["deaths_total_by_age_group"] = [{
+            "from": ag.start,
+            "to": ag.end,
+            "count": ag.count
+        } for ag in age_groups]
+
+        summary_report = json.dumps(summary_report)
+
     record_images = [{
         "id": idx + 1,
         "image_location": url_for("upload", filename=img.image_location)
@@ -179,7 +331,7 @@ def death_report_view(id):
         selected_record = DeathRecord.query.get(request.args.get("recode_id"))
 
     return render_template("death_reports_view.html", death_report=death_report, record_images=record_images,
-                           selected_record=selected_record)
+                           selected_record=selected_record, summary_report=summary_report)
 
 
 @app.route("/all")

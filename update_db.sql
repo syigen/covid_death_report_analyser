@@ -24,3 +24,10 @@ alter table covid_death_report
 alter table covid_death_report
     add has_summery_detail_report boolean default false null;
 
+-- 5. Add summary table
+alter table press_release_summary
+    add report_id int(11) not null;
+alter table press_release_summary
+    add constraint press_release_summary_covid_death_report_id_fk
+        foreign key (report_id) references covid_death_report (id)
+            on update cascade on delete cascade;
