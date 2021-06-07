@@ -1,0 +1,329 @@
+{% set this_year = today_date.year %}
+{% set this_month = today_date.month %}
+{% set this_date = today_date.day %}
+{% set max_year = today_date.year + 1 %}
+{% set max_month = 13 %}
+{% set max_date = 32 %}
+<div class="mt-5 shadow-sm bg-gray-50 my-2 mb-12">
+    <div
+            id="death_record_summery_form" x-data="CreateSummeryForm('{{ url_for("save_death_report_summary") }}')"
+
+            {% if summary_report %}
+            x-init="init('{{ summary_report }}')"
+            {% endif %}
+
+    >
+        <input name="report_id" id="report_id" type="hidden" value="{{ death_report.id }}">
+        {% if summery_report %}
+            <input name="record_id" id="record_id" type="hidden" value="{{ selected_record.id }}">
+        {% endif %}
+
+        <div class="shadow overflow-hidden sm:rounded-md">
+            <div class="px-4 py-5 bg-white sm:p-6">
+                <div class="grid grid-cols-12 gap-4">
+
+                    <div class="col-span-12 border-b-2 border-gray-300 py-2">
+                        <h4 class="text-2xl">
+
+                            {% if selected_record %}
+                                Edit
+                            {% else %}
+                                Add a
+                            {% endif %}
+
+                            Report Summary</h4>
+                    </div>
+
+                    <div class="col-span-6">
+                        <label for="number_of_females" class="block text-sm font-medium text-gray-700">
+                            Report Total</label>
+                        <input
+                                x-model="todayTotal"
+                                data-rules='["required"]' type="number" name="number_of_females"
+                                id="number_of_females"
+                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                    </div>
+                    <div class="col-span-6">
+                        <label for="number_of_male" class="block text-sm font-medium text-gray-700">
+                            So Far total</label>
+                        <input
+                                x-model="soFarTotal"
+                                data-rules='["required"]' type="number" name="number_of_male"
+                                id="number_of_male"
+                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                    </div>
+
+                    <div class="col-span-12">
+                        <h4 class="font-bold"> Per Record Date </h4>
+                    </div>
+                    <div class="col-span-3">
+                        <label for="date_death_modal_year" class="block text-sm font-medium text-gray-700">
+                            Year</label>
+                        <select
+                                x-model="dateDeathModal.year"
+                                name="date_death_modal_year" id="date_death_modal_year"
+                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            {% for year in range(2019,max_year) %}
+                                <option value="{{ year }}"
+                                        {% if this_year==year %}
+                                        selected
+                                        {% endif %}
+                                >{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-span-3">
+                        <label for="date_death_modal_month" class="block text-sm font-medium text-gray-700">
+                            Month</label>
+                        <select
+                                x-model="dateDeathModal.month"
+                                name="date_death_modal_month" id="date_death_modal_month"
+                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            {% for month in range(1,max_month) %}
+                                <option value="{{ month }}"
+                                        {% if this_month==month %}
+                                        selected
+                                        {% endif %}
+                                >{{ month }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-span-3">
+                        <label for="date_death_modal_date" class="block text-sm font-medium text-gray-700">
+                            Date</label>
+                        <select
+                                x-model="dateDeathModal.date"
+                                name="date_death_modal_date" id="date_death_modal_date"
+                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            {% for date in range(1,max_date) %}
+                                <option value="{{ date }}"
+
+                                        {% if this_date==date %}
+                                        selected
+                                        {% endif %}
+
+                                >{{ date }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-span-2">
+                        <label for="date_death_modal_count" class="block text-sm font-medium text-gray-700">
+                            Count</label>
+                        <input
+                                x-model="dateDeathModal.count"
+                                @keydown.enter="addDateDeathCount"
+                                name="date_death_modal_count" id="date_death_modal_count"
+                                type="number" name="today_count"
+                                id="today_count"
+                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-sm font-medium text-gray-700">
+                            &nbsp;
+                        </label>
+                        <button
+                                x-on:click="addDateDeathCount()"
+                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm
+                                block
+                                text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700
+                                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >+
+                        </button>
+                    </div>
+                    <div class="col-span-12">
+                        <ul>
+                            <template x-for="rpDate in reportDates" :key="rpDate.id">
+                                <li>
+                                    <div class="flex items-stretch text-right">
+                                        <span x-text="rpDate.date" class="mx-1"></span>
+                                        <span class="mx-4">-</span>
+                                        <span x-text="rpDate.count" class="mx-1 w-4"></span>
+                                        <span class="mx-4">Deaths</span>
+                                        <button
+                                                class="inline-flex justify-center px-2 border border-transparent shadow-sm
+                                                block ml-4
+                                                text-sm font-medium rounded-md text-white bg-red-600
+                                                hover:bg-red-700
+                                                focus:outline-none focus:ring-2 focus:ring-offset-2
+                                                focus:ring-red-500"
+                                                x-on:click="removeDateDeathCount(rpDate.id)">-
+                                        </button>
+                                    </div>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+
+                    <div class="col-span-12">
+                        <h4 class="font-bold">Age Groups </h4>
+                    </div>
+                    <div class="col-span-3">
+                        <label for="age_group_modal_from" class="block text-sm font-medium text-gray-700">
+                            From</label>
+                        <input
+                                x-model="ageGroupModal.from"
+                                type="number" name="age_group_modal_from"
+                                id="age_group_modal_from"
+                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+
+                    </div>
+                    <div class="col-span-3">
+                        <label for="age_group_modal_to" class="block text-sm font-medium text-gray-700">
+                            To</label>
+                        <input
+                                x-model="ageGroupModal.to"
+                                type="number" name="age_group_modal_to"
+                                id="age_group_modal_to"
+                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+
+                    </div>
+                    <div class="col-span-2">
+                        <label for="age" class="block text-sm font-medium text-gray-700">
+                            Count</label>
+                        <input
+                                @keydown.enter="addAgeGroup"
+                                x-model="ageGroupModal.count" type="number" name="today_count"
+                                id="today_count"
+                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-sm font-medium text-gray-700">
+                            &nbsp;
+                        </label>
+                        <button
+                                type="button"
+                                x-on:click="addAgeGroup"
+                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm
+                                block
+                                text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700
+                                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >+
+                        </button>
+                    </div>
+                    <div class="col-span-12">
+                        <ul>
+                            <template x-for="ageGroup in ageGroups" :key="ageGroup.id">
+                                <li>
+                                    <div class="flex items-stretch text-right">
+                                        <span x-text="ageGroup.from" class="mx-1 w-4"></span>
+                                        <span class="">-</span>
+                                        <span x-text="ageGroup.to" class="mx-1 w-4"></span>
+                                        <span class="mx-1">Years</span>
+                                        <span class="mx-4">-</span>
+                                        <span x-text="ageGroup.count" class="mx-1 w-4"></span>
+                                        <button
+                                                class="inline-flex justify-center px-2 border border-transparent shadow-sm
+                                                block ml-4
+                                                text-sm font-medium rounded-md text-white bg-red-600
+                                                hover:bg-red-700
+                                                focus:outline-none focus:ring-2 focus:ring-offset-2
+                                                focus:ring-red-500"
+                                                x-on:click="removeAgeGroup(ageGroup.id)">-
+                                        </button>
+                                    </div>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+
+                    <div class="col-span-12">
+                        <h4 class="font-bold">Place of death </h4>
+                    </div>
+
+                    <div class="col-span-3">
+                        <label for="number_of_females" class="block text-sm font-medium text-gray-700">
+                            Hospital</label>
+                        <input x-model="hospitalCount"
+                               data-rules='["required"]' type="number" name="number_of_females"
+                               id="number_of_females"
+                               class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                    </div>
+
+                    <div class="col-span-3">
+                        <label for="number_of_females" class="block text-sm font-medium text-gray-700">
+                            Home</label>
+                        <input x-model="homeCount"
+                               data-rules='["required"]' type="number" name="number_of_females"
+                               id="number_of_females"
+                               class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                    </div>
+                    <div class="col-span-3">
+                        <label for="number_of_females" class="block text-sm font-medium text-gray-700">
+                            Admission</label>
+                        <input x-model="onAdmissionCount"
+                               data-rules='["required"]' type="number" name="number_of_females"
+                               id="number_of_females"
+                               class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                    </div>
+
+                    <div class="col-span-3">
+                        <label for="number_of_females" class="block text-sm font-medium text-gray-700">
+                            Gov</label>
+                        <input x-model="govHospitalCount"
+                               data-rules='["required"]' type="number" name="number_of_females"
+                               id="number_of_females"
+                               class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                    </div>
+
+                    <div class="col-span-12">
+                        <h4 class="font-bold"> Other Details </h4>
+                    </div>
+
+                    <div class="col-span-6">
+                        <label for="number_of_females" class="block text-sm font-medium text-gray-700">
+                            Female Count</label>
+                        <input
+                                x-model="femaleCount"
+                                data-rules='["required"]' type="number" name="number_of_females"
+                                id="number_of_females"
+                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                    </div>
+                    <div class="col-span-6">
+                        <label for="number_of_male" class="block text-sm font-medium text-gray-700">
+                            Male Count</label>
+                        <input
+                                x-model="maleCount"
+                                data-rules='["required"]' type="number" name="number_of_male"
+                                id="number_of_male"
+                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                    </div>
+
+                    <div class="col-span-12">
+                        <label for="area_of_residence" class="block text-sm font-medium text-gray-700">
+                            Area Of Residence</label>
+                        <input
+                                x-model="areaOfResidence"
+                                data-rules='["required"]' type="text" name="area_of_residence"
+                                id="area_of_residence"
+                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                    </div>
+                    <div class="col-span-12">
+                        <label for="cause_of_death" class="block text-sm font-medium text-gray-700">
+                            Cause of death</label>
+                        <input
+                                x-model="causeOfDeath"
+                                data-rules='["required"]' type="text" name="cause_of_death"
+                                id="cause_of_death"
+                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                    </div>
+
+
+                    <div class="col-span-12 bg-gray-50 text-right">
+                        <a class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-black bg-grey-600 hover:bg-grey-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-grey-500"
+                           href="{{ url_for("death_report_view",id=death_report.id) }}">Reset</a>
+                        <button type="button"
+                                x-on:click="submitData"
+                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for("static",filename="create_summary_form.js") }}" type="application/javascript"></script>
+<script>
+
+</script>
