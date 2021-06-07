@@ -1,6 +1,11 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import pandas as pd
 import numpy as np
+
+
+def _read_summary_csv():
+    df = pd.read_csv('data_summary.csv')
+    return df
 
 
 def get_count_summary_by_reported_and_record_same_date(df, dates):
@@ -105,7 +110,7 @@ def get_gender_summary(df, dates):
 
 
 def generate_summary_report():
-    df = pd.read_csv('data_summary.csv')
+    df = _read_summary_csv()
     dates = list(df.death_record_date.unique())
     dates += list(df.report_date.unique())
     dates = list(set(dates))
@@ -150,7 +155,7 @@ def age_group_summary_report():
     get age group wise data
     :return:
     """
-    df = pd.read_csv('data_summary.csv')
+    df = _read_summary_csv()
     age_groups = ['0-10', '10-20', '20-30', '30-40', '40-50', '50-60', '60-70', '70-80', '80-90', '90']
     age_group_bins = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, np.inf]
 
@@ -179,7 +184,7 @@ def get_death_report_location_summary():
     Get Place of death report
     :return:
     """
-    df = pd.read_csv('data_summary.csv')
+    df = _read_summary_csv()
     reported_at_df = df.groupby("reported_at").count()
     death_location_summary = []
     for v in reported_at_df.itertuples():
@@ -189,3 +194,113 @@ def get_death_report_location_summary():
         })
 
     return death_location_summary
+
+
+def age_group_summary_by_date_report():
+    df = _read_summary_csv()
+    dates = list(df.death_record_date.unique())
+    dates += list(df.report_date.unique())
+    dates = list(set(dates))
+    dates.sort(key=lambda date: datetime.strptime(date, '%Y-%m-%d'))
+
+    age_groups = ['0-10', '10-20', '20-30', '30-40', '40-50', '50-60', '60-70', '70-80', '80-90', '90']
+    age_group_bins = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, np.inf]
+
+    summary = {}
+    data = []
+    df['report_date'] = pd.to_datetime(df['report_date']) - pd.to_timedelta(7, unit='d')
+    for idx, d in enumerate(dates):
+        date_d = datetime.strptime(d, '%Y-%m-%d')
+        _df_temp = df.query(f"report_date=='{d}'")
+        if len(_df_temp) > 0:
+            age_group_df = pd.cut(_df_temp['age'], bins=age_group_bins)
+            age_group_df = _df_temp.groupby(age_group_df).count()
+
+            group_summary = {}
+            for age_g, count in zip(age_groups, age_group_df.report_date.values):
+                group_summary[f"{age_g}"] = int(count)
+                # data.append([date_d.weekday(), age_groups.index(f"{age_g}"), int(count)])
+                data.append([idx, age_groups.index(f"{age_g}"), int(count)])
+
+            summary[f"{d}"] = list(group_summary.values())
+
+    return {
+        "groups": age_groups,
+        "dates": list(summary.keys()),
+        "data": data
+    }
+
+
+def age_group_summary_by_week_report():
+    df_temp = _read_summary_csv()
+    df_temp['report_date'] = pd.to_datetime(df_temp['report_date']) - pd.to_timedelta(7, unit='d')
+    df_temp['daysoffset'] = df_temp['report_date'].apply(lambda x: x.weekday())
+    # We apply, row by row (axis=1) a timedelta operation
+    df_temp['report_date_week'] = df_temp.apply(lambda x: x['report_date'] - timedelta(days=x['daysoffset']), axis=1)
+
+    wk_dates = list(df_temp.report_date_week.unique())
+    wk_dates = list(set(wk_dates))
+    wk_dates.sort(key=lambda date: datetime.fromtimestamp(date.item() / 10 ** 9))
+
+    age_groups = ['0-10', '10-20', '20-30', '30-40', '40-50', '50-60', '60-70', '70-80', '80-90', '90']
+    age_group_bins = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, np.inf]
+    summary = {}
+
+    data = []
+    total_count = 0
+    for idx, d in enumerate(wk_dates):
+        d = datetime.fromtimestamp(d.item() / 10 ** 9).strftime('%Y-%m-%d')
+        _df_temp = df_temp.query(f"report_date_week=='{d}'")
+        if len(_df_temp) > 0:
+            age_group_df = pd.cut(_df_temp['age'], bins=age_group_bins)
+            age_group_df = _df_temp.groupby(age_group_df).count()
+
+            group_summary = {}
+            for age_g, count in zip(age_groups, age_group_df.report_date_week.values):
+                group_summary[f"{age_g}"] = int(count)
+                data.append([idx, age_groups.index(f"{age_g}"), int(count)])
+
+            summary[f"{d}"] = list(group_summary.values())
+
+    return {
+        "groups": age_groups,
+        "dates": list(summary.keys()),
+        "raw_data": summary,
+        "data": data
+    }
+
+
+def get_gender_summary_repored_date_weekly():
+    df = _read_summary_csv()
+    df['report_date'] = pd.to_datetime(df['report_date']) - pd.to_timedelta(7, unit='d')
+    df['daysoffset'] = df['report_date'].apply(lambda x: x.weekday())
+    # We apply, row by row (axis=1) a timedelta operation
+    df['report_date_week'] = df.apply(lambda x: x['report_date'] - timedelta(days=x['daysoffset']), axis=1)
+
+    dates = list(df.report_date_week.unique())
+    dates = list(set(dates))
+    dates.sort(key=lambda date: datetime.fromtimestamp(date.item() / 10 ** 9))
+    gender_summary = {}
+    pre_rec = None
+    for rd in dates:
+        rd = datetime.fromtimestamp(rd.item() / 10 ** 9).strftime('%Y-%m-%d')
+        gender_data = {
+            "male": 0,
+            "female": 0
+        }
+        for t in df.query(f"report_date_week=='{rd}'").itertuples():
+            if "male" == t.gender:
+                gender_data["male"] += 1
+            elif "female" == t.gender:
+                gender_data["female"] += 1
+        if pre_rec:
+            gender_data["male"] += pre_rec["male"]
+            gender_data["female"] += pre_rec["female"]
+
+        gender_summary[rd] = [
+            {"name": "Male", "value": gender_data["male"]},
+            {"name": "Female", "value": gender_data["female"]}
+        ]
+
+        pre_rec = gender_data
+    return gender_summary
