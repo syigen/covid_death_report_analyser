@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Api from '../../../api';
+import React, { useEffect, useRef, useState } from 'react';
 import echarts from '../../../chart_theme';
 
-const TotalDeathReport = ({ title = "", data = [] }) => {
+const TotalDeathReport = ({ rawData }) => {
     const chartRef = useRef();
     const [chart, setChart] = useState();
     const [dataMap, setDataMap] = useState();
@@ -13,15 +12,12 @@ const TotalDeathReport = ({ title = "", data = [] }) => {
             setChart(myChart);
         }
     }, [chartRef]);
-
     useEffect(() => {
-        const getData = async () => {
-            const data_raw = await Api();
-            const data = data_raw.daily_summary_report;
-            setDataMap(data)
+        if (rawData) {
+            const data = rawData.daily_summary_report;
+            setDataMap(data);
         }
-        getData();
-    }, [])
+    }, [rawData])
 
     useEffect(() => {
         if (chart && dataMap) {

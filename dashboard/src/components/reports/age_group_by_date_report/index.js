@@ -1,11 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
-import Api from '../../../api';
+import React, { useEffect, useRef, useState } from 'react';
 
-const DeathAgeGroupByDateReport = () => {
+const DeathAgeGroupByDateReport = ({ rawData }) => {
     const chartRef = useRef();
     const [chart, setChart] = useState();
     const [dataMap, setDataMap] = useState();
+
+    useEffect(() => {
+        if (rawData) {
+            const data = rawData.age_group_weekly_summary_by_date_report;
+            setDataMap(data);
+        }
+    }, [rawData])
 
     useEffect(() => {
         if (chartRef) {
@@ -14,14 +20,6 @@ const DeathAgeGroupByDateReport = () => {
         }
     }, [chartRef]);
 
-    useEffect(() => {
-        const getData = async () => {
-            const data_raw = await Api();
-            const data = data_raw.age_group_weekly_summary_by_date_report;
-            setDataMap(data)
-        }
-        getData();
-    }, [])
 
     useEffect(() => {
         if (chart && dataMap) {
@@ -62,7 +60,7 @@ const DeathAgeGroupByDateReport = () => {
                     left: 'center',
                 },
                 series: [{
-                    name: 'Punch Card',
+                    name: 'Weekly Age Group Sumamry',
                     type: 'heatmap',
                     data: data,
                     label: {

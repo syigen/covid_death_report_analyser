@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PieChartReport from "../../charts/pie_chart";
 
-const DeathReportGenderWise = () => {
+const DeathReportGenderWise = ({rawData}) => {
     const [genderCount, setGenderCount] = useState();
     useEffect(() => {
         setGenderCount([
@@ -9,6 +9,8 @@ const DeathReportGenderWise = () => {
             { value: 735, name: 'Female' },
         ])
     }, [])
+
+    
 
 
     return (

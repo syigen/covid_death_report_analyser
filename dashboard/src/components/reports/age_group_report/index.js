@@ -56,7 +56,7 @@ const DeathReportAgeGroupWise = () => {
                     ]
                 },
                 series: [{
-                    name: 'COVID Deaths Age group wise',
+                    name: 'Deaths Age group wise',
                     type: 'radar',
                     data: [
                         {
