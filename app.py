@@ -165,9 +165,12 @@ def all_reports():
 
     report_death_count = sum([r.report_total for r in reports])
     saved_death_count = DeathRecord.query.count()
+    delete_key = ""
+    if "delete_key" in request.args:
+        delete_key = request.args.get("delete_key")
 
     return render_template("all_reports.html", reports=reports, report_total=report_death_count,
-                           saved_total=saved_death_count)
+                           saved_total=saved_death_count, delete_key=delete_key)
 
 
 @app.route('/uploads/<filename>')
@@ -237,20 +240,19 @@ def save_death_record():
 
 @app.route("/report/delete/<id>", methods=["POST"])
 def delete_report(id):
-    # report = CovidDeathReport.query.get(id)
-    # for img in report.images:
-    #     try:
-    #         filename = img.image_location
-    #         path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    #         os.remove(path)
-    #     except:
-    #         pass
-    #     db.session.delete(img)
-    # for re in report.death_records:
-    #     db.session.delete(re)
-    # db.session.delete(report)
-    # db.session.commit()
-    # return redirect(url_for("all_reports"))
+    report = CovidDeathReport.query.get(id)
+    for img in report.images:
+        try:
+            filename = img.image_location
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            os.remove(path)
+        except:
+            pass
+        db.session.delete(img)
+    for re in report.death_records:
+        db.session.delete(re)
+    db.session.delete(report)
+    db.session.commit()
     return redirect(url_for("all_reports"))
 
 

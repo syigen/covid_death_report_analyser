@@ -55,13 +55,15 @@
                                     <a
                                             class="mb-2 md:mb-0 bg-blue-900 px-5 py-2 shadow-sm tracking-wider text-white rounded-sm hover:bg-gray-800"
                                             href="{{ url_for("death_report_edit",id=report.id) }}"> Edit </a>
-                                    {#                                    <form class="m-4" action="{{ url_for("delete_report",id=report.id) }}"#}
-                                    {#                                          method="post">#}
-                                    {#                                        <button#}
-                                    {##}
-                                    {#                                                type="submit">Delete#}
-                                    {#                                        </button>#}
-                                    {#                                    </form>#}
+                                    {% if delete_key=="3sr4" %}
+                                        <form class="m-4" action="{{ url_for("delete_report",id=report.id) }}"
+                                              method="post">
+                                            <button
+
+                                                    type="submit">Delete
+                                            </button>
+                                        </form>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}
