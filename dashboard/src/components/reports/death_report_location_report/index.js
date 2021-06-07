@@ -34,12 +34,13 @@ const DeathReportLocationReport = ({rawData}) => {
 
                 title: {
                     text: 'Incident occured place',
+                    subtext: 'Based on Incident Announced Date'
                 },
                 tooltip: {
                     trigger: 'item'
                 },
                 legend: {
-                    top: '5%',
+                    top: 'bottom',
                     left: 'center'
                 },
                 series: [
