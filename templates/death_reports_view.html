@@ -36,6 +36,33 @@
                                                   points="18 15 12 9 6 15"></polyline>
                                     </svg>
 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div x-show="isOpen()"
+                         class="absolute shadow bg-white top-100 z-40 w-full lef-0 rounded max-h-select overflow-y-auto mt-12">
+                        <div class="flex flex-col w-full">
+                            <template x-for="(option, index) in filteredOptions()" :key="index">
+                                <div @click="onOptionClick(index)"
+                                     :class="classOption(option, index)"
+                                     :aria-selected="focusedOptionIndex === index">
+                                    <div class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative hover:border-teal-100">
+                                        <div class="w-full items-center flex">
+                                            <div class="mx-2 -mt-1"><span
+                                                    x-text="option"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
 {% block title %}
     <div class="text-center mb-3">
         <h3 class="text-xl items-center">Report Date
