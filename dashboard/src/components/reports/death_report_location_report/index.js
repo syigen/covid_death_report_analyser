@@ -60,6 +60,47 @@ const DeathReportLocationReport = ({rawData}) => {
                         labelLine: {
                             show: true
                         },
+                        itemStyle:{
+                            normal: {
+                                label: {
+                                    show: true,
+                                    formatter: function (params) {
+                                        return params.name + "-" + params.percent + '%\n'
+                                    },
+                                },
+                                labelLine: {
+                                    show: true
+                                },
+                                textStyle: {
+                                    color: '#000'
+                                },
+                                color: (item) => {
+
+                                    let colorStops = [];
+
+                                    if (item.name === "Hospital") {
+                                        colorStops = [
+                                            { offset: 0, color: 'rgba(232,237,0,1)' },
+                                            { offset: 1, color: 'rgba(129,116,37,1)' }
+                                        ]
+                                    } else if (item.name === "Home") {
+                                        colorStops = [
+                                            { offset: 0, color: 'rgba(72,237,0,1)' },
+                                            { offset: 1, color: ' rgba(37,129,37,1)' }
+                                        ]
+                                    }
+
+                                    return {
+                                        type: 'linear',
+                                        x: 0,
+                                        y: 1,
+                                        x2: 0,
+                                        y2: 0,
+                                        colorStops: colorStops
+                                    }
+                                },
+                            },
+                        },
                         data: data
                     }
                 ]

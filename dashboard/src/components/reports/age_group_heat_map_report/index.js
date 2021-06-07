@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import echarts from '../../../chart_theme';
 
-const DeathReportAgeGroupHeatMap = ({rawData}) => {
+const DeathReportAgeGroupHeatMap = ({ rawData }) => {
     const chartRef = useRef();
     const [chart, setChart] = useState();
     const [dataMap, setDataMap] = useState();
@@ -47,7 +47,7 @@ const DeathReportAgeGroupHeatMap = ({rawData}) => {
                 radiusAxis: {
                 },
                 polar: {
-                }, 
+                },
                 series: [{
                     type: 'bar',
                     data: female,
@@ -56,6 +56,22 @@ const DeathReportAgeGroupHeatMap = ({rawData}) => {
                     stack: 'a',
                     emphasis: {
                         focus: 'series'
+                    },
+
+                    itemStyle: {
+                        normal: {
+                            color: {
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [
+                                    { offset: 0, color: 'rgba(255, 0, 135)' },
+                                    { offset: 1, color: 'rgba(135, 0, 157)' }
+                                ]
+                            },
+                        }
                     }
                 }, {
                     type: 'bar',
@@ -65,6 +81,22 @@ const DeathReportAgeGroupHeatMap = ({rawData}) => {
                     stack: 'a',
                     emphasis: {
                         focus: 'series'
+                    },
+
+                    itemStyle: {
+                        normal: {
+                            color: {
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [
+                                    { offset: 0, color: 'rgba(55, 162, 255)' },
+                                    { offset: 1, color: 'rgba(116, 21, 219)' }
+                                ]
+                            },
+                        }
                     }
                 }, {
                     type: 'bar',
@@ -74,6 +106,21 @@ const DeathReportAgeGroupHeatMap = ({rawData}) => {
                     stack: 'a',
                     emphasis: {
                         focus: 'series'
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: {
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [
+                                    { offset: 0, color: 'rgba(255, 170, 0)' },
+                                    { offset: 1, color: 'rgba(170, 255, 0)' }
+                                ]
+                            },
+                        }
                     }
                 }],
                 legend: {
