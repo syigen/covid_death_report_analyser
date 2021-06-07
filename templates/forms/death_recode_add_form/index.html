@@ -147,6 +147,11 @@
                                     selected
                                     {% endif %}>Private Hospital
                             </option>
+                            <option value="on_admission"
+                                    {% if selected_record and selected_record.reported_at == 'on_admission' %}
+                                    selected
+                                    {% endif %}>On Admission
+                            </option>
                             <option value="home"
                                     {% if selected_record and selected_record.reported_at == 'home' %}
                                     selected
