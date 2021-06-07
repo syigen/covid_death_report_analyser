@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Api from '../../../api';
+import React, { useEffect, useRef, useState } from 'react';
 import echarts from '../../../chart_theme';
 
-const DeathReportAgeGroupHeatMap = () => {
+const DeathReportAgeGroupHeatMap = ({rawData}) => {
     const chartRef = useRef();
     const [chart, setChart] = useState();
     const [dataMap, setDataMap] = useState();
@@ -15,13 +14,11 @@ const DeathReportAgeGroupHeatMap = () => {
     }, [chartRef]);
 
     useEffect(() => {
-        const getData = async () => {
-            const data_raw = await Api();
-            const data = data_raw.age_group_summary_report;
-            setDataMap(data)
+        if (rawData) {
+            const data = rawData.age_group_summary_report;
+            setDataMap(data);
         }
-        getData();
-    }, [])
+    }, [rawData])
 
     useEffect(() => {
 
