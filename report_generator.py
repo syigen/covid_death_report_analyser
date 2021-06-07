@@ -186,13 +186,24 @@ def get_death_report_location_summary():
     """
     df = _read_summary_csv()
     reported_at_df = df.groupby("reported_at").count()
-    death_location_summary = []
+    _death_location_summary = {}
     for v in reported_at_df.itertuples():
-        death_location_summary.append({
-            "name": f"{v.Index}".replace("_", " ").title(),
-            "value": int(v.report_date)
-        })
+        key = f"{v.Index}"
+        if key == "gov_hospital":
+            key = "hospital"
+        if key == "pvt_hospital":
+            key = "hospital"
+        if key not in _death_location_summary:
+            _death_location_summary[key] = 0
+        _death_location_summary[key] += int(v.report_date)
 
+    death_location_summary = []
+    for v in _death_location_summary.keys():
+        val = _death_location_summary[v]
+        death_location_summary.append({
+            "name": f"{v}".replace("_", " ").title(),
+            "value": val
+        })
     return death_location_summary
 
 
@@ -281,7 +292,7 @@ def get_gender_summary_repored_date_weekly():
     dates = list(set(dates))
     dates.sort(key=lambda date: datetime.fromtimestamp(date.item() / 10 ** 9))
     gender_summary = {}
-    pre_rec = None
+    data = []
     for rd in dates:
         rd = datetime.fromtimestamp(rd.item() / 10 ** 9).strftime('%Y-%m-%d')
         gender_data = {
@@ -293,14 +304,19 @@ def get_gender_summary_repored_date_weekly():
                 gender_data["male"] += 1
             elif "female" == t.gender:
                 gender_data["female"] += 1
-        if pre_rec:
-            gender_data["male"] += pre_rec["male"]
-            gender_data["female"] += pre_rec["female"]
 
-        gender_summary[rd] = [
+        record = [
             {"name": "Male", "value": gender_data["male"]},
             {"name": "Female", "value": gender_data["female"]}
         ]
-
-        pre_rec = gender_data
-    return gender_summary
+        data.append({
+            "date": f"{rd}",
+            "male": gender_data["male"],
+            "female": gender_data["female"],
+        })
+        gender_summary[rd] = record
+    return {
+        "dates": list(gender_summary.keys()),
+        "raw_data": gender_summary,
+        "data": data
+    }
