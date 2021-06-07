@@ -32,24 +32,16 @@ const DeathReportAgeGroupHeatMap = () => {
             const all = dataMap.all;
             const male = dataMap.male;
             const female = dataMap.female;
-            // y-index,x-index, value
-            let data = dataMap.all;
-            data = data.map(function (item, index) {
-                return [index, index, item];
-            });
-
-            console.log(data);
-
-
             const option = {
-
-
                 title: {
-                    text: 'Age groups',
+                    text: "Age group overoll summary",
+                    subtext: 'Based on Incident Announced Date'
                 },
-
                 tooltip: {
                     position: 'top'
+                },
+                grid: {
+                    top: 100
                 },
                 angleAxis: {
                     type: 'category',
@@ -58,7 +50,7 @@ const DeathReportAgeGroupHeatMap = () => {
                 radiusAxis: {
                 },
                 polar: {
-                },
+                }, 
                 series: [{
                     type: 'bar',
                     data: female,
@@ -88,6 +80,7 @@ const DeathReportAgeGroupHeatMap = () => {
                     }
                 }],
                 legend: {
+                    top: 'bottom',
                     show: true,
                     data: ['All', 'Female', 'Male']
                 }

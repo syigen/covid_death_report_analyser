@@ -1,4 +1,5 @@
 import React from 'react';
+import DeathAgeGroupByDateReport from '../../components/reports/age_group_by_date_report';
 import DeathReportAgeGroupHeatMap from '../../components/reports/age_group_heat_map_report';
 import DeathReportAgeGroupWise from '../../components/reports/age_group_report';
 import DeathReportLocationReport from '../../components/reports/death_report_location_report';
@@ -17,22 +18,30 @@ const Dashboard = () => {
             </div>
 
 
-            <div className={"col-span-12 md:col-span-4"}>
+            <div className={"col-span-12 md:col-span-8"}>
 
                 <div className={"p-2  h-full w-full"}>
-                    <DeathReportAgeGroupWise />
+                    <DeathAgeGroupByDateReport />
                 </div>
             </div>
 
 
 
-            <div className={"col-span-12  md:col-span-4"}>
+            <div className={"col-span-12  md:col-span-4"} style={{ "height": "30rem" }}>
 
                 <div className={"p-2  h-full w-full"}>
                     <DeathReportAgeGroupHeatMap />
                 </div>
             </div>
 
+
+
+            <div className={"col-span-12  md:col-span-8"}>
+
+                <div className={"p-2 h-full w-full"}>
+                    <DeathReportLocationReport />
+                </div>
+            </div>
 
 
             <div className={"col-span-12  md:col-span-4"} style={{ "height": "30rem" }}>

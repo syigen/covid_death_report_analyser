@@ -36,11 +36,15 @@ const DeathReportAgeGroupWise = () => {
 
 
             const option = {
+                title: {
+                    text: "Age group overoll summary",
+                    subtext: 'Based on Incident Announced Date'
+                },
                 tooltip: {
                     position: 'top'
                 },
-                title: {
-                    text: 'Age groups',
+                grid: {
+                    top: '15%'
                 },
                 legend: {
                     data: ['Total', 'Male', 'Female']
@@ -76,7 +80,7 @@ const DeathReportAgeGroupWise = () => {
         }
     }, [chart, dataMap]);
     return (
-        <div ref={chartRef}  className="w-auto h-full" />
+        <div ref={chartRef} className="w-auto h-full" />
     );
 }
 
