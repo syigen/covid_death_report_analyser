@@ -133,9 +133,10 @@ function CreateSummeryForm(submitUrl) {
             const month = modal.month
             const date = modal.date
             const count = modal.count
+            const dateObj = new Date(year, month-1, date, 0, 0, 0, 0);
             this.reportDates.unshift({
                 "id": dateDeathCountNextId,
-                "date": new Date(year, month, date, 0, 0, 0, 0),
+                "date": moment(dateObj).format("YYYY-MM-DD"),
                 "count": parseInt(count)
             });
             this.dateDeathModal = {
