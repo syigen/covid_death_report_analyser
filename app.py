@@ -13,6 +13,7 @@ from uuid import uuid4
 from flask import Flask, request, render_template, send_from_directory, redirect, url_for, jsonify, flash
 from flask_assets import Environment
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.hybrid import hybrid_property
 from webassets import Bundle
 from werkzeug.utils import secure_filename
 
@@ -61,6 +62,26 @@ class CovidDeathReport(db.Model):
     death_report_summary = db.relationship("PressReleaseSummary", uselist=False, backref="covid_death_report",
                                            lazy=True)
 
+    @hybrid_property
+    def completed_count(self):
+        if self.has_full_detail_report:
+            return len(self.death_records)
+        if self.has_summery_detail_report and self.death_report_summary \
+                and self.death_report_summary.total_count_today == self.report_total \
+                and self.death_report_summary.is_completed:
+            return self.death_report_summary.total_count_today
+        return 0
+
+    @hybrid_property
+    def is_completed(self):
+        if self.has_full_detail_report and len(self.death_records) == self.report_total:
+            return True
+        if self.has_summery_detail_report and self.death_report_summary \
+                and self.death_report_summary.total_count_today == self.report_total \
+                and self.death_report_summary.is_completed:
+            return True
+        return False
+
 
 class ReportImage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -85,6 +106,20 @@ class PressReleaseSummary(db.Model):
     age_groups = db.relationship("AgeGroup", backref="press_release_summary", lazy=True)
     report_id = db.Column(db.Integer, db.ForeignKey('covid_death_report.id'),
                           nullable=False)
+
+    @hybrid_property
+    def is_completed(self):
+        print(f"R {self.total_count_home + self.total_count_hospital + self.total_count_on_admission}")
+        print(f"G {self.total_count_male + self.total_count_female}")
+        print(f"D {sum([d.count for d in self.death_records])}")
+        print(f"A {sum([d.count for d in self.age_groups])}")
+        if self.total_count_home + self.total_count_hospital + self.total_count_on_admission == \
+                self.total_count_today and \
+                self.total_count_male + self.total_count_female == self.total_count_today and \
+                sum([d.count for d in self.death_records]) == self.total_count_today and \
+                sum([d.count for d in self.age_groups]) == self.total_count_today:
+            return True
+        return False
 
 
 #
@@ -290,7 +325,8 @@ def death_report_edit(id):
 
 @app.route("/report/<id>")
 def death_report_view(id):
-    death_report = CovidDeathReport.query.get(id)
+    death_report: CovidDeathReport = CovidDeathReport.query.get(id)
+    print(death_report.is_completed)
     summary_report = None
     if death_report.has_summery_detail_report and death_report.death_report_summary:
         summary: PressReleaseSummary = death_report.death_report_summary
@@ -340,7 +376,7 @@ def all_reports():
     reports = CovidDeathReport.query.order_by(CovidDeathReport.date.desc()).all()
 
     report_death_count = sum([r.report_total for r in reports])
-    saved_death_count = DeathRecord.query.count()
+    saved_death_count = sum([r.completed_count for r in reports])
     delete_key = ""
     if "delete_key" in request.args:
         delete_key = request.args.get("delete_key")

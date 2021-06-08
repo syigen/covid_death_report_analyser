@@ -70,8 +70,8 @@
             <small>({{ death_report.release_number }})</small>
         </h3>
     </div>
-    {{ death_report.death_records|length }}/{{ death_report.report_total }}
-    {% if death_report.death_records|length == death_report.report_total %}
+    {{ death_report.completed_count }}/{{ death_report.report_total }}
+    {% if death_report.is_completed %}
         <span class="bg-green-500  text-white rounded-full py-1 px-3 ml-4">Completed</span>
     {% else %}
         <span class="bg-red-500 text-white rounded-full py-1 px-3  ml-4">Pending</span>

@@ -40,9 +40,9 @@
                                     </p>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    {{ report.death_records|length }}/{{ report.report_total }}
+                                    {{ report.completed_count }}/{{ report.report_total }}
 
-                                    {% if report.death_records|length == report.report_total %}
+                                    {% if report.is_completed %}
                                         <span class="bg-green-500  text-white rounded-full py-1 px-3 ml-4">Completed</span>
                                     {% else %}
                                         <span class="bg-red-500 text-white rounded-full py-1 px-3  ml-4">Pending</span>
