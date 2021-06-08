@@ -73,7 +73,7 @@ function CreateSummeryForm(submitUrl) {
                     {id: ageGroupNextId++, from: 70, to: 79, count: 0},
                     {id: ageGroupNextId++, from: 80, to: 89, count: 0},
                     {id: ageGroupNextId++, from: 90, to: 99, count: 0},
-                    {id: ageGroupNextId++, from: 100, to: null, count: 0},
+                    {id: ageGroupNextId++, from: 100, to: 109, count: 0},
                 ]
             }
         },
