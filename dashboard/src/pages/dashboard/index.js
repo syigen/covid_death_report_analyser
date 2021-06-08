@@ -1,21 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import Api from '../../api';
+import React from 'react';
 import DeathAgeGroupByDateReport from '../../components/reports/age_group_by_date_report';
 import DeathReportAgeGroupHeatMap from '../../components/reports/age_group_heat_map_report';
 import DeathReportGenderWise from '../../components/reports/death_report_gender_wise';
 import DeathReportLocationReport from '../../components/reports/death_report_location_report';
 import TotalDeathReport from '../../components/reports/total_death_report';
 import TotalDeathOccuredReport from '../../components/reports/total_death_report_on_occured';
-const Dashboard = () => {
-    const [dataMap, setDataMap] = useState();
-
-    useEffect(() => {
-        const getData = async () => {
-            const data_raw = await Api();
-            setDataMap(data_raw)
-        }
-        getData();
-    }, [])
+const Dashboard = ({ dataMap }) => {
 
 
     return (

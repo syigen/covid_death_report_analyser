@@ -335,5 +335,5 @@ def get_about_report():
         "to_date": to_date,
         "total_records": len(df),
         "total_press_release": len(df.report_date.unique()),
-        "last_update_time": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f%Z")
+        "last_update_time": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S %Z")
     }
