@@ -10,6 +10,8 @@
 
             {% if summary_report %}
             x-init="init('{{ summary_report }}')"
+            {% else %}
+            x-init="init()"
             {% endif %}
 
     >
@@ -229,7 +231,6 @@
 
                     <template x-for="ageGroup in ageGroups.sort((a,b)=>parseInt(a.from)>parseInt(b.from))"
                               :key="ageGroup.id">
-
                         <div class="grid grid-cols-12 gap-4 col-span-12">
                             <div class="col-span-3">
                                 <label for="age_group_modal_from" class="block text-sm font-medium text-gray-700">

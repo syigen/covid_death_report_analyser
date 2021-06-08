@@ -15,19 +15,7 @@ function CreateSummeryForm(submitUrl) {
             count: null
         },
         ///
-        ageGroups: [
-            {from: 0, to: 9, count: 0},
-            {from: 10, to: 19, count: 0},
-            {from: 20, to: 29, count: 0},
-            {from: 30, to: 39, count: 0},
-            {from: 40, to: 49, count: 0},
-            {from: 50, to: 59, count: 0},
-            {from: 60, to: 69, count: 0},
-            {from: 70, to: 79, count: 0},
-            {from: 80, to: 89, count: 0},
-            {from: 90, to: 99, count: 0},
-            {from: 100, to: null, count: 0},
-        ],
+        ageGroups: [],
         reportDates: [],
         todayTotal: 0,
         soFarTotal: 0,
@@ -39,37 +27,53 @@ function CreateSummeryForm(submitUrl) {
         govHospitalCount: 0,
         areaOfResidence: "",
         causeOfDeath: "",
-        init(summary_report) {
-            const data = JSON.parse(summary_report);
-            this.todayTotal = data.total_count_today;
-            this.soFarTotal = data.total_count_so_far;
-            this.maleCount = data.total_count_male
-            this.femaleCount = data.total_count_female;
-            this.homeCount = data.total_count_home;
-            this.hospitalCount = data.total_count_hospital;
-            this.onAdmissionCount = data.total_count_on_admission;
-            this.govHospitalCount = data.total_count_on_gov_hospital;
-            this.causeOfDeath = data.cause_of_deaths;
-            this.areaOfResidence = data.place_of_deaths;
-            this.reportDates = data.deaths_total_by_date.map(function (dt) {
-                const id = dateDeathCountNextId;
-                dateDeathCountNextId++;
-                return {
-                    "id": id,
-                    "date": dt.date,
-                    "count": dt.count
-                }
-            });
-            this.ageGroups = data.deaths_total_by_age_group.map(function (ag) {
-                const id = ageGroupNextId;
-                ageGroupNextId++;
-                return {
-                    "id": id,
-                    "from": ag.from,
-                    "to": ag.to,
-                    "count": ag.count
-                }
-            });
+        init(summary_report = null) {
+            if (summary_report) {
+                const data = JSON.parse(summary_report);
+                this.todayTotal = data.total_count_today;
+                this.soFarTotal = data.total_count_so_far;
+                this.maleCount = data.total_count_male
+                this.femaleCount = data.total_count_female;
+                this.homeCount = data.total_count_home;
+                this.hospitalCount = data.total_count_hospital;
+                this.onAdmissionCount = data.total_count_on_admission;
+                this.govHospitalCount = data.total_count_on_gov_hospital;
+                this.causeOfDeath = data.cause_of_deaths;
+                this.areaOfResidence = data.place_of_deaths;
+                this.reportDates = data.deaths_total_by_date.map(function (dt) {
+                    const id = dateDeathCountNextId;
+                    dateDeathCountNextId++;
+                    return {
+                        "id": id,
+                        "date": dt.date,
+                        "count": dt.count
+                    }
+                });
+                this.ageGroups = data.deaths_total_by_age_group.map(function (ag) {
+                    const id = ageGroupNextId;
+                    ageGroupNextId++;
+                    return {
+                        "id": id,
+                        "from": ag.from,
+                        "to": ag.to,
+                        "count": ag.count
+                    }
+                });
+            } else {
+                this.ageGroups = [
+                    {id:ageGroupNextId++,from: 0, to: 9, count: 0},
+                    {id:ageGroupNextId++,from: 10, to: 19, count: 0},
+                    {id:ageGroupNextId++,from: 20, to: 29, count: 0},
+                    {id:ageGroupNextId++,from: 30, to: 39, count: 0},
+                    {id:ageGroupNextId++,from: 40, to: 49, count: 0},
+                    {id:ageGroupNextId++,from: 50, to: 59, count: 0},
+                    {id:ageGroupNextId++,from: 60, to: 69, count: 0},
+                    {id:ageGroupNextId++,from: 70, to: 79, count: 0},
+                    {id:ageGroupNextId++,from: 80, to: 89, count: 0},
+                    {id:ageGroupNextId++,from: 90, to: 99, count: 0},
+                    {id:ageGroupNextId++,from: 100, to: null, count: 0},
+                ]
+            }
         },
         submitData() {
             const report_id = document.querySelector("#report_id").value;
