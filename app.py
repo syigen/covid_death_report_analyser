@@ -510,7 +510,7 @@ def summary_report_generate():
         deaths = []
         total_deaths: List[MiniDeathRecord] = rep_summary.death_records
         for td in total_deaths:
-            for c in range(td.count):
+            for c in range(int(td.count)):
                 deaths.append(td.report_date)
         if len(deaths) != rep_summary.total_count_today:
             raise Exception(f"Invalid Death Date Count, report ID :{report.id}")
@@ -518,8 +518,8 @@ def summary_report_generate():
         ages = []
         age_deaths: List[AgeGroup] = rep_summary.age_groups
         for ad in age_deaths:
-            avg_age = (ad.end + ad.start) / 2
-            for a in range(ad.count):
+            avg_age = (int(ad.end) + int(ad.start)) / 2
+            for a in range(int(ad.count)):
                 ages.append(avg_age)
 
         if len(ages) != rep_summary.total_count_today:
@@ -527,8 +527,8 @@ def summary_report_generate():
         # Gender
         male_count = rep_summary.total_count_male
         female_count = rep_summary.total_count_female
-        genders = ["male" for m in range(male_count)]
-        genders += ["female" for m in range(female_count)]
+        genders = ["male" for m in range(int(male_count))]
+        genders += ["female" for m in range(int(female_count))]
         if len(genders) != rep_summary.total_count_today:
             raise Exception(f"Invalid Gender Count, report ID :{report.id}")
 
