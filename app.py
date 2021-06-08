@@ -7,6 +7,7 @@ import subprocess
 import tempfile
 import zipfile
 from distutils.dir_util import copy_tree
+from typing import List
 from uuid import uuid4
 
 from flask import Flask, request, render_template, send_from_directory, redirect, url_for, jsonify, flash
@@ -91,16 +92,16 @@ class PressReleaseSummary(db.Model):
 class MiniDeathRecord(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     report_date = db.Column(db.Date, nullable=False)
-    count = db.Column(db.Integer)
+    count = db.Column(db.Integer, default=0)
     gender = db.Column(db.Enum(GenderType), default=GenderType.Any)
     report_summary_id = db.Column(db.Integer, db.ForeignKey('press_release_summary.id'), nullable=False)
 
 
 class AgeGroup(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    start = db.Column(db.Integer)
-    end = db.Column(db.Integer)
-    count = db.Column(db.Integer)
+    start = db.Column(db.Integer, default=0)
+    end = db.Column(db.Integer, default=0)
+    count = db.Column(db.Integer, default=0)
     gender = db.Column(db.Enum(GenderType), default=GenderType.Any)
     report_summary_id = db.Column(db.Integer, db.ForeignKey('press_release_summary.id'),
                                   nullable=False)
@@ -456,13 +457,73 @@ def summary_report_generate():
                 dr.residence_location,
                 dr.death_location,
                 dr.reported_at,
+                0
             ))
+
+    report_summaries = PressReleaseSummary.query.all()
+    for rep_summary in report_summaries:
+
+        rep_summary: PressReleaseSummary = rep_summary
+        report: CovidDeathReport = CovidDeathReport.query.get(rep_summary.report_id)
+        # Deaths
+        deaths = []
+        total_deaths: List[MiniDeathRecord] = rep_summary.death_records
+        for td in total_deaths:
+            for c in range(td.count):
+                deaths.append(td.report_date)
+        if len(deaths) != rep_summary.total_count_today:
+            raise Exception(f"Invalid Death Date Count, report ID :{report.id}")
+        # Age
+        ages = []
+        age_deaths: List[AgeGroup] = rep_summary.age_groups
+        for ad in age_deaths:
+            avg_age = (ad.end + ad.start) / 2
+            for a in range(ad.count):
+                ages.append(avg_age)
+
+        if len(ages) != rep_summary.total_count_today:
+            raise Exception(f"Invalid Age Group Count, report ID :{report.id}")
+        # Gender
+        male_count = rep_summary.total_count_male
+        female_count = rep_summary.total_count_female
+        genders = ["male" for m in range(male_count)]
+        genders += ["female" for m in range(female_count)]
+        if len(genders) != rep_summary.total_count_today:
+            raise Exception(f"Invalid Gender Count, report ID :{report.id}")
+
+        # Residence
+        on_home = rep_summary.total_count_home
+        on_admission = rep_summary.total_count_on_admission
+        on_hospital = rep_summary.total_count_hospital
+        reported_at_locations = ["home" for m in range(on_home)]
+        reported_at_locations += ["on_admission" for m in range(on_admission)]
+        reported_at_locations += ["hospital" for m in range(on_hospital)]
+
+        if len(reported_at_locations) != rep_summary.total_count_today:
+            raise Exception(f"Invalid Reported Location Count, report ID :{report.id}")
+
+        for record_number, report_date, gender, age, reported_at in zip(range(rep_summary.total_count_today), deaths,
+                                                                        genders,
+                                                                        ages, reported_at_locations):
+            csv_data.append((
+                report.date,
+                record_number,
+                report_date,
+                "COVID-19",
+                gender,
+                age,
+                "SRI LANKA",
+                "SRI LANKA",
+                reported_at,
+                1
+            ))
+
     with open('data_summary.csv', mode='w') as csv_file:
         w = csv.writer(csv_file)
         # write header
         w.writerow(
             ('report_date', 'record_index', 'death_record_date', 'reason', 'gender', 'age', 'residence_location',
-             'death_location', 'reported_at'))
+             'death_location', 'reported_at', 'artificial'))
 
         # write each log item
         for item in csv_data:

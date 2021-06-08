@@ -36,7 +36,8 @@
 
                     <div class="col-span-6">
                         <label for="number_of_females" class="block text-sm font-medium text-gray-700">
-                            Report Total</label>
+                            Report Total
+                        </label>
                         <input
                                 x-model="todayTotal"
                                 data-rules='["required"]' type="number" name="number_of_females"
@@ -54,7 +55,8 @@
                     </div>
 
                     <div class="col-span-12">
-                        <h4 class="font-bold"> Per Record Date </h4>
+                        <h4 class="font-bold"> Per Record Date
+                            (<span x-text="reportDates.reduce((tot,item)=>tot+parseInt(item.count),0)"></span>)</h4>
                     </div>
                     <div class="col-span-3">
                         <label for="date_death_modal_year" class="block text-sm font-medium text-gray-700">
@@ -131,31 +133,55 @@
                         </button>
                     </div>
                     <div class="col-span-12">
-                        <ul>
-                            <template x-for="rpDate in reportDates" :key="rpDate.id">
-                                <li>
-                                    <div class="flex items-stretch text-right">
-                                        <span x-text="rpDate.date" class="mx-1"></span>
-                                        <span class="mx-4">-</span>
-                                        <span x-text="rpDate.count" class="mx-1 w-4"></span>
-                                        <span class="mx-4">Deaths</span>
-                                        <button
-                                                class="inline-flex justify-center px-2 border border-transparent shadow-sm
-                                                block ml-4
-                                                text-sm font-medium rounded-md text-white bg-red-600
-                                                hover:bg-red-700
-                                                focus:outline-none focus:ring-2 focus:ring-offset-2
-                                                focus:ring-red-500"
-                                                x-on:click="removeDateDeathCount(rpDate.id)">-
-                                        </button>
-                                    </div>
-                                </li>
-                            </template>
-                        </ul>
+                        <template x-for="rpDate in reportDates.sort((a,b)=>a.date>b.date)" :key="rpDate.id">
+                            <div class="grid grid-cols-12 gap-4 col-span-12">
+                                {#                                <div class="flex items-stretch text-right">#}
+
+                                <div class="col-span-4">
+                                    <label for="date_death_modal_count"
+                                           class="block text-sm font-medium text-gray-700">
+                                        Date</label>
+                                    <input
+                                            x-model="rpDate.date"
+                                            name="date_death_modal_count" id="date_death_modal_count"
+                                            type="date" name="today_count"
+                                            id="today_count"
+                                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                                </div>
+                                <div class="col-span-3">
+                                    <label for="date_death_modal_count"
+                                           class="block text-sm font-medium text-gray-700">
+                                        Count</label>
+                                    <input
+                                            x-model="rpDate.count"
+                                            name="date_death_modal_count" id="date_death_modal_count"
+                                            type="number" name="today_count"
+                                            id="today_count"
+                                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                                </div>
+                                <div class="col-span-1">
+                                    <label class="block text-sm font-medium text-gray-700">
+                                        &nbsp;
+                                    </label>
+                                    <button
+                                            x-on:click="removeDateDeathCount(rpDate.id)"
+                                            class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm
+                                block
+                                text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700
+                                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                    >-
+                                    </button>
+                                </div>
+                            </div>
+
+                        </template>
                     </div>
 
                     <div class="col-span-12">
-                        <h4 class="font-bold">Age Groups </h4>
+                        <h4 class="font-bold">Age Groups
+
+                            (<span x-text="ageGroups.reduce((tot,item)=>tot+parseInt(item.count),0)"></span>)
+                        </h4>
                     </div>
                     <div class="col-span-3">
                         <label for="age_group_modal_from" class="block text-sm font-medium text-gray-700">
@@ -200,34 +226,60 @@
                         >+
                         </button>
                     </div>
-                    <div class="col-span-12">
-                        <ul>
-                            <template x-for="ageGroup in ageGroups" :key="ageGroup.id">
-                                <li>
-                                    <div class="flex items-stretch text-right">
-                                        <span x-text="ageGroup.from" class="mx-1 w-4"></span>
-                                        <span class="">-</span>
-                                        <span x-text="ageGroup.to" class="mx-1 w-4"></span>
-                                        <span class="mx-1">Years</span>
-                                        <span class="mx-4">-</span>
-                                        <span x-text="ageGroup.count" class="mx-1 w-4"></span>
-                                        <button
-                                                class="inline-flex justify-center px-2 border border-transparent shadow-sm
-                                                block ml-4
-                                                text-sm font-medium rounded-md text-white bg-red-600
-                                                hover:bg-red-700
-                                                focus:outline-none focus:ring-2 focus:ring-offset-2
-                                                focus:ring-red-500"
-                                                x-on:click="removeAgeGroup(ageGroup.id)">-
-                                        </button>
-                                    </div>
-                                </li>
-                            </template>
-                        </ul>
-                    </div>
+
+                    <template x-for="ageGroup in ageGroups.sort((a,b)=>parseInt(a.from)>parseInt(b.from))"
+                              :key="ageGroup.id">
+
+                        <div class="grid grid-cols-12 gap-4 col-span-12">
+                            <div class="col-span-3">
+                                <label for="age_group_modal_from" class="block text-sm font-medium text-gray-700">
+                                    From</label>
+                                <input
+                                        x-model="ageGroup.from"
+                                        type="number" name="age_group_modal_from"
+                                        id="age_group_modal_from"
+                                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+
+                            </div>
+                            <div class="col-span-3">
+                                <label for="age_group_modal_to" class="block text-sm font-medium text-gray-700">
+                                    To</label>
+                                <input
+                                        x-model="ageGroup.to"
+                                        type="number" name="age_group_modal_to"
+                                        id="age_group_modal_to"
+                                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+
+                            </div>
+                            <div class="col-span-2">
+                                <label for="age" class="block text-sm font-medium text-gray-700">
+                                    Count</label>
+                                <input
+                                        x-model="ageGroup.count" type="number" name="today_count"
+                                        id="today_count"
+                                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                            </div>
+                            <div class="col-span-1">
+                                <label class="block text-sm font-medium text-gray-700">
+                                    &nbsp;
+                                </label>
+                                <button
+                                        type="button"
+                                        x-on:click="removeAgeGroup(ageGroup.id)"
+                                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm
+                                block
+                                text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700
+                                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                >-
+                                </button>
+                            </div>
+                        </div>
+                    </template>
 
                     <div class="col-span-12">
-                        <h4 class="font-bold">Place of death </h4>
+                        <h4 class="font-bold">Place of death
+                            (<span x-text="parseInt(hospitalCount)+parseInt(homeCount)+parseInt(onAdmissionCount)"></span>)
+                        </h4>
                     </div>
 
                     <div class="col-span-3">
@@ -266,7 +318,8 @@
                     </div>
 
                     <div class="col-span-12">
-                        <h4 class="font-bold"> Other Details </h4>
+                        <h4 class="font-bold"> Gender Details
+                            (<span x-text="parseInt(femaleCount)+parseInt(maleCount)"></span>) </h4>
                     </div>
 
                     <div class="col-span-6">
@@ -289,6 +342,9 @@
                     </div>
 
                     <div class="col-span-12">
+                        <h4 class="font-bold"> Other Details</h4>
+                    </div>
+                    <div class="col-span-12">
                         <label for="area_of_residence" class="block text-sm font-medium text-gray-700">
                             Area Of Residence</label>
                         <input
@@ -307,13 +363,42 @@
                                 class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
                     </div>
 
+                    <div class="col-span-12">
+                        <ul>
+                            <li
+                                    class="text-red-500"
+                                    x-show="reportDates.reduce((tot,item)=>tot+item.count,0)!==todayTotal">
+                                Invalid Report Date Count
+                            </li>
+                            <li
+                                    class="text-red-500"
+                                    x-show="ageGroups.reduce((tot,item)=>tot+item.count,0)!==todayTotal">
+                                Invalid Age group Count
+                            </li>
+                            <li
+                                    class="text-red-500"
+                                    x-show="parseInt(femaleCount)+parseInt(maleCount)!==todayTotal">
+                                Invalid Gender Count
+                            </li>
+                            <li
+                                    class="text-red-500"
+                                    x-show="parseInt(hospitalCount)+parseInt(homeCount)+parseInt(onAdmissionCount) !== todayTotal">
+                                Invalid Report Location Count
+                            </li>
+                        </ul>
+                    </div>
 
                     <div class="col-span-12 bg-gray-50 text-right">
                         <a class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-black bg-grey-600 hover:bg-grey-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-grey-500"
                            href="{{ url_for("death_report_view",id=death_report.id) }}">Reset</a>
                         <button type="button"
+
+
                                 x-on:click="submitData"
-                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                class="inline-flex justify-center py-2 px-4 border
+                                border-transparent shadow-sm text-sm font-medium rounded-md text-white
+                                bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2
+                                focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 ">
                             Save
                         </button>
                     </div>

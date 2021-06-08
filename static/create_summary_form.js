@@ -15,7 +15,19 @@ function CreateSummeryForm(submitUrl) {
             count: null
         },
         ///
-        ageGroups: [],
+        ageGroups: [
+            {from: 0, to: 9, count: 0},
+            {from: 10, to: 19, count: 0},
+            {from: 20, to: 29, count: 0},
+            {from: 30, to: 39, count: 0},
+            {from: 40, to: 49, count: 0},
+            {from: 50, to: 59, count: 0},
+            {from: 60, to: 69, count: 0},
+            {from: 70, to: 79, count: 0},
+            {from: 80, to: 89, count: 0},
+            {from: 90, to: 99, count: 0},
+            {from: 100, to: null, count: 0},
+        ],
         reportDates: [],
         todayTotal: 0,
         soFarTotal: 0,
@@ -76,14 +88,14 @@ function CreateSummeryForm(submitUrl) {
                 'deaths_total_by_date': this.reportDates.map(function (dt) {
                     return {
                         "date": dt.date,
-                        "count": dt.count
+                        "count": parseInt(dt.count)
                     }
                 }),
                 'deaths_total_by_age_group': this.ageGroups.map((ag) => {
                     return {
-                        "from": ag.from,
-                        "to": ag.to,
-                        "count": ag.count
+                        "from": parseInt(ag.from),
+                        "to": parseInt(ag.to),
+                        "count": parseInt(ag.count)
                     }
                 }),
             }
@@ -103,6 +115,14 @@ function CreateSummeryForm(submitUrl) {
                 });
 
         },
+
+        getDeathDateTotal: function (reportDates) {
+            let total = 0;
+            for (const repDate in reportDates) {
+                total += repDate.count
+            }
+            return total;
+        },
         addDateDeathCount() {
             const modal = {...this.dateDeathModal}
             const year = modal.year
@@ -111,8 +131,8 @@ function CreateSummeryForm(submitUrl) {
             const count = modal.count
             this.reportDates.unshift({
                 "id": dateDeathCountNextId,
-                "date": `${year}-${month}-${date}`,
-                "count": count
+                "date": new Date(year, month, date, 0, 0, 0, 0),
+                "count": parseInt(count)
             });
             this.dateDeathModal = {
                 year: 2021,
@@ -142,9 +162,9 @@ function CreateSummeryForm(submitUrl) {
             const count = modal.count
             this.ageGroups.unshift({
                 "id": ageGroupNextId,
-                "from": from,
-                "to": to,
-                "count": count
+                "from": parseInt(from),
+                "to": parseInt(to),
+                "count": parseInt(count)
             });
             this.ageGroupModal = {
                 from: null,

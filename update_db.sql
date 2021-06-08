@@ -31,3 +31,10 @@ alter table press_release_summary
     add constraint press_release_summary_covid_death_report_id_fk
         foreign key (report_id) references covid_death_report (id)
             on update cascade on delete cascade;
+
+-- 6. Add Default 0
+alter table mini_death_record alter column count set default 0;
+alter table age_group alter column start set default 0;
+alter table age_group alter column end set default 0;
+alter table age_group alter column count set default 0;
+
