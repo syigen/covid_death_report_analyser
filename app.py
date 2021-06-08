@@ -609,7 +609,7 @@ def inject_today_date():
 def download_backup():
     base_dir = tempfile.mkdtemp()
     temp_dir = os.path.join(base_dir, "backup")
-    upload_path = os.path.join(temp_dir, 'uploads')
+    upload_path = os.path.join(temp_dir, 'upload')
     os.makedirs(upload_path)
     path = os.path.join(app.config['UPLOAD_FOLDER'], "")
     copy_tree(path, upload_path)
