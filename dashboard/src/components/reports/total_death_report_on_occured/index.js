@@ -102,16 +102,6 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                                             color: '#fff'
                                         }
                                     }
-                                },
-                                {
-                                    type: 'min', name: 'Min Incidents', itemStyle: {
-                                        color: "#4072FD",
-                                    },
-                                    label: {
-                                        textStyle: {
-                                            color: '#fff'
-                                        }
-                                    }
                                 }
                             ]
                         },
