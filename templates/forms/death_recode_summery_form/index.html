@@ -363,6 +363,15 @@
                                 id="cause_of_death"
                                 class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
                     </div>
+                    <div class="col-span-12">
+                        <label for="note" class="block text-sm font-medium text-gray-700">
+                            Note</label>
+                        <textarea
+                                x-model="note"
+                                data-rules='["required"]' type="text" name="note"
+                                id="note"
+                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"></textarea>
+                    </div>
 
                     <div class="col-span-12">
                         <ul>

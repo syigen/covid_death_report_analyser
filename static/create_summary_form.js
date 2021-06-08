@@ -27,6 +27,7 @@ function CreateSummeryForm(submitUrl) {
         govHospitalCount: 0,
         areaOfResidence: "",
         causeOfDeath: "",
+        note: "",
         init(summary_report = null) {
             if (summary_report) {
                 const data = JSON.parse(summary_report);
@@ -59,19 +60,20 @@ function CreateSummeryForm(submitUrl) {
                         "count": ag.count
                     }
                 });
+                this.note = data.note;
             } else {
                 this.ageGroups = [
-                    {id:ageGroupNextId++,from: 0, to: 9, count: 0},
-                    {id:ageGroupNextId++,from: 10, to: 19, count: 0},
-                    {id:ageGroupNextId++,from: 20, to: 29, count: 0},
-                    {id:ageGroupNextId++,from: 30, to: 39, count: 0},
-                    {id:ageGroupNextId++,from: 40, to: 49, count: 0},
-                    {id:ageGroupNextId++,from: 50, to: 59, count: 0},
-                    {id:ageGroupNextId++,from: 60, to: 69, count: 0},
-                    {id:ageGroupNextId++,from: 70, to: 79, count: 0},
-                    {id:ageGroupNextId++,from: 80, to: 89, count: 0},
-                    {id:ageGroupNextId++,from: 90, to: 99, count: 0},
-                    {id:ageGroupNextId++,from: 100, to: null, count: 0},
+                    {id: ageGroupNextId++, from: 0, to: 9, count: 0},
+                    {id: ageGroupNextId++, from: 10, to: 19, count: 0},
+                    {id: ageGroupNextId++, from: 20, to: 29, count: 0},
+                    {id: ageGroupNextId++, from: 30, to: 39, count: 0},
+                    {id: ageGroupNextId++, from: 40, to: 49, count: 0},
+                    {id: ageGroupNextId++, from: 50, to: 59, count: 0},
+                    {id: ageGroupNextId++, from: 60, to: 69, count: 0},
+                    {id: ageGroupNextId++, from: 70, to: 79, count: 0},
+                    {id: ageGroupNextId++, from: 80, to: 89, count: 0},
+                    {id: ageGroupNextId++, from: 90, to: 99, count: 0},
+                    {id: ageGroupNextId++, from: 100, to: null, count: 0},
                 ]
             }
         },
@@ -102,6 +104,7 @@ function CreateSummeryForm(submitUrl) {
                         "count": parseInt(ag.count)
                     }
                 }),
+                "note": this.note
             }
             fetch(_submitUrl, {
                 method: 'POST',
@@ -133,7 +136,7 @@ function CreateSummeryForm(submitUrl) {
             const month = modal.month
             const date = modal.date
             const count = modal.count
-            const dateObj = new Date(year, month-1, date, 0, 0, 0, 0);
+            const dateObj = new Date(year, month - 1, date, 0, 0, 0, 0);
             this.reportDates.unshift({
                 "id": dateDeathCountNextId,
                 "date": moment(dateObj).format("YYYY-MM-DD"),

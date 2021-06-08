@@ -38,3 +38,8 @@ alter table age_group alter column start set default 0;
 alter table age_group alter column end set default 0;
 alter table age_group alter column count set default 0;
 
+-- 7. Add Note column to summary
+alter table press_release_summary
+	add note TEXT null;
+
+

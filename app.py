@@ -102,6 +102,7 @@ class PressReleaseSummary(db.Model):
     total_count_on_gov_hospital = db.Column(db.Integer, default=0)
     place_of_deaths = db.Column(db.Text)
     cause_of_deaths = db.Column(db.Text)
+    note = db.Column(db.Text())
     death_records = db.relationship("MiniDeathRecord", backref="press_release_summary", lazy=True)
     age_groups = db.relationship("AgeGroup", backref="press_release_summary", lazy=True)
     report_id = db.Column(db.Integer, db.ForeignKey('covid_death_report.id'),
@@ -256,19 +257,21 @@ def save_death_report_summary():
 
     total_by_date = content["deaths_total_by_date"]
     total_by_age_group = content["deaths_total_by_age_group"]
+    note = content["note"]
     report: CovidDeathReport = CovidDeathReport.query.get(report_id)
     if report and report.has_summery_detail_report and report.death_report_summary:
         release_summary = report.death_report_summary
-        release_summary.total_count_so_far = total_count_so_far,
-        release_summary.total_count_today = total_count_today,
-        release_summary.place_of_deaths = place_of_deaths,
-        release_summary.cause_of_deaths = cause_of_deaths,
-        release_summary.total_count_male = total_count_male,
-        release_summary.total_count_female = total_count_female,
-        release_summary.total_count_home = total_count_home,
-        release_summary.total_count_hospital = total_count_hospital,
-        release_summary.total_count_on_admission = total_count_on_admission,
-        release_summary.total_count_on_gov_hospital = total_count_on_gov_hospital,
+        release_summary.total_count_so_far = total_count_so_far
+        release_summary.total_count_today = total_count_today
+        release_summary.place_of_deaths = place_of_deaths
+        release_summary.cause_of_deaths = cause_of_deaths
+        release_summary.total_count_male = total_count_male
+        release_summary.total_count_female = total_count_female
+        release_summary.total_count_home = total_count_home
+        release_summary.total_count_hospital = total_count_hospital
+        release_summary.total_count_on_admission = total_count_on_admission
+        release_summary.total_count_on_gov_hospital = total_count_on_gov_hospital
+        release_summary.note = note
     else:
         release_summary = PressReleaseSummary(
             total_count_so_far=total_count_so_far,
@@ -281,7 +284,8 @@ def save_death_report_summary():
             total_count_hospital=total_count_hospital,
             total_count_on_admission=total_count_on_admission,
             total_count_on_gov_hospital=total_count_on_gov_hospital,
-            report_id=report_id
+            report_id=report_id,
+            note=note
         )
 
     report.death_report_summary = release_summary
@@ -342,6 +346,7 @@ def death_report_view(id):
             'total_count_on_gov_hospital': summary.total_count_on_gov_hospital,
             'cause_of_deaths': summary.cause_of_deaths,
             'place_of_deaths': summary.place_of_deaths,
+            'note': summary.note,
         }
 
         death_records = summary.death_records
