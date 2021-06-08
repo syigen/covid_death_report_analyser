@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import pandas as pd
 import numpy as np
 
@@ -319,4 +319,21 @@ def get_gender_summary_repored_date_weekly():
         "dates": list(gender_summary.keys()),
         "raw_data": gender_summary,
         "data": data
+    }
+
+
+def get_about_report():
+    df = _read_summary_csv()
+    dates = list(df.death_record_date.unique())
+    dates += list(df.report_date.unique())
+    dates = list(set(dates))
+    dates.sort(key=lambda date: datetime.strptime(date, '%Y-%m-%d'))
+    from_date = dates[0]
+    to_date = dates[-1]
+    return {
+        "from_date": from_date,
+        "to_date": to_date,
+        "total_records": len(df),
+        "total_press_release": len(df.report_date.unique()),
+        "last_update_time": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f%Z")
     }
