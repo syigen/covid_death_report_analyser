@@ -42,7 +42,11 @@ const DeathReportGenderWise = ({ rawData }) => {
             const option = {
                 title: {
                     text: 'Incidents based on gender',
-                    subtext: 'Based on Incident Announced Date'
+                    subtext: 'Based on Incident Announced Date',
+                    padding: [
+                        10,  // up
+                        10, // left
+                    ]
                 },
                 tooltip: {
                     trigger: 'axis',

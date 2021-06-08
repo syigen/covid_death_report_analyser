@@ -37,13 +37,16 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                     data: dates,
                     label: {
                         formatter: function (s) {
-                            // (new Date(s))
-                            return s;//.getDay();
+                            return s;
                         }
                     }
                 },
                 title: {
-                    subtext: 'COVID-19 Death Announced Date'
+                    subtext: 'COVID-19 Death Announced Date',
+                    padding: [
+                        10,  // up
+                        10, // left
+                    ]
                 },
                 tooltip: {
                 },
@@ -57,7 +60,7 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                 calculable: true,
                 grid: {
                     top: 80,
-                    bottom: 80,
+                    bottom: 120,
                     left: 30,
                     right: 30,
                     tooltip: {
@@ -85,6 +88,12 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                         name: 'Count'
                     }
                 ],
+                dataZoom: [{
+                    bottom: 60,
+                    textStyle: {
+                        color: "#white"
+                    }
+                }],
                 series: [
                     {
                         name: 'Incident Date', type: 'bar', itemStyle: {
@@ -116,7 +125,7 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                         }
                     },
                     {
-                        name: 'Gender',
+                        name: 'Cummulative Gender Wise Data',
                         type: 'pie',
                         center: ['20%', '40%'],
                         radius: '30%',
@@ -189,7 +198,7 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                 ],
                 options: dates.map((d) => {
                     return {
-                        title: { text: `${d}` },
+                        title: { text: `Data up to  ${d}` },
                         series: [
                             {
                                 data: dataMap.data.record_date[`${d}`],

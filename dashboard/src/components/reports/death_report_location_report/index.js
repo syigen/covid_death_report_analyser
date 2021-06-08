@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import echarts from '../../../chart_theme';
 
-const DeathReportLocationReport = ({rawData}) => {
+const DeathReportLocationReport = ({ rawData }) => {
     const chartRef = useRef();
     const [chart, setChart] = useState();
     const [dataMap, setDataMap] = useState();
@@ -12,7 +12,7 @@ const DeathReportLocationReport = ({rawData}) => {
             setChart(myChart);
         }
     }, [chartRef]);
-    
+
     useEffect(() => {
         if (rawData) {
             const data = rawData.death_report_location_report;
@@ -34,7 +34,11 @@ const DeathReportLocationReport = ({rawData}) => {
 
                 title: {
                     text: 'Incident occured place',
-                    subtext: 'Based on Incident Announced Date'
+                    subtext: 'Based on Incident Announced Date',
+                    padding: [
+                        10,  // up
+                        10, // left
+                    ]
                 },
                 tooltip: {
                     trigger: 'item'
@@ -47,6 +51,7 @@ const DeathReportLocationReport = ({rawData}) => {
                     {
                         name: `Death Report Location`,
                         type: 'pie',
+                        radius: '60%',
                         avoidLabelOverlap: true,
                         label: {
                             show: false,
@@ -60,7 +65,7 @@ const DeathReportLocationReport = ({rawData}) => {
                         labelLine: {
                             show: true
                         },
-                        itemStyle:{
+                        itemStyle: {
                             normal: {
                                 label: {
                                     show: true,
@@ -88,6 +93,11 @@ const DeathReportLocationReport = ({rawData}) => {
                                             { offset: 0, color: 'rgba(72,237,0,1)' },
                                             { offset: 1, color: ' rgba(37,129,37,1)' }
                                         ]
+                                    } else if (item.name === "On Admission") {
+                                        colorStops = [
+                                            { offset: 0, color: 'rgba(190,0,245,1)' },
+                                            { offset: 1, color: ' rgba(150,0,129,1)' }
+                                        ]
                                     }
 
                                     return {
@@ -109,7 +119,7 @@ const DeathReportLocationReport = ({rawData}) => {
         }
     }, [chart, dataMap]);
     return (
-        <div ref={chartRef}  className="w-auto h-full" />
+        <div ref={chartRef} className="w-auto h-full" />
     );
 }
 export default DeathReportLocationReport;

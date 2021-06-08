@@ -40,7 +40,11 @@ const TotalDeathReport = ({ rawData }) => {
                     }
                 },
                 title: {
-                    subtext: 'COVID-19 Death Announced Date'
+                    subtext: 'COVID-19 Deaths based on SriLanka Goverment publications',
+                    padding: [
+                        10,  // up
+                        10, // left
+                    ]
                 },
                 tooltip: {
                 },
@@ -54,7 +58,7 @@ const TotalDeathReport = ({ rawData }) => {
                 calculable: true,
                 grid: {
                     top: 80,
-                    bottom: 80,
+                    bottom: 120,
                     left: 30,
                     right: 30,
                     tooltip: {
@@ -82,10 +86,16 @@ const TotalDeathReport = ({ rawData }) => {
                         name: 'Count'
                     }
                 ],
+                dataZoom: [{
+                    bottom: 60,
+                    textStyle: {
+                        color: "#white"
+                    }
+                }],
                 series: [
                     {
                         name: 'Publication Date', type: 'line', itemStyle: {
-                            color: '#a75252'
+                            color: '#bee3f5'
                         },
                         markPoint: {
                             data: [
@@ -118,7 +128,7 @@ const TotalDeathReport = ({ rawData }) => {
                         },
                     },
                     {
-                        name: 'Gender',
+                        name: 'Cummulative Gender Wise Data',
                         type: 'pie',
                         center: ['20%', '40%'],
                         radius: '30%',
@@ -139,7 +149,43 @@ const TotalDeathReport = ({ rawData }) => {
                                 },
                                 textStyle: {
                                     color: '#000'
-                                }
+                                },
+                                color: (item) => {
+
+                                    let colorStops = [];
+
+                                    if (item.name === "Male") {
+                                        colorStops = [
+                                            { offset: 0, color: 'rgba(55, 162, 255)' },
+                                            { offset: 1, color: 'rgba(116, 21, 219)' }
+                                        ]
+                                    } else if (item.name === "Female") {
+                                        colorStops = [
+                                            { offset: 0, color: 'rgba(255, 0, 135)' },
+                                            { offset: 1, color: 'rgba(135, 0, 157)' }
+                                        ]
+                                    }
+
+                                    return {
+                                        type: 'linear',
+                                        x: 0,
+                                        y: 0,
+                                        x2: 0,
+                                        y2: 1,
+                                        colorStops: colorStops
+                                    }
+                                },
+                            },
+
+                            areaStyle: {
+                                opacity: 0.8,
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                    offset: 0,
+                                    color: 'rgba(255, 0, 135)'
+                                }, {
+                                    offset: 1,
+                                    color: 'rgba(135, 0, 157)'
+                                }])
                             },
                             emphasis: {
                                 label: {
@@ -155,7 +201,7 @@ const TotalDeathReport = ({ rawData }) => {
                 ],
                 options: dates.map((d) => {
                     return {
-                        title: { text: `${d}` },
+                        title: { text: `Data up to ${d}` },
                         series: [
                             { data: dataMap.data.report_date_count[`${d}`] },
                             { data: dataMap.data.record_date[`${d}`] },

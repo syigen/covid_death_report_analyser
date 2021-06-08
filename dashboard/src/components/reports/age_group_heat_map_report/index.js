@@ -32,7 +32,11 @@ const DeathReportAgeGroupHeatMap = ({ rawData }) => {
             const option = {
                 title: {
                     text: "Age group overoll summary",
-                    subtext: 'Based on Incident Announced Date'
+                    subtext: 'Based on Incident Announced Date',
+                    padding: [
+                        10,  // up
+                        10, // left
+                    ]
                 },
                 tooltip: {
                     position: 'top'
@@ -46,12 +50,15 @@ const DeathReportAgeGroupHeatMap = ({ rawData }) => {
                 },
                 radiusAxis: {
                 },
-                polar: {
+                polar: {                    
+                    radius: '60%',
                 },
                 series: [{
                     type: 'bar',
                     data: female,
                     coordinateSystem: 'polar',
+                    
+                    radius: '60%',
                     name: 'Female',
                     stack: 'a',
                     emphasis: {
@@ -75,6 +82,7 @@ const DeathReportAgeGroupHeatMap = ({ rawData }) => {
                     }
                 }, {
                     type: 'bar',
+                    radius: '60%',
                     data: male,
                     coordinateSystem: 'polar',
                     name: 'Male',

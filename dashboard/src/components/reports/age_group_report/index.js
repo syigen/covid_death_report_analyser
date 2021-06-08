@@ -38,7 +38,11 @@ const DeathReportAgeGroupWise = () => {
             const option = {
                 title: {
                     text: "Age group overoll summary",
-                    subtext: 'Based on Incident Announced Date'
+                    subtext: 'Based on Incident Announced Date',
+                    padding: [
+                        10,  // up
+                        10, // left
+                    ]
                 },
                 tooltip: {
                     position: 'top'
@@ -57,7 +61,8 @@ const DeathReportAgeGroupWise = () => {
                 },
                 series: [{
                     name: 'Deaths Age group wise',
-                    type: 'radar',
+                    type: 'radar',                    
+                    radius: '60%',
                     data: [
                         {
                             value: all,

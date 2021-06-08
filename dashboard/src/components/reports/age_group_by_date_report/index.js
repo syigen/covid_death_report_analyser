@@ -30,7 +30,11 @@ const DeathAgeGroupByDateReport = ({ rawData }) => {
             const option = {
                 title: {
                     text: "Age group weekly summary",
-                    subtext: 'Based on Incident Announced Date'
+                    subtext: 'Based on Incident Announced Date',
+                    padding: [
+                        10,  // up
+                        10, // left
+                    ]
                 },
                 tooltip: {
                     position: 'top'
