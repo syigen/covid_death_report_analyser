@@ -368,22 +368,22 @@
                         <ul>
                             <li
                                     class="text-red-500"
-                                    x-show="reportDates.reduce((tot,item)=>tot+item.count,0)!==todayTotal">
+                                    x-show="reportDates.reduce((tot,item)=>tot+item.count,0)!==parseInt(todayTotal)">
                                 Invalid Report Date Count
                             </li>
                             <li
                                     class="text-red-500"
-                                    x-show="ageGroups.reduce((tot,item)=>tot+item.count,0)!==todayTotal">
+                                    x-show="ageGroups.reduce((tot,item)=>tot+item.count,0)!==parseInt(todayTotal)">
                                 Invalid Age group Count
                             </li>
                             <li
                                     class="text-red-500"
-                                    x-show="parseInt(femaleCount)+parseInt(maleCount)!==todayTotal">
+                                    x-show="parseInt(femaleCount)+parseInt(maleCount)!==parseInt(todayTotal)">
                                 Invalid Gender Count
                             </li>
                             <li
                                     class="text-red-500"
-                                    x-show="parseInt(hospitalCount)+parseInt(homeCount)+parseInt(onAdmissionCount) !== todayTotal">
+                                    x-show="parseInt(hospitalCount)+parseInt(homeCount)+parseInt(onAdmissionCount) !== parseInt(todayTotal)">
                                 Invalid Report Location Count
                             </li>
                         </ul>
@@ -393,8 +393,6 @@
                         <a class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-black bg-grey-600 hover:bg-grey-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-grey-500"
                            href="{{ url_for("death_report_view",id=death_report.id) }}">Reset</a>
                         <button type="button"
-
-
                                 x-on:click="submitData"
                                 class="inline-flex justify-center py-2 px-4 border
                                 border-transparent shadow-sm text-sm font-medium rounded-md text-white
