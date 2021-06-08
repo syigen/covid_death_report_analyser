@@ -24,10 +24,10 @@ const Announcement = () => {
                                 </span>
                                 <p class="ml-3 font-medium text-white truncate">
                                     <span class="md:hidden">
-                                        This report is completely based on official press release.
+                                        This report is completely based on official press release.There could be a 5% error
           </span>
                                     <span class="hidden md:inline">
-                                        This report is completely based on official press release.
+                                        This report is completely based on official press release.There could be a 5% error
           </span>
                                 </p>
                             </div>

@@ -112,7 +112,7 @@ def get_gender_summary(df, dates):
 def generate_summary_report():
     df = _read_summary_csv()
     dates = list(df.death_record_date.unique())
-    # dates += list(df.report_date.unique())
+    dates += list(df.report_date.unique())
     dates = list(set(dates))
     dates.sort(key=lambda date: datetime.strptime(date, '%Y-%m-%d'))
 
@@ -324,8 +324,8 @@ def get_gender_summary_repored_date_weekly():
 
 def get_about_report():
     df = _read_summary_csv()
-    dates = list(df.death_record_date.unique())
-    dates += list(df.report_date.unique())
+    dates = list(df.report_date.unique())
+    # dates += list(df.report_date.unique())
     dates = list(set(dates))
     dates.sort(key=lambda date: datetime.strptime(date, '%Y-%m-%d'))
     from_date = dates[0]
