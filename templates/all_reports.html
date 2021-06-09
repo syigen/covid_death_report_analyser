@@ -15,11 +15,11 @@
                                 Title
                             </th>
                             <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                class="px-6 py-3 w-1/4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Record ID
                             </th>
                             <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                class="px-6 py-3 w-1/4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Status
                             </th>
                             <th scope="col" class="relative px-6 py-3">
@@ -39,14 +39,21 @@
                                         <small> {{ report.release_number }}</small>
                                     </p>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    {{ report.completed_count }}/{{ report.report_total }}
-
+                                <td class="px-6 py-4 grid grid-flow-col  auto-cols-min  items-stretch">
+                                    <span class=" justify-self-start
                                     {% if report.is_completed %}
-                                        <span class="bg-green-500  text-white rounded-full py-1 px-3 ml-4">Completed</span>
-                                    {% else %}
-                                        <span class="bg-red-500 text-white rounded-full py-1 px-3  ml-4">Pending</span>
+                                    bg-green-500
+                                       {% else %}
+                                       bg-red-500
+                                       {% endif %}
+                                      text-white rounded-full py-1 px-3">
+                                        {{ report.completed_count }}/{{ report.report_total }}
+                                    </span>
+
+                                    {% if report.has_summery_detail_report %}
+                                        <span class="bg-indigo-500  text-white rounded-full py-1 px-3 ml-4">Summary</span>
                                     {% endif %}
+
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <a

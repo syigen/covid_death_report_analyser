@@ -114,11 +114,12 @@ const App = () => {
 
                         {/* <a href="/" >SYIGEN-COVID-ANALYZER</a><br /> */}
                         <span class="text-sm text-white no-underline text-grey-darkest hover:text-blue-dark font-sans font-bold">
-                            COVID-19 Pandamic Report Analysis  Copyright (C) 2021  SYIGEN PRIVATE LIMITED
+                            COVID-19 Pandemic Report Analysis
+                            Copyright (C) 2021 Syigen (Private) Limited
                 </span>
                         <p>
                             <a class="text-xs text-gray-50" href={'https://www.gnu.org/licenses/gpl-3.0.html'}>
-                                This program is licenced under GPL-v3
+                                This program is licensed under GPL-v3
                         </a>
                         </p>
                     </div>
