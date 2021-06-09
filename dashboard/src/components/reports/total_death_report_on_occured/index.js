@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import echarts from '../../../chart_theme';
+import InfoPanel from '../../ui/info_ui';
 
 const TotalDeathOccuredReport = ({ rawData }) => {
     const chartRef = useRef();
@@ -42,22 +43,53 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                     }
                 },
                 title: {
-                    subtext: 'COVID-19 Death Announced Date',
                     padding: [
                         10,  // up
                         10, // left
-                    ]
+                    ],
+                    subtext: 'This report is calculate each day based on official press release',
+                    sublink: "https://www.dgi.gov.lk/news/press-releases-sri-lanka/covid-19-documents",
+                    subTarge: "blank"
                 },
                 tooltip: {
                 },
                 legend: {
-                    left: 'right',
                     data: ['Reported Count', 'Recorded Count'],
-                    selected: {
-
-                    }
                 },
                 calculable: true,
+                graphic: [
+                    {
+                        type: 'group',
+                        right: 50,
+                        bottom: 120,
+                        z: 100,
+                        children: [
+                            {
+                                type: 'rect',
+                                left: "center",
+                                top: 'center',
+                                z: 100,
+                                shape: {
+                                    width: 200,
+                                    height: 30
+                                },
+                                style: {
+                                    fill: 'rgba(0,0,0,0.1)'
+                                }
+                            },
+                            {
+                                type: 'text',
+                                left: "center",
+                                top: 'center',
+                                z: 100,
+                                style: {
+                                    fill: 'rgba(255,255,255,0.4)',
+                                    text: 'pandemic-info.syigen.com',
+                                }
+                            }
+                        ]
+                    },
+                ],
                 grid: {
                     top: 80,
                     bottom: 120,
@@ -112,7 +144,10 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                                         }
                                     }
                                 }
-                            ]
+                            ],
+                            legend: {
+                                data: ['Reported Count', 'Recorded Count'],
+                            },
                         },
                         markLine: {
                             data: [
@@ -198,7 +233,9 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                 ],
                 options: dates.map((d) => {
                     return {
-                        title: { text: `Data up to  ${d}` },
+                        title: { text: `Press Release Date  ${d}` },
+
+
                         series: [
                             {
                                 data: dataMap.data.record_date[`${d}`],
@@ -214,7 +251,25 @@ const TotalDeathOccuredReport = ({ rawData }) => {
         }
     }, [chart, dataMap]);
     return (
-        <div ref={chartRef} className="w-full" style={{ "height": "600px" }} />
+        <div class="p-2 h-auto bg-chart rounded-md">
+            <InfoPanel
+                sinhala={
+                    <>
+                        මරණය සිදුවූ දවස අනුව එකතුව මෙම Bar Chart එක මගින් පෙන්වා ඇත. මෙහි දැක්වෙන අගයන් එම
+                        දිනට අදාලව දැනට නිකුත් වී ඇති වාර්තා පදනම් කරගෙන
+                        නිර්මාණය කර ඇති නිසා මෙහි දක්වා ඇති දිනයන්ට අදාල  අගයන් ඉදිරියේදි ලැබෙන වාර්තා අනුව වෙනස් විය හැක
+                    </>
+                }
+
+                english={
+                    <>
+                        This chart shows sum of death per day. These values are based on data currently released to public.
+                        This is subject to change upon availability of new data.
+                    </>
+                }
+            />
+            <div ref={chartRef} className="w-full" style={{ "height": "600px" }} />
+        </ div>
     );
 }
 
