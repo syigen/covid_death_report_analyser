@@ -37,7 +37,7 @@ const DeathReportAgeGroupWise = () => {
 
             const option = {
                 title: {
-                    text: "Age group overoll summary",
+                    text: "Age group overall summary",
                     subtext: 'Based on Incident Announced Date',
                     padding: [
                         10,  // up

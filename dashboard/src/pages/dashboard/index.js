@@ -19,7 +19,7 @@ const Dashboard = ({ dataMap }) => {
             </div>
 
 
-            <div className={"col-span-12 md:col-span-8"}>
+            <div className={"col-span-12 md:col-span-8"} style={{ "height": "30rem" }}>
 
                 <div className={"p-2  h-full w-full"}>
                     <DeathAgeGroupByDateReport rawData={dataMap} />
@@ -37,7 +37,7 @@ const Dashboard = ({ dataMap }) => {
 
 
 
-            <div className={"col-span-12  md:col-span-8"}>
+            <div className={"col-span-12  md:col-span-8"} style={{ "height": "30rem" }}>
 
                 <div className={"p-2 h-full w-full"}>
                     <DeathReportGenderWise rawData={dataMap} />

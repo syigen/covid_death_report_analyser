@@ -41,7 +41,7 @@ const DeathReportGenderWise = ({ rawData }) => {
             });
             const option = {
                 title: {
-                    text: 'Incidents based on gender',
+                    text: 'By Gender',
                     subtext: 'Based on Incident Announced Date',
                     padding: [
                         10,  // up

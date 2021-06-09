@@ -33,7 +33,7 @@ const DeathReportLocationReport = ({ rawData }) => {
             const option = {
 
                 title: {
-                    text: 'Incident occured place',
+                    text: 'By Place of Death',
                     subtext: 'Based on Incident Announced Date',
                     padding: [
                         10,  // up

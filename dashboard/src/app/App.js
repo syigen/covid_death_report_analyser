@@ -22,16 +22,13 @@ const Announcement = () => {
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
                                     </svg>
                                 </span>
-                                <p class="ml-3 font-medium text-white truncate">
-                                    <span class="md:hidden">
-                                        This report is completely based on official press release.There could be a 5% error
-          </span>
-                                    <span class="hidden md:inline">
-                                        This report is completely based on official press release.There could be a 5% error
-          </span>
+                                <p class="ml-3 font-medium text-white">
+                                    This report is based on data extracted from 
+                                    <a href="www.dgi.gov.lk" class="font-bold pl-1">Government Press Release</a>.
+                                     There can be +/- 5% error due to data collection/processing.
                                 </p>
                             </div>
-                            <div class="order-3 mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto">
+                            <div class="order-3 md:span-12 mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto">
                                 <a href="https://www.dgi.gov.lk/news/press-releases-sri-lanka/covid-19-documents"
                                     target="blank"
                                     class="flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50">
