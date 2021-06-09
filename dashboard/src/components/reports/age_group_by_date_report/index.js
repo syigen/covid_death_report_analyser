@@ -1,5 +1,6 @@
 import * as echarts from 'echarts';
 import React, { useEffect, useRef, useState } from 'react';
+import ChartReportCore from '../chart_report_core';
 
 const DeathAgeGroupByDateReport = ({ rawData }) => {
     const chartRef = useRef();
@@ -58,10 +59,13 @@ const DeathAgeGroupByDateReport = ({ rawData }) => {
                 },
                 visualMap: {
                     min: 0,
-                    max: 10,
+                    max: 50,
                     calculable: true,
                     orient: 'horizontal',
                     left: 'center',
+                    inRange: {
+                        color: ["white", "gray", "rgb(255,240,30)", "rgb(255,240,200)", "rgb(240,10,10)"]
+                    }
                 },
                 series: [{
                     name: 'Weekly Age Group Sumamry',
@@ -82,7 +86,24 @@ const DeathAgeGroupByDateReport = ({ rawData }) => {
         }
     }, [chart, dataMap]);
     return (
-        <div ref={chartRef} className="w-auto h-full" />
+        <div className="w-full h-full">
+            <ChartReportCore
+                sinhalaText={
+                    <>
+                        මෙම සටහන නිර්මාණයට මරණකරුගෙ වයස් කාණ්ඩය සතියක සම්පිණ්ඩයක් ලෙස ගෙන ඇත
+                    </>
+                }
+                englishText={
+                    <>
+                        This chart uses ages of diseased summarized by week
+                    </>
+                }
+                chartRef={
+                    chartRef
+                }
+                className="w-auto h-full"
+            />
+        </div>
     );
 }
 

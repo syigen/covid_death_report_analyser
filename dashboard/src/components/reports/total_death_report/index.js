@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import echarts from '../../../chart_theme';
+import ChartReportCore from '../chart_report_core';
 
 const TotalDeathReport = ({ rawData }) => {
     const chartRef = useRef();
@@ -216,7 +217,32 @@ const TotalDeathReport = ({ rawData }) => {
         }
     }, [chart, dataMap]);
     return (
-        <div ref={chartRef} className="w-full" style={{ "height": "600px" }} />
+        <ChartReportCore
+            sinhalaText={
+                <>
+                    මරණය සිදුවූ දවස අනුව එකතුව මෙම Bar Chart එක මගින් පෙන්වා ඇත. මෙහි දැක්වෙන අගයන් එම
+                    දිනට අදාලව දැනට නිකුත් වී ඇති වාර්තා පදනම් කරගෙන
+                    නිර්මාණය කර ඇති නිසා මෙහි දක්වා ඇති දිනයන්ට අදාල  අගයන් ඉදිරියේදි ලැබෙන වාර්තා අනුව වෙනස් විය හැක
+                </>
+            }
+            englishText={
+                <>
+                    This chart shows sum of death per day. These values are based on data currently released to public.
+                    This is subject to change upon availability of new data.
+                </>
+            }
+            chartRef={
+                chartRef
+            }
+            className={
+                "w-full"
+            }
+            style={
+                {
+                    "height": "600px"
+                }
+            }
+        />
     );
 }
 

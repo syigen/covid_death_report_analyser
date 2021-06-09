@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import echarts from '../../../chart_theme';
+import ChartReportCore from '../chart_report_core';
 
 const DeathReportGenderWise = ({ rawData }) => {
     const chartRef = useRef();
@@ -65,20 +66,23 @@ const DeathReportGenderWise = ({ rawData }) => {
                     }
                 },
                 yAxis: {
-
+                    type: 'value'
+                },
+                legend: {
+                    top: 'bottom',
+                    data: ['Male', 'Female']
                 },
                 series: [
+
                     {
-                        name: 'Male',
+                        name: 'Female',
                         type: 'line',
                         stack: 'gender',
                         smooth: true,
                         lineStyle: {
                             width: 0
                         },
-                        showSymbol: false,
-                       
-                        areaStyle: {
+                        showSymbol: false, areaStyle: {
                             opacity: 0.8,
                             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                                 offset: 0,
@@ -91,10 +95,9 @@ const DeathReportGenderWise = ({ rawData }) => {
                         emphasis: {
                             focus: 'series'
                         },
-                        data: male
-                    },
-                    {
-                        name: 'Female',
+                        data: female
+                    }, {
+                        name: 'Male',
                         type: 'line',
                         stack: 'gender',
                         smooth: true,
@@ -102,6 +105,7 @@ const DeathReportGenderWise = ({ rawData }) => {
                             width: 0
                         },
                         showSymbol: false,
+
                         areaStyle: {
                             opacity: 0.8,
                             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -112,10 +116,11 @@ const DeathReportGenderWise = ({ rawData }) => {
                                 color: 'rgba(116, 21, 219)'
                             }])
                         },
+
                         emphasis: {
                             focus: 'series'
                         },
-                        data: female
+                        data: male
                     },
                 ]
             };
@@ -123,7 +128,24 @@ const DeathReportGenderWise = ({ rawData }) => {
         }
     }, [chart, dataMap]);
     return (
-        <div ref={chartRef} className="w-auto h-full" />
+        <div className="w-full h-full">
+            <ChartReportCore
+                sinhalaText={
+                    <>
+                        මෙම සටහන නිර්මාණයට මරණකරුගෙ ස්ත්‍රී පුරුෂ භාවය අනුව එකතුව සතියක සම්පිණ්ඩයක් ලෙස ගෙන ඇත
+                    </>
+                }
+                englishText={
+                    <>
+                     This chart uses gender of diseased summarized by week
+                    </>
+                }
+                chartRef={
+                    chartRef
+                }
+                className="w-auto h-full"
+            />
+        </div>
     );
 }
 

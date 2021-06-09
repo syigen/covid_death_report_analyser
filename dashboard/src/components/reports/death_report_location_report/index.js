@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import echarts from '../../../chart_theme';
+import ChartReportCore from '../chart_report_core';
 
 const DeathReportLocationReport = ({ rawData }) => {
     const chartRef = useRef();
@@ -119,7 +120,24 @@ const DeathReportLocationReport = ({ rawData }) => {
         }
     }, [chart, dataMap]);
     return (
-        <div ref={chartRef} className="w-auto h-full" />
+        <div  className="w-full h-full">
+            <ChartReportCore
+                sinhalaText={
+                    <>
+                        මරණය සිදුවූ ස්තානය අනුව මෙම සටහන නිර්මාණය කර ඇත.
+                    </>
+                }
+                englishText={
+                    <>
+                        This chart uses place of death of diseased
+                    </>
+                }
+                chartRef={
+                    chartRef
+                }
+                className="w-auto h-full"
+            />
+        </div>
     );
 }
 export default DeathReportLocationReport;

@@ -269,6 +269,14 @@ const TotalDeathOccuredReport = ({ rawData }) => {
             chartRef={
                 chartRef
             }
+            className={
+                "w-full"
+            }
+            style={
+                {
+                    "height": "600px"
+                }
+            }
         />
     );
 }

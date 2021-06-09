@@ -1,14 +1,16 @@
 import InfoPanel from "../../ui/info_ui";
 
-const ChartReportCore = ({ sinhalaText, englishText, chartRef }) => {
+const ChartReportCore = ({ sinhalaText, englishText, chartRef, style = {}, className = "" }) => {
 
     return (
-        <div class="p-2 h-auto bg-chart rounded-md">
+        <div class="p-2 bg-chart rounded-md w-full " style={{
+            "height": "100%"
+        }}>
             <InfoPanel
                 sinhala={sinhalaText}
                 english={englishText}
             />
-            <div ref={chartRef} className="w-full" style={{ "height": "600px" }} />
+            <div ref={chartRef} className={"h-full w-full"} style={{ "height": "30rem", ...style }} />
         </ div>
     );
 }

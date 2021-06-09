@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import echarts from '../../../chart_theme';
+import ChartReportCore from '../chart_report_core';
 
 const DeathReportAgeGroupHeatMap = ({ rawData }) => {
     const chartRef = useRef();
@@ -50,14 +51,14 @@ const DeathReportAgeGroupHeatMap = ({ rawData }) => {
                 },
                 radiusAxis: {
                 },
-                polar: {                    
+                polar: {
                     radius: '60%',
                 },
                 series: [{
                     type: 'bar',
                     data: female,
                     coordinateSystem: 'polar',
-                    
+
                     radius: '60%',
                     name: 'Female',
                     stack: 'a',
@@ -141,7 +142,24 @@ const DeathReportAgeGroupHeatMap = ({ rawData }) => {
         }
     }, [chart, dataMap]);
     return (
-        <div ref={chartRef} className="w-auto h-full" />
+        <div className="w-full h-full">
+            <ChartReportCore
+                sinhalaText={
+                    <>
+                        මෙම සටහන නිර්මාණයට මරණකරුගෙ වයස් කාණ්ඩය සම්පූර්ණ දත්ත සියල්ලේම සම්පිණ්ඩයක් ලෙස ගෙන ඇත
+                    </>
+                }
+                englishText={
+                    <>
+                        This chart uses ages of diseased
+                    </>
+                }
+                chartRef={
+                    chartRef
+                }
+                className="w-auto h-full"
+            />
+        </div>
     );
 }
 
