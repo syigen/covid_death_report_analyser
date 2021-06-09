@@ -22,8 +22,7 @@ const AboutUsModal = ({ close, rawData }) => {
                 </div>
 
                 <p className={"py-2 text-justify"}>
-                    This report is based on {data.total_records} incidents extracted from {data.total_press_release} 
-                      press releases made by the Department of Government Information (www.dgi.gov.lk)
+                    This report is based on {data.total_records} incidents extracted from {data.total_press_release}&nbsp;press releases made by the Department of Government Information (www.dgi.gov.lk)
                       from  {data.from_date} to  {data.to_date}.
                 </p>
 

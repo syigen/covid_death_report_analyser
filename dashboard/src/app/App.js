@@ -24,7 +24,7 @@ const Announcement = () => {
                                 </span>
                                 <p class="ml-3 font-medium text-white">
                                     This report is based on data extracted from 
-                                    <a href="www.dgi.gov.lk" class="font-bold pl-1">Government Press Release</a>.
+                                    <a target='blank' href="https://www.dgi.gov.lk/news/press-releases-sri-lanka/covid-19-documents" class="font-bold pl-1">Government Press Release</a>.
                                      There can be +/- 5% error due to data collection/processing.
                                 </p>
                             </div>
