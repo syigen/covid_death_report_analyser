@@ -13,7 +13,7 @@ const AboutUsModal = ({ close, rawData }) => {
             <div class="absolute w-full h-full bg-gray-900 opacity-50"></div>
             <div class="py-4 text-left px-6  bg-gray-900 text-blue-50 z-50 w-1/4">
                 <div class="flex justify-between items-center pb-3">
-                    <p class="text-2xl font-bold text-gray-50">About us</p>
+                    <p class="text-2xl font-bold text-gray-50">Information</p>
                     <div class="cursor-pointer z-50" onClick={close}>
                         <svg class="fill-current text-white" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
                             <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>

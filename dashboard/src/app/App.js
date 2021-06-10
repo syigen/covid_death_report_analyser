@@ -23,7 +23,7 @@ const Announcement = () => {
                                     </svg>
                                 </span>
                                 <p class="ml-3 font-medium text-white">
-                                    This report is based on data extracted from 
+                                    This report is based on data extracted from
                                     <a target='blank' href="https://www.dgi.gov.lk/news/press-releases-sri-lanka/covid-19-documents" class="font-bold pl-1">Government Press Release</a>.
                                      There can be +/- 5% error due to data collection/processing.
                                 </p>
@@ -84,17 +84,28 @@ const App = () => {
                     </div>
 
                     <div class="sm:mb-0 self-center">
+                        <ul class="flex">
+                            <li class="-mb-px mr-1">
+                                <a
+                                    target="blank"
+                                    className={"inline-block py-2 px-4 text-gray-200 font-semibold"} href={"https://medium.com/@dewmal/how-to-develop-an-analysis-tool-from-scratch"}>  Development Story</a>
+                            </li>
+                            <li class="mr-1">
+                                <Popup trigger={
+                                    <button>
+                                        <InformationCircleIcon className={"h-8 w-8 text-gray-200"} />
+                                    </button>
+                                } modal nested={false}>
+                                    {close => (
+                                        <AboutUsModal close={close} rawData={dataMap} />)}
+
+                                </Popup>
+                            </li>
+                        </ul>
 
 
-                        <Popup trigger={
-                            <button>
-                                <InformationCircleIcon className={"h-8 w-8 text-gray-500"} />
-                            </button>
-                        } modal nested={false}>
-                            {close => (
-                                <AboutUsModal close={close} rawData={dataMap} />)}
 
-                        </Popup>
+
 
                     </div>
 
