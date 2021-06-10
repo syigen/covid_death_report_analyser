@@ -11,7 +11,7 @@ const AboutUsModal = ({ close, rawData }) => {
     return (
         <> {data && <div className={" fixed w-full h-full top-0 left-0 flex items-center justify-center"}>
             <div class="absolute w-full h-full bg-gray-900 opacity-50"></div>
-            <div class="py-4 text-left px-6  bg-gray-900 text-blue-50 z-50 w-1/4">
+            <div class="py-4 text-left px-6  bg-gray-900 text-blue-50 z-50 w-10/12 lg:w-4/12">
                 <div class="flex justify-between items-center pb-3">
                     <p class="text-2xl font-bold text-gray-50">Information</p>
                     <div class="cursor-pointer z-50" onClick={close}>

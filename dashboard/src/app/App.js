@@ -88,7 +88,7 @@ const App = () => {
                             <li class="-mb-px mr-1">
                                 <a
                                     target="blank"
-                                    className={"inline-block py-2 px-4 text-gray-200 font-semibold"} href={"https://medium.com/@dewmal/how-to-develop-an-analysis-tool-from-scratch"}>  Development Story</a>
+                                    className={"inline-block py-2 px-4 text-gray-200 font-semibold"} href={"https://dewmal.medium.com/how-to-develop-an-analysis-tool-from-scratch-89b6730ef44d"}>  Development Story</a>
                             </li>
                             <li class="mr-1">
                                 <Popup trigger={
@@ -102,10 +102,6 @@ const App = () => {
                                 </Popup>
                             </li>
                         </ul>
-
-
-
-
 
                     </div>
 
