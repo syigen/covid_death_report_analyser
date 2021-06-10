@@ -1,6 +1,9 @@
 import * as echarts from 'echarts';
+
 import React, { useEffect, useRef, useState } from 'react';
+import { dateFormatter } from '../../../utils';
 import ChartReportCore from '../chart_report_core';
+
 
 const DeathAgeGroupByDateReport = ({ rawData }) => {
     const chartRef = useRef();
@@ -22,6 +25,8 @@ const DeathAgeGroupByDateReport = ({ rawData }) => {
     }, [chartRef]);
 
 
+
+
     useEffect(() => {
         if (chart && dataMap) {
             const hours = dataMap.dates;
@@ -38,24 +43,35 @@ const DeathAgeGroupByDateReport = ({ rawData }) => {
                     ]
                 },
                 tooltip: {
-                    position: 'top'
+                    position: 'top',
+                    formatter: (params) => {
+                        return `<span style="font-weight:bold;margin-bottom:4px;">${params.seriesName}</span><br />
+                       <small> ${params.name}</small><br/>
+                        <div style="float:left;">${params.marker} ${dateFormatter(params.name, 'MMMM')}</div> <div style="float:right">${params.data[2]}</div>`;
+                    }
                 },
                 grid: {
-                    top: '15%'
+                    top: '20%',                    
+                    left: 40,
                 },
                 xAxis: {
                     type: 'category',
                     data: hours,
                     splitArea: {
                         show: true
-                    }
+                    },
+                    axisLabel: {
+                        formatter: (label) => dateFormatter(label, "MMM"),
+                    },
+                    name: 'Week'
                 },
                 yAxis: {
                     type: 'category',
                     data: days,
                     splitArea: {
                         show: true
-                    }
+                    },
+                    name: 'Age group'
                 },
                 visualMap: {
                     min: 0,
@@ -72,7 +88,7 @@ const DeathAgeGroupByDateReport = ({ rawData }) => {
                     type: 'heatmap',
                     data: data,
                     label: {
-                        show: true
+                        show: true,
                     },
                     emphasis: {
                         itemStyle: {

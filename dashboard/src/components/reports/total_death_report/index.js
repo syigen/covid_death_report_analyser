@@ -84,7 +84,7 @@ const TotalDeathReport = ({ rawData }) => {
                 yAxis: [
                     {
                         type: 'value',
-                        name: 'Count'
+                        name: 'Count per day'
                     }
                 ],
                 dataZoom: [{

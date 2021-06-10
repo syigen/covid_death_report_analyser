@@ -94,7 +94,7 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                 grid: {
                     top: 80,
                     bottom: 120,
-                    left: 30,
+                    left: 40,
                     right: 30,
                     tooltip: {
                         trigger: 'axis',
@@ -118,7 +118,7 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                 yAxis: [
                     {
                         type: 'value',
-                        name: 'Count'
+                        name: 'Count per day'
                     }
                 ],
                 dataZoom: [{

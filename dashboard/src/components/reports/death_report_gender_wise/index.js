@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import echarts from '../../../chart_theme';
+import { dateFormatter } from '../../../utils';
 import ChartReportCore from '../chart_report_core';
 
 const DeathReportGenderWise = ({ rawData }) => {
@@ -29,6 +30,7 @@ const DeathReportGenderWise = ({ rawData }) => {
     }, [chartRef]);
 
     useEffect(() => {
+        const title = "Weekly summary by gender";
         if (chart && dataMap) {
             const data = dataMap.data;
             const dates = dataMap.dates;
@@ -42,7 +44,7 @@ const DeathReportGenderWise = ({ rawData }) => {
             });
             const option = {
                 title: {
-                    text: 'By Gender',
+                    text: title,
                     subtext: 'Based on Incident Announced Date',
                     padding: [
                         10,  // up
@@ -56,6 +58,29 @@ const DeathReportGenderWise = ({ rawData }) => {
                         label: {
                             backgroundColor: '#6a7985'
                         }
+                    },
+                    formatter: (params) => {
+                        const section1 = params[0];
+                        const section2 = params[1];
+                        return `<span style="font-weight:bold;margin-bottom:4px;">${title}</span><br />
+                        <div style="">${dateFormatter(section1.name, 'MMMM')}</div>
+                        <div class="flex flex-wrap items-baseline">
+      <div class="text-gray-700">
+      ${section1.marker} ${section1.seriesName}
+      </div>
+      <div class="text-gray-700 ml-3">
+      ${section1.data}
+      </div>
+    </div>
+    <div class="flex flex-wrap items-baseline">
+    <div class="text-gray-700">
+    ${section2.marker} ${section2.seriesName}
+    </div>
+    <div class="text-gray-700 ml-3">
+    ${section2.data}
+    </div>
+  </div>                       
+                        `;
                     }
                 },
                 xAxis: {
@@ -63,10 +88,20 @@ const DeathReportGenderWise = ({ rawData }) => {
                     data: dates,
                     splitArea: {
                         show: true
-                    }
+                    },
+                    axisLabel: {
+                        formatter: (label) => dateFormatter(label, "MMM"),
+                    },
+                    
+                    name: 'Week'
                 },
                 yAxis: {
-                    type: 'value'
+                    type: 'value',                    
+                    name: 'Count'
+                },
+                grid: {
+                    top: '20%',
+                    left: 40,
                 },
                 legend: {
                     top: 'bottom',
@@ -137,7 +172,7 @@ const DeathReportGenderWise = ({ rawData }) => {
                 }
                 englishText={
                     <>
-                     This chart uses gender of diseased summarized by week
+                        This chart uses gender of diseased summarized by week
                     </>
                 }
                 chartRef={
