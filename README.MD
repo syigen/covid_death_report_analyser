@@ -35,7 +35,7 @@ Copyright (C) 2021 Syigen (Private) Limited
 
 The content of this repository is bound by the following licenses:
 
-    The software is licensed under the BSD-3-Clause license.
+   The software is licensed under the GPL-3.0 License 
 
 
 
