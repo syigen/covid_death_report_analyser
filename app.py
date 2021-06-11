@@ -10,6 +10,7 @@ from distutils.dir_util import copy_tree
 from typing import List
 from uuid import uuid4
 
+import boto3
 from flask import Flask, request, render_template, send_from_directory, redirect, url_for, jsonify, flash
 from flask_assets import Environment
 from flask_sqlalchemy import SQLAlchemy
@@ -17,7 +18,13 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from webassets import Bundle
 from werkzeug.utils import secure_filename
 
+# Let's use Amazon S3
+from app_helper import generate_summery
+
+aws_client = boto3.resource('s3')
+
 UPLOAD_FOLDER = './upload'
+bucket = "pandemic-info-egy-test"
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -570,12 +577,32 @@ def summary_report_generate():
         for item in csv_data:
             w.writerow(item)
         csv_file.close()
-    return "success"
+    # Upload a new file
+
+    return send_from_directory(os.path.join("."), 'data_summary.csv')
+
+
+def _gen_summary_report(bucket_name=bucket):
+    json_data = generate_summery()
+    file_name = 'get_json_report.json'
+    s3object = aws_client.Object(bucket, file_name)
+
+    s3object.put(
+        Body=(bytes(json.dumps(json_data).encode('UTF-8')))
+    )
+    object_acl = aws_client.ObjectAcl(bucket_name, file_name)
+    response = object_acl.put(ACL='public-read')
 
 
 @app.route("/download")
 def download_report():
     return send_from_directory("./", 'data_summary.csv')
+
+
+@app.route("/upload_summary/<bucket_name>")
+def download_report(bucket_name):
+    _gen_summary_report(bucket_name)
+    return "success"
 
 
 @app.route("/reason_auto_complete", methods=["GET"])
