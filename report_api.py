@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 
 import report_generator as reg
+import app_helper as app_h
 
 app = Flask(__name__)
 CORS(app)
@@ -9,14 +10,7 @@ CORS(app)
 
 @app.route("/get_json_report")
 def save_summery_reports():
-    data = {
-        "about_report":reg.get_about_report(),
-        "daily_summary_report": reg.generate_summary_report(),
-        "age_group_summary_report": reg.age_group_summary_report(),
-        "age_group_weekly_summary_by_date_report": reg.age_group_summary_by_week_report(),
-        "gender_weekly_summary_by_date_report": reg.get_gender_summary_repored_date_weekly(),
-        "death_report_location_report": reg.get_death_report_location_summary()
-    }
+    data = app_h.generate_summery()
     return jsonify(data)
 
 

@@ -10,3 +10,4 @@ Flask-SQLAlchemy
 Flask-Assets
 flask-cors
 pandas
+boto3
