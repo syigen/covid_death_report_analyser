@@ -109,6 +109,18 @@ def get_gender_summary(df, dates):
     return gender_summary
 
 
+def get_report_date_distribution_summary(df, dates):
+    reports_dates = list(df.report_date.unique())
+    data_summary = {}
+    for d in reports_dates:
+        data_set_record_date = {f"{d}": 0 for d in dates}
+        death_record_date_df = df.query(f"report_date=='{d}'").groupby("death_record_date").count()
+        for t in death_record_date_df.itertuples():
+            data_set_record_date[f"{t.Index}"] = int(t.report_date)
+        data_summary[f"{d}"] = list(data_set_record_date.values())
+    return data_summary
+
+
 def generate_summary_report():
     df = _read_summary_csv()
     dates = list(df.death_record_date.unique())
@@ -133,6 +145,7 @@ def generate_summary_report():
     report_date_summary = get_count_summary_by_reported_and_record_same_date(df, dates)
     report_date_count_summary = get_report_date_count_summary(df, dates)
     record_date_summary = get_count_summary_by_considering_record_date(df, dates)
+    report_date_distribution_summary = get_report_date_distribution_summary(df, dates)
 
     # Gender Summary
     gender_summary = get_gender_summary(df, dates)
@@ -143,6 +156,7 @@ def generate_summary_report():
             "report_date_count": report_date_count_summary,
             "report_date": report_date_summary,
             "record_date": record_date_summary,
+            "selected_date": report_date_distribution_summary,
             "gender": gender_summary
         }
     }
