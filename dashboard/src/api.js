@@ -6,10 +6,7 @@ const Api = async () => {
     const curTime = new Date();
     const should_refresh = false;
     if (!DATA.data || should_refresh) {
-        let url = "https://pandemic-info.s3.ap-south-1.amazonaws.com/get_json_report.json"
-        // if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
-        //     url = "http://127.0.0.1:7878/get_json_report"
-        // }
+        let url = `${process.env.REACT_APP_API_URL}`
         const res = await fetch(url)
         const data = await res.json();
         DATA.data = data
