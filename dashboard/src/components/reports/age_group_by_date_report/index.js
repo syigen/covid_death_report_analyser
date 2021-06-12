@@ -36,13 +36,16 @@ const DeathAgeGroupByDateReport = ({ rawData }) => {
                 tooltip: {
                     position: 'top',
                     formatter: (params) => {
+                        if(!params.seriesName){
+                            return "";
+                        }
                         return `<span style="font-weight:bold;margin-bottom:4px;">${params.seriesName}</span><br />
                        <small> ${params.name}</small><br/>
-                        <div style="float:left;">${params.marker} ${dateFormatter(params.name, 'MMMM')}</div> <div style="float:right">${params.data[2]}</div>`;
+                        <div style="float:left;">${params.marker} ${dateFormatter(params.name, 'MMMM')}</div> <div style="float:right">${(params.data && params.data.length >= 2) ? params.data[2] : '000'}</div>`;
                     }
                 },
                 grid: {
-                    top: '20%',                    
+                    top: '20%',
                     left: 40,
                 },
                 xAxis: {
