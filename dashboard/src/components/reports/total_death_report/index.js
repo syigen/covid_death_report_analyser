@@ -13,8 +13,11 @@ const ActionBarComponent = ({ onChangeStartDate, onChangeEndDate }) => {
         </button>
     ));
     return (
-        <div className="w-full flex items-center max-w-2xl mx-auto justify-end space-x-4">
-            <div className="relative">
+        <>
+            <div className={"mb-2"}>
+                <span class="text-gray-50 text-xl font-semibold">Daily count based on press release</span>
+            </div>
+            <div className={"mb-2"}>
                 <ReactDatePicker
                     selected={startDate}
                     onChange={(date) => { setStartDate(date); if (onChangeStartDate) onChangeStartDate(moment(date).format("YYYY-MM-DD")) }}
@@ -24,7 +27,7 @@ const ActionBarComponent = ({ onChangeStartDate, onChangeEndDate }) => {
                     previousMonthButtonLabel="<"
                 />
             </div>
-        </div>
+        </>
     )
 }
 const TotalDeathReport = ({ rawData }) => {
@@ -85,7 +88,7 @@ const TotalDeathReport = ({ rawData }) => {
             const dates = dataMap.dates;
             const option = {
                 timeline: {
-                    bottom: 25,
+                    bottom: 0,
                     axisType: 'category',
                     loop: false,
                     autoPlay: true,
@@ -111,7 +114,7 @@ const TotalDeathReport = ({ rawData }) => {
                 tooltip: {
                 },
                 legend: {
-                    top: 'bottom',
+                    top: 70,
                     data: ['Selected anncounded date distribution', 'Count by announced date', 'Count by incident date', 'Cummulative Gender Wise Data'],
                     selected: {
 
@@ -120,7 +123,7 @@ const TotalDeathReport = ({ rawData }) => {
                 calculable: true,
                 grid: {
                     top: 80,
-                    bottom: 140,
+                    bottom: 120,
                     left: 30,
                     right: 30,
                     tooltip: {
@@ -149,7 +152,7 @@ const TotalDeathReport = ({ rawData }) => {
                     }
                 ],
                 dataZoom: [{
-                    bottom: 80,
+                    bottom: 60,
                     textStyle: {
                         color: "#white"
                     }
