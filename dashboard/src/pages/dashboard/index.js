@@ -12,14 +12,14 @@ const Dashboard = ({ dataMap }) => {
 
         <div className={"grid grid-cols-12 gap-2 min-h-screen"}>
 
-            <div className={"col-span-12 w-full p-2"}>
+             <div className={"col-span-12 w-full p-2"}>
                 <div>
                     <TotalDeathOccuredReport rawData={dataMap} />
                 </div>
             </div>
 
 
-            <div className={"col-span-12 md:col-span-8"} >
+          <div className={"col-span-12 md:col-span-8"} >
 
                 <div className={"p-2  h-full w-full"}>
                     <DeathAgeGroupByDateReport rawData={dataMap} />
@@ -28,7 +28,7 @@ const Dashboard = ({ dataMap }) => {
 
 
 
-            <div className={"col-span-12  md:col-span-4"} >
+           <div className={"col-span-12  md:col-span-4"} >
 
                 <div className={"p-2  h-full w-full"}>
                     <DeathReportAgeGroupHeatMap rawData={dataMap} />
@@ -50,8 +50,7 @@ const Dashboard = ({ dataMap }) => {
                 <div className={"p-2 h-full w-full"}>
                     <DeathReportLocationReport rawData={dataMap} />
                 </div>
-            </div>
-
+            </div> 
             <div className={"col-span-12 w-full"} >
 
                 <div className={"w-full p-2"}>

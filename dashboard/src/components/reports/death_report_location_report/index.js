@@ -3,16 +3,8 @@ import echarts from '../../../chart_theme';
 import ChartReportCore from '../chart_report_core';
 
 const DeathReportLocationReport = ({ rawData }) => {
-    const chartRef = useRef();
-    const [chart, setChart] = useState();
+    const [chartOption, setChartOption] = useState();
     const [dataMap, setDataMap] = useState();
-
-    useEffect(() => {
-        if (chartRef) {
-            const myChart = echarts.init(chartRef.current, 'chalk');
-            setChart(myChart);
-        }
-    }, [chartRef]);
 
     useEffect(() => {
         if (rawData) {
@@ -22,14 +14,7 @@ const DeathReportLocationReport = ({ rawData }) => {
     }, [rawData])
 
     useEffect(() => {
-        if (chartRef) {
-            const myChart = echarts.init(chartRef.current, 'dark');
-            setChart(myChart);
-        }
-    }, [chartRef]);
-
-    useEffect(() => {
-        if (chart && dataMap) {
+        if (dataMap) {
             const data = dataMap
             const option = {
 
@@ -116,11 +101,11 @@ const DeathReportLocationReport = ({ rawData }) => {
                     }
                 ]
             };
-            chart.setOption(option);
+            setChartOption(option);
         }
-    }, [chart, dataMap]);
+    }, [dataMap]);
     return (
-        <div  className="w-full h-full">
+        <div className="w-full h-full">
             <ChartReportCore
                 sinhalaText={
                     <>
@@ -132,8 +117,8 @@ const DeathReportLocationReport = ({ rawData }) => {
                         This chart uses place of death of diseased
                     </>
                 }
-                chartRef={
-                    chartRef
+                option={
+                    chartOption
                 }
                 className="w-auto h-full"
             />

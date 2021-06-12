@@ -1,13 +1,11 @@
-import * as echarts from 'echarts';
-
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { dateFormatter } from '../../../utils';
 import ChartReportCore from '../chart_report_core';
 
 
+
 const DeathAgeGroupByDateReport = ({ rawData }) => {
-    const chartRef = useRef();
-    const [chart, setChart] = useState();
+    const [chartOption, setChartOption] = useState();
     const [dataMap, setDataMap] = useState();
 
     useEffect(() => {
@@ -17,18 +15,11 @@ const DeathAgeGroupByDateReport = ({ rawData }) => {
         }
     }, [rawData])
 
-    useEffect(() => {
-        if (chartRef) {
-            const myChart = echarts.init(chartRef.current, 'chalk');
-            setChart(myChart);
-        }
-    }, [chartRef]);
-
 
 
 
     useEffect(() => {
-        if (chart && dataMap) {
+        if (dataMap) {
             const hours = dataMap.dates;
             const days = dataMap.groups;
             var data = dataMap.data;
@@ -98,9 +89,9 @@ const DeathAgeGroupByDateReport = ({ rawData }) => {
                     }
                 }]
             };
-            chart.setOption(option);
+            setChartOption(option);
         }
-    }, [chart, dataMap]);
+    }, [dataMap]);
     return (
         <div className="w-full h-full">
             <ChartReportCore
@@ -114,8 +105,8 @@ const DeathAgeGroupByDateReport = ({ rawData }) => {
                         This chart uses ages of diseased summarized by week
                     </>
                 }
-                chartRef={
-                    chartRef
+                option={
+                    chartOption
                 }
                 className="w-auto h-full"
             />

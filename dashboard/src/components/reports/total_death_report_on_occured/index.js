@@ -4,16 +4,8 @@ import InfoPanel from '../../ui/info_ui';
 import ChartReportCore from '../chart_report_core';
 
 const TotalDeathOccuredReport = ({ rawData }) => {
-    const chartRef = useRef();
-    const [chart, setChart] = useState();
+    const [chartOption, setChartOption] = useState();
     const [dataMap, setDataMap] = useState();
-
-    useEffect(() => {
-        if (chartRef) {
-            const myChart = echarts.init(chartRef.current, 'chalk');
-            setChart(myChart);
-        }
-    }, [chartRef]);
 
     useEffect(() => {
         if (rawData) {
@@ -23,7 +15,7 @@ const TotalDeathOccuredReport = ({ rawData }) => {
     }, [rawData])
 
     useEffect(() => {
-        if (chart && dataMap) {
+        if (dataMap) {
             const dates = dataMap.dates;
             const option = {
                 timeline: {
@@ -248,9 +240,9 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                     }
                 })
             };
-            chart.setOption(option);
+            setChartOption(option);
         }
-    }, [chart, dataMap]);
+    }, [dataMap]);
     return (
         <ChartReportCore
             sinhalaText={
@@ -266,8 +258,8 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                     This is subject to change upon availability of new data.
                 </>
             }
-            chartRef={
-                chartRef
+            option={
+                chartOption
             }
             className={
                 "w-full"
