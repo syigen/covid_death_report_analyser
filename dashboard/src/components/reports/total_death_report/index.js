@@ -8,7 +8,8 @@ const ActionBarComponent = ({ onChangeStartDate, onChangeEndDate }) => {
     const [startDate, setStartDate] = useState(new Date())
     // const [endDate, setEndDate] = useState(new Date().setDate(startDate.getDay() + 7))
     const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
-        <button className="py-2 px-4 bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 rounded-md text-gray-50" onClick={onClick} ref={ref}>
+        <button className="py-2 px-11 bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 
+        focus:ring-purple-600 focus:ring-opacity-50 rounded-md text-gray-50" onClick={onClick} ref={ref}>
             Pres release date  {value}
         </button>
     ));
