@@ -72,6 +72,7 @@ const ChartReportCore = ({ sinhalaText, englishText, option, style = {}, classNa
 
             chart.setOption({
                 toolbox: {
+                    top:30,
                     show: true,
                     feature: {
                         dataZoom: {
@@ -92,7 +93,7 @@ const ChartReportCore = ({ sinhalaText, englishText, option, style = {}, classNa
             "height": "100%"
         }}>
             {ActionBarComponent &&
-                <div class="mt-2 flex justify-between space-x-4 w-full mb-2 border-b border-gray-50 border-opacity-10">
+                <div class="mt-2 flex flex-wrap justify-between w-full mb-2 border-b border-gray-50 border-opacity-10">
                     {ActionBarComponent}
                 </div>
             }

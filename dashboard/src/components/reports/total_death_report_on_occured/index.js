@@ -15,7 +15,7 @@ const ActionComponent = ({ onChangeDateRange }) => {
             <div className={"mb-2"}>
                 <span class="text-gray-50 text-xl font-semibold">Daily count based on press release</span>
             </div>
-            <div className={"mb-2 flex justify-between"}>
+            <div className={"mb-2 w-full sm:w-auto grid grid-cols-2 md:grid-cols-4 gap-1"}>
                 <button disabled={selected === -1} className={`py-1 px-3 mx-2 text-gray-50 rounded-md  bg-green-500 hover:bg-green-600 disabled:opacity-50`} onClick={() => setSelected(-1)} >All</button>
                 <button disabled={selected === 7} className={`py-1 px-3 mx-2 text-gray-50 rounded-md  bg-green-500 hover:bg-green-600 disabled:opacity-50`} onClick={() => setSelected(7)} >Last 7 Days</button>
                 <button disabled={selected === 14} className={`py-1 px-3 mx-2 text-gray-50 rounded-md  bg-green-500 hover:bg-green-600 disabled:opacity-50`} onClick={() => setSelected(14)} >Last 14 Days</button>
@@ -108,7 +108,7 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                 ...timeLineOption,
                 title: {
                     text: `Up to press release ${latestDate}`,
-                    subtext: 'This report is calculate each day based on official press release',
+                    subtext: 'Count by incident date',
                     sublink: "https://www.dgi.gov.lk/news/press-releases-sri-lanka/covid-19-documents",
                     subTarge: "blank"
                 },
