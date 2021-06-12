@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import echarts from '../../../chart_theme';
-import InfoPanel from '../../ui/info_ui';
 import ChartReportCore from '../chart_report_core';
 
 const TotalDeathOccuredReport = ({ rawData }) => {
@@ -49,40 +48,7 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                 legend: {
                     data: ['Reported Count', 'Recorded Count'],
                 },
-                calculable: true,
-                graphic: [
-                    {
-                        type: 'group',
-                        right: 50,
-                        bottom: 120,
-                        z: 100,
-                        children: [
-                            {
-                                type: 'rect',
-                                left: "center",
-                                top: 'center',
-                                z: 100,
-                                shape: {
-                                    width: 200,
-                                    height: 30
-                                },
-                                style: {
-                                    fill: 'rgba(0,0,0,0.1)'
-                                }
-                            },
-                            {
-                                type: 'text',
-                                left: "center",
-                                top: 'center',
-                                z: 100,
-                                style: {
-                                    fill: 'rgba(255,255,255,0.4)',
-                                    text: 'pandemic-info.syigen.com',
-                                }
-                            }
-                        ]
-                    },
-                ],
+                calculable: true,                
                 grid: {
                     top: 80,
                     bottom: 120,
