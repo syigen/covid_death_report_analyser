@@ -8,7 +8,7 @@ const ChartReportCore = ({ sinhalaText, englishText, option, style = {}, classNa
 } }) => {
     const chartRef = useRef();
     const [chart, setChart] = useState();
-    const [ActionBarComponent, setActionBarComponent] = useState(() => <></>)
+    const [ActionBarComponent, setActionBarComponent] = useState()
 
 
     useEffect(() => {
@@ -91,12 +91,11 @@ const ChartReportCore = ({ sinhalaText, englishText, option, style = {}, classNa
         <div class="p-2 bg-chart rounded-md w-full " style={{
             "height": "100%"
         }}>
-            <div class="mt-2 flex flex-row-reverse space-x-4 w-full">
-                <section class="flex-initial">
+            {ActionBarComponent &&
+                <div class="mt-2 flex justify-between space-x-4 w-full mb-2 border-b border-gray-50 border-opacity-10">
                     {ActionBarComponent}
-                </section>
-            </div>
-
+                </div>
+            }
             <div ref={chartRef} className={"h-full w-full"} style={{ "height": "30rem", ...style }} />
             <InfoPanel
                 sinhala={sinhalaText}

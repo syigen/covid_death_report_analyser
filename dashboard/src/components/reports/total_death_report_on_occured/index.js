@@ -1,10 +1,34 @@
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import echarts from '../../../chart_theme';
 import ChartReportCore from '../chart_report_core';
 
+const ActionComponent = ({ onChangeDateRange }) => {
+    const [selected, setSelected] = useState(-1);
+    useEffect(() => {
+        if (onChangeDateRange)
+            onChangeDateRange(selected);
+    }, [selected, onChangeDateRange]);
+
+    return (
+        <>
+            <div className={"mb-2"}>
+                <span class="text-gray-50 text-xl font-semibold">Daily count based on press release</span>
+            </div>
+            <div className={"mb-2 flex justify-between"}>
+                <button disabled={selected === -1} className={`py-1 px-3 mx-2 text-gray-50 rounded-md  bg-green-500 hover:bg-green-600 disabled:opacity-50`} onClick={() => setSelected(-1)} >All</button>
+                <button disabled={selected === 7} className={`py-1 px-3 mx-2 text-gray-50 rounded-md  bg-green-500 hover:bg-green-600 disabled:opacity-50`} onClick={() => setSelected(7)} >Last 7 Days</button>
+                <button disabled={selected === 14} className={`py-1 px-3 mx-2 text-gray-50 rounded-md  bg-green-500 hover:bg-green-600 disabled:opacity-50`} onClick={() => setSelected(14)} >Last 14 Days</button>
+                <button disabled={selected === 30} className={`py-1 px-3 mx-2 text-gray-50 rounded-md  bg-green-500 hover:bg-green-600 disabled:opacity-50`} onClick={() => setSelected(30)} >Last 30 Days</button>
+            </div>
+        </>
+    );
+}
+
 const TotalDeathOccuredReport = ({ rawData }) => {
     const [chartOption, setChartOption] = useState();
     const [dataMap, setDataMap] = useState();
+    const [dateRange, onChangeDateRange] = useState(-1);
 
     useEffect(() => {
         if (rawData) {
@@ -15,14 +39,58 @@ const TotalDeathOccuredReport = ({ rawData }) => {
 
     useEffect(() => {
         if (dataMap) {
-            const dates = dataMap.dates;
-            const option = {
+            let dates = [...dataMap.dates];
+            const latestDate = dataMap.dates[dataMap.dates.length - 1];
+            let seriesLastRecodedDataSet = [...dataMap.data.record_date[latestDate]];
+            let seriesLastGenderDataSet = [...dataMap.data.gender[latestDate]];
+            if (dateRange && dateRange !== -1) {
+                const endDate = moment(latestDate);
+                const startDate = moment(latestDate).subtract(dateRange, "days");
+                const fDates = dataMap.dates.filter((d) => {
+                    const m = moment(d);
+                    if (m.isBetween(startDate, endDate))
+                        return d;
+                    return false;
+                });
+                const filterFirstDate = fDates[0];
+                seriesLastRecodedDataSet = [...seriesLastRecodedDataSet.splice(dates.indexOf(filterFirstDate), seriesLastRecodedDataSet.length)]
+
+                const seriesFirstGenderDataSet = [...dataMap.data.gender[filterFirstDate]];
+                console.log(seriesFirstGenderDataSet, seriesLastGenderDataSet);
+                let maleCount = 0;
+                let femaleCount = 0;
+
+                [...seriesLastGenderDataSet].forEach((elem) => {
+                    if (elem.name === "Male")
+                        maleCount += elem.value;
+                    if (elem.name === "Female")
+                        femaleCount += elem.value;
+                });
+
+
+                [...seriesFirstGenderDataSet].forEach((elem) => {
+                    if (elem.name === "Male")
+                        maleCount -= elem.value;
+                    if (elem.name === "Female")
+                        femaleCount -= elem.value;
+                });
+
+                seriesLastGenderDataSet = [
+                    { name: "Male", value: maleCount },
+                    { name: "Female", value: femaleCount },
+                ]
+
+                dates = [...fDates];
+            }
+
+            const timeLineOption = {
                 timeline: {
+                    show: false,
                     axisType: 'category',
                     // realtime: false,
                     loop: false,
                     autoPlay: true,
-                    currentIndex: (dates.length - 5),
+                    currentIndex: (dates.length - 1),
                     playInterval: 500,
                     controlStyle: {
                         position: 'left'
@@ -33,12 +101,13 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                             return s;
                         }
                     }
-                },
+                }
+            }
+
+            const option = {
+                ...timeLineOption,
                 title: {
-                    padding: [
-                        10,  // up
-                        10, // left
-                    ],
+                    text: `Up to press release ${latestDate}`,
                     subtext: 'This report is calculate each day based on official press release',
                     sublink: "https://www.dgi.gov.lk/news/press-releases-sri-lanka/covid-19-documents",
                     subTarge: "blank"
@@ -46,12 +115,13 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                 tooltip: {
                 },
                 legend: {
-                    data: ['Incident Date', 'filter', 'Cummulative Gender Wise Data'],
+                    bottom: 40,
+                    data: ['Count by incident date', 'Cummulative Gender Wise Data'],
                 },
                 calculable: true,
                 grid: {
                     top: 80,
-                    bottom: 120,
+                    bottom: 90,
                     left: 40,
                     right: 30,
                     tooltip: {
@@ -80,15 +150,14 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                     }
                 ],
                 dataZoom: [{
-                    bottom: 60,
+                    bottom: 0,
                     textStyle: {
                         color: "#white"
                     }
                 }],
                 series: [
-
                     {
-                        name: 'Incident Date',
+                        name: 'Count by incident date',
                         type: 'bar', itemStyle: {
                             color: '#a75252'
                         },
@@ -117,7 +186,8 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                                     },
                                 }
                             ]
-                        }
+                        },
+                        data: seriesLastRecodedDataSet,
                     },
                     {
                         name: 'Cummulative Gender Wise Data',
@@ -189,27 +259,27 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                                 }
                             }
                         },
+                        data: seriesLastGenderDataSet
                     }
                 ],
-                options: dates.map((d) => {
-                    return {
-                        title: { text: `Press Release Date  ${d}` },
+                // options: dateRange === -1 ? dates.map((d) => {
+                //     return {
+                //         title: { text: `Press Release Date  ${d}` },
 
-                        series: [
-                            {
-                                data: dataMap.data.record_date[`${d}`],
-                            },
-                            {
-                                data: dataMap.data.gender[`${d}`],
-                            }
-                        ]
-                    }
-                })
+                //         series: [
+                //             {
+                //                 data: dataMap.data.record_date[`${d}`],
+                //             },
+                //             {
+                //                 data: dataMap.data.gender[`${d}`],
+                //             }
+                //         ]
+                //     }
+                // }) : []
             };
             setChartOption(option);
-            console.log("Update");
         }
-    }, [dataMap]);
+    }, [dataMap, dateRange]);
     return (
         <>
 
@@ -238,6 +308,11 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                         "height": "600px"
                     }
                 }
+                watermarkPos={{
+                    bottom: 95,
+                    right: 10
+                }}
+                actionBarComponent={<ActionComponent onChangeDateRange={onChangeDateRange} />}
             />
         </>
     );
