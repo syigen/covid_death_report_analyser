@@ -1,11 +1,13 @@
+import { InformationCircleIcon } from '@heroicons/react/solid';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
+import Popup from 'reactjs-popup';
+import Api from "../api";
+import AboutUsModal from '../components/ui/abou_us_modal';
+import ShareModal from '../components/ui/share_modal';
+import githubLogo from '../githublogo.png';
 import Dashboard from '../pages/dashboard';
 import './App.css';
-import githubLogo from '../githublogo.png'
-import { InformationCircleIcon } from '@heroicons/react/solid'
-import Popup from 'reactjs-popup';
-import AboutUsModal from '../components/ui/abou_us_modal';
-import Api from "../api";
 
 const Announcement = () => {
     const [show, setShow] = useState(true);
@@ -25,7 +27,7 @@ const Announcement = () => {
                                 <p class="ml-3 font-medium text-white">
                                     This report is based on data extracted from
                                     <a target='blank' href="https://www.dgi.gov.lk/news/press-releases-sri-lanka/covid-19-documents" class="font-bold pl-1">Government Press Release</a>.
-                                     There can be +/- 5% error due to data collection/processing.
+                                    There can be +/- 5% error due to data collection/processing.
                                 </p>
                             </div>
                             <div class="order-3 md:span-12 mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto">
@@ -33,7 +35,7 @@ const Announcement = () => {
                                     target="blank"
                                     class="flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50">
                                     Official reports
-        </a>
+                                </a>
                             </div>
                             <div class="order-2 flex-shrink-0 sm:order-3 sm:ml-3">
                                 <button type="button"
@@ -77,9 +79,15 @@ const App = () => {
                 <nav class="mb-2 font-sans flex flex-col text-center content-center sm:flex-row sm:text-left sm:justify-between py-2 px-6 bg-gray-800 shadow sm:items-baseline w-full">
                     <div class="mb-2 sm:mb-0 inner">
 
-                        <a href="/" class="text-2xl text-white no-underline text-grey-darkest hover:text-blue-dark font-sans font-bold">SYIGEN-COVID-ANALYZER</a><br />
-                        <span class="text-xs text-gray-50">COVID-19 Pandamic Report Analysis</span>
-                        {(dataMap && dataMap.about_report) && <span class="text-xs text-gray-50 ml-2">(Last update - {dataMap.about_report.last_update_time})</span>}
+                        <a href="/" class="text-2xl text-white 
+                        no-underline text-grey-darkest hover:text-blue-dark font-sans font-bold">
+                            {`${process.env.REACT_APP_TITLE}`}</a><br />
+                        <span class="text-xs text-gray-50">{process.env.REACT_APP_DESCRIPTION_MINI}</span>
+                        {(dataMap && dataMap.about_report) && <span class="text-xs text-gray-50 ml-2">(Last update - {moment.utc(dataMap.about_report.last_update_time, "YYYY-MM-DD hh:mm:ss ZZZ").local().format("YYYY-MMM-DD HH:mm")})</span>}
+
+                    </div>
+
+                    <div class="sm:mb-0 self-center">
 
                     </div>
 
@@ -88,8 +96,21 @@ const App = () => {
                             <li class="-mb-px mr-1">
                                 <a
                                     target="blank"
-                                    className={"inline-block py-2 px-4 text-gray-200 font-semibold"} href={"https://dewmal.medium.com/how-to-develop-an-analysis-tool-from-scratch-89b6730ef44d"}>  Development Story</a>
+                                    className={"inline-block py-2 px-4 text-gray-200 font-semibold"} href={"https://dewmal.medium.com/how-to-develop-an-analysis-tool-from-scratch-89b6730ef44d"}> How Story</a>
                             </li>
+                            <li class="-mb-px mr-1">
+                                <Popup trigger={
+                                    <span className={"inline-block py-2 px-4 text-gray-200 font-semibold cursor-pointer"}>
+                                        Share
+                                    </span>
+                                } modal nested={false}>
+                                    {close => (
+                                        <ShareModal close={close} rawData={dataMap} />)}
+
+                                </Popup>
+
+                            </li>
+
                             <li class="mr-1">
                                 <Popup trigger={
                                     <button>
@@ -101,6 +122,7 @@ const App = () => {
 
                                 </Popup>
                             </li>
+
                         </ul>
 
                     </div>
@@ -120,11 +142,11 @@ const App = () => {
                         <span class="text-sm text-white no-underline text-grey-darkest hover:text-blue-dark font-sans font-bold">
                             COVID-19 Pandemic Report Analysis
                             Copyright (C) 2021 Syigen (Private) Limited
-                </span>
+                        </span>
                         <p>
                             <a class="text-xs text-gray-50" href={'https://www.gnu.org/licenses/gpl-3.0.html'}>
                                 This program is licensed under GPL-v3
-                        </a>
+                            </a>
                         </p>
                     </div>
 
