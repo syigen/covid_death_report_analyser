@@ -4,17 +4,8 @@ import { dateFormatter } from '../../../utils';
 import ChartReportCore from '../chart_report_core';
 
 const DeathReportGenderWise = ({ rawData }) => {
-    const chartRef = useRef();
-    const [chart, setChart] = useState();
+    const [chartOption, setChartOption] = useState();
     const [dataMap, setDataMap] = useState();
-
-    useEffect(() => {
-        if (chartRef) {
-            const myChart = echarts.init(chartRef.current, 'chalk');
-            setChart(myChart);
-        }
-    }, [chartRef]);
-
     useEffect(() => {
         if (rawData) {
             const data = rawData.gender_weekly_summary_by_date_report;
@@ -22,16 +13,10 @@ const DeathReportGenderWise = ({ rawData }) => {
         }
     }, [rawData])
 
-    useEffect(() => {
-        if (chartRef) {
-            const myChart = echarts.init(chartRef.current, 'dark');
-            setChart(myChart);
-        }
-    }, [chartRef]);
 
     useEffect(() => {
         const title = "Weekly summary by gender";
-        if (chart && dataMap) {
+        if (dataMap) {
             const data = dataMap.data;
             const dates = dataMap.dates;
             const male = data.map((dt) => {
@@ -92,11 +77,11 @@ const DeathReportGenderWise = ({ rawData }) => {
                     axisLabel: {
                         formatter: (label) => dateFormatter(label, "MMM"),
                     },
-                    
+
                     name: 'Week'
                 },
                 yAxis: {
-                    type: 'value',                    
+                    type: 'value',
                     name: 'Count'
                 },
                 grid: {
@@ -159,9 +144,9 @@ const DeathReportGenderWise = ({ rawData }) => {
                     },
                 ]
             };
-            chart.setOption(option);
+            setChartOption(option);
         }
-    }, [chart, dataMap]);
+    }, [ dataMap]);
     return (
         <div className="w-full h-full">
             <ChartReportCore
@@ -175,8 +160,8 @@ const DeathReportGenderWise = ({ rawData }) => {
                         This chart uses gender of diseased summarized by week
                     </>
                 }
-                chartRef={
-                    chartRef
+                option={
+                    chartOption
                 }
                 className="w-auto h-full"
             />

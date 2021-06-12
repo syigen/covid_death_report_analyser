@@ -1,18 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
-import echarts from '../../../chart_theme';
+import React, { useEffect, useState } from 'react';
 import ChartReportCore from '../chart_report_core';
+import echarts from '../../../chart_theme';
 
 const TotalDeathReport = ({ rawData }) => {
-    const chartRef = useRef();
-    const [chart, setChart] = useState();
+    const [chartOptions, setChartOptions] = useState();
     const [dataMap, setDataMap] = useState();
-
-    useEffect(() => {
-        if (chartRef) {
-            const myChart = echarts.init(chartRef.current, 'chalk');
-            setChart(myChart);
-        }
-    }, [chartRef]);
     useEffect(() => {
         if (rawData) {
             const data = rawData.daily_summary_report;
@@ -21,7 +13,7 @@ const TotalDeathReport = ({ rawData }) => {
     }, [rawData])
 
     useEffect(() => {
-        if (chart && dataMap) {
+        if (dataMap) {
             const dates = dataMap.dates;
             const option = {
                 timeline: {
@@ -213,9 +205,9 @@ const TotalDeathReport = ({ rawData }) => {
                     }
                 })
             };
-            chart.setOption(option);
+            setChartOptions(option);
         }
-    }, [chart, dataMap]);
+    }, [dataMap]);
     return (
         <ChartReportCore
             sinhalaText={
@@ -231,8 +223,8 @@ const TotalDeathReport = ({ rawData }) => {
                     This is subject to change upon availability of new data.
                 </>
             }
-            chartRef={
-                chartRef
+            option={
+                chartOptions
             }
             className={
                 "w-full"

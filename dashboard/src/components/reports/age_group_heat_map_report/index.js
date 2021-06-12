@@ -1,18 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
-import echarts from '../../../chart_theme';
+import React, { useEffect, useState } from 'react';
 import ChartReportCore from '../chart_report_core';
 
 const DeathReportAgeGroupHeatMap = ({ rawData }) => {
-    const chartRef = useRef();
-    const [chart, setChart] = useState();
+    const [chartOption, setChartOption] = useState();
     const [dataMap, setDataMap] = useState();
-
-    useEffect(() => {
-        if (chartRef) {
-            const myChart = echarts.init(chartRef.current, 'chalk');
-            setChart(myChart);
-        }
-    }, [chartRef]);
 
     useEffect(() => {
         if (rawData) {
@@ -22,10 +13,7 @@ const DeathReportAgeGroupHeatMap = ({ rawData }) => {
     }, [rawData])
 
     useEffect(() => {
-
-
-
-        if (chart && dataMap) {
+        if (dataMap) {
             const xData = dataMap.indicator;
             const all = dataMap.all;
             const male = dataMap.male;
@@ -138,9 +126,9 @@ const DeathReportAgeGroupHeatMap = ({ rawData }) => {
                     data: ['All', 'Female', 'Male']
                 }
             };
-            chart.setOption(option);
+            setChartOption(option);
         }
-    }, [chart, dataMap]);
+    }, [dataMap]);
     return (
         <div className="w-full h-full">
             <ChartReportCore
@@ -154,8 +142,8 @@ const DeathReportAgeGroupHeatMap = ({ rawData }) => {
                         This chart uses ages of diseased
                     </>
                 }
-                chartRef={
-                    chartRef
+                option={
+                    chartOption
                 }
                 className="w-auto h-full"
             />
