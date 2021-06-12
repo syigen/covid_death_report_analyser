@@ -1,36 +1,21 @@
-import { SaveIcon } from "@heroicons/react/solid";
 import { useEffect, useRef, useState } from "react";
 import echarts from '../../../chart_theme';
 import InfoPanel from "../../ui/info_ui";
 
-const ChartReportCore = ({ sinhalaText, englishText, option, style = {}, className = "", actionBarComponent = <></> }) => {
-
+const ChartReportCore = ({ sinhalaText, englishText, option, style = {}, className = "", actionBarComponent, watermarkPos = {
+    bottom: 10,
+    right: 10
+} }) => {
     const chartRef = useRef();
     const [chart, setChart] = useState();
-    const [chartDataImage, setChartDataImage] = useState();
+    const [ActionBarComponent, setActionBarComponent] = useState(() => <></>)
+
 
     useEffect(() => {
-        if (chartDataImage) {
-            const img = new Image();
-            img.crossOrigin = 'anonymous';
-            img.src = chartDataImage;
-            img.onload = () => {
-                // create Canvas
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = img.width;
-                canvas.height = img.height;
-                ctx.drawImage(img, 0, 0);
-                // create a tag
-                const a = document.createElement('a');
-                const chartName = chart.getOption().title[0].text;
-                console.log(chart.getOption());
-                a.download = `${chartName}.png`;
-                a.href = canvas.toDataURL('image/png');
-                a.click();
-            };
+        if (actionBarComponent) {
+            setActionBarComponent(actionBarComponent)
         }
-    }, [chartDataImage, chart]);
+    }, [actionBarComponent]);
 
     useEffect(() => {
         if (chartRef) {
@@ -52,8 +37,10 @@ const ChartReportCore = ({ sinhalaText, englishText, option, style = {}, classNa
             const graphic = [
                 {
                     type: 'group',
-                    right: 10,
-                    bottom: 10,
+                    right: watermarkPos.right,
+                    bottom: watermarkPos.bottom,
+                    top: watermarkPos.top,
+                    left: watermarkPos.left,
                     z: 100,
                     children: [
                         {
@@ -83,36 +70,33 @@ const ChartReportCore = ({ sinhalaText, englishText, option, style = {}, classNa
                 },
             ];
 
-            chart.setOption({ "graphic": graphic, ...option });
+            chart.setOption({
+                toolbox: {
+                    show: true,
+                    feature: {
+                        dataZoom: {
+                            yAxisIndex: 'none'
+                        },
+                        dataView: { readOnly: false },
+                        restore: {},
+                        saveAsImage: {}
+                    }
+                },
+                "graphic": graphic, ...option
+            });
         }
-    }, [chart, option]);
+    }, [chart, option, watermarkPos]);
 
     return (
         <div class="p-2 bg-chart rounded-md w-full " style={{
             "height": "100%"
         }}>
-            <div class="mt-2 flex space-x-4 w-full">
+            <div class="mt-2 flex flex-row-reverse space-x-4 w-full">
                 <section class="flex-initial">
-                    {{ actionBarComponent }}
-                </section>
-                <section class="flex-initial ">
-                    <button
-                        class="text-gray-100 font-bold py-2 px-4 inline-flex items-center"
-                        onClick={() => {
-                            if (chart) {
-                                setChartDataImage(
-                                    chart.getDataURL({
-                                        pixelRatio: 2,
-                                    })
-                                );
-                            }
-                        }}
-                    >
-                        <SaveIcon className={"w-4 h-4 mr-2"} />
-                        Save Image
-                    </button>
+                    {ActionBarComponent}
                 </section>
             </div>
+
             <div ref={chartRef} className={"h-full w-full"} style={{ "height": "30rem", ...style }} />
             <InfoPanel
                 sinhala={sinhalaText}

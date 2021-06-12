@@ -1,22 +1,91 @@
-import React, { useEffect, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import ChartReportCore from '../chart_report_core';
 import echarts from '../../../chart_theme';
+import ReactDatePicker from 'react-datepicker';
+import moment from 'moment';
 
+const ActionBarComponent = ({ onChangeStartDate, onChangeEndDate }) => {
+    const [startDate, setStartDate] = useState(new Date())
+    // const [endDate, setEndDate] = useState(new Date().setDate(startDate.getDay() + 7))
+    const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
+        <button className="py-2 px-4 bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 rounded-md text-gray-50" onClick={onClick} ref={ref}>
+            Pres release date  {value}
+        </button>
+    ));
+    return (
+        <div className="w-full flex items-center max-w-2xl mx-auto justify-end space-x-4">
+            <div className="relative">
+                <ReactDatePicker
+                    selected={startDate}
+                    onChange={(date) => { setStartDate(date); if (onChangeStartDate) onChangeStartDate(moment(date).format("YYYY-MM-DD")) }}
+                    selectsStart
+                    customInput={<ExampleCustomInput />}
+                    nextMonthButtonLabel=">"
+                    previousMonthButtonLabel="<"
+                />
+            </div>
+        </div>
+    )
+}
 const TotalDeathReport = ({ rawData }) => {
     const [chartOptions, setChartOptions] = useState();
     const [dataMap, setDataMap] = useState();
+    const [startDate, setStartDate] = useState();
+    const [endDate, setEndDate] = useState();
+    const [filterData, setFilterData] = useState([]);
     useEffect(() => {
         if (rawData) {
             const data = rawData.daily_summary_report;
             setDataMap(data);
         }
-    }, [rawData])
+    }, [rawData]);
+
+
+    useEffect(() => {
+
+        if (dataMap) {
+            const startDateVal = moment(startDate);
+            const endDateVal = moment(endDate ? endDate : startDate);
+            const dates = [...dataMap.dates.filter(
+                (d) => {
+                    const m = moment(d);
+                    if (m.isBetween(startDateVal, endDateVal) || m.isSame(startDate) || m.isSame(endDate)) {
+                        return d;
+                    }
+                    return false;
+                }
+            )];
+
+            if (dates && dates.length > 0) {
+                let filters = null;
+                dates.map((d) => {
+                    const data = dataMap.data.selected_date[`${d}`];
+                    if (!data) {
+                        return [];
+                    }
+                    return [...data];
+                }).forEach((ar) => {
+                    if (!filters) {
+                        filters = ar;
+                    } else {
+                        for (let i = 0; i < ar.length; i++) {
+                            const c = ar[i];
+                            filters[i] += c;
+                        }
+                    }
+                });
+                setFilterData(filters);
+            }
+        }
+
+    }, [startDate, endDate, dataMap]);
 
     useEffect(() => {
         if (dataMap) {
             const dates = dataMap.dates;
             const option = {
                 timeline: {
+                    bottom: 25,
                     axisType: 'category',
                     loop: false,
                     autoPlay: true,
@@ -42,8 +111,8 @@ const TotalDeathReport = ({ rawData }) => {
                 tooltip: {
                 },
                 legend: {
-                    left: 'right',
-                    data: ['Reported Count', 'Recorded Count'],
+                    top: 'bottom',
+                    data: ['Selected anncounded date distribution', 'Count by announced date', 'Count by incident date', 'Cummulative Gender Wise Data'],
                     selected: {
 
                     }
@@ -51,7 +120,7 @@ const TotalDeathReport = ({ rawData }) => {
                 calculable: true,
                 grid: {
                     top: 80,
-                    bottom: 120,
+                    bottom: 140,
                     left: 30,
                     right: 30,
                     tooltip: {
@@ -80,122 +149,149 @@ const TotalDeathReport = ({ rawData }) => {
                     }
                 ],
                 dataZoom: [{
-                    bottom: 60,
+                    bottom: 80,
                     textStyle: {
                         color: "#white"
                     }
                 }],
-                series: [
-                    {
-                        name: 'Publication Date', type: 'line', itemStyle: {
-                            color: '#bee3f5'
-                        },
-                        markPoint: {
-                            data: [
-                                {
-                                    type: 'max', name: 'Max Incidents',
-                                    itemStyle: {
-                                        color: "#FD4040",
-                                    },
-                                    label: {
-                                        textStyle: {
-                                            color: '#fff'
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        markLine: {
-                            data: [
-                                {
-                                    type: 'average', name: 'Average Incidents', itemStyle: {
-                                        color: "##FD4098",
-                                    },
-                                }
-                            ]
-                        }
+                series: [{
+                    type: 'bar',
+                    barGap: '-100%',  // this changed
+                    zlevel: 100,
+                    name: 'Selected anncounded date distribution', itemStyle: {
+                        color: 'rgba(59, 130, 246, 0.5)'
                     },
-                    {
-                        name: 'Incident Date', type: 'bar', itemStyle: {
-                            color: '#a75252'
-                        },
-                    },
-                    {
-                        name: 'Cummulative Gender Wise Data',
-                        type: 'pie',
-                        center: ['20%', '40%'],
-                        radius: '30%',
-                        z: 100,
-                        color: ["#bee3f5", "#fcc3c3"],
-                        itemStyle: {
-                            borderColor: '#293441',
-                            borderWidth: 4,
-                            normal: {
+                    data: filterData,
+                    markPoint: {
+                        data: [
+                            {
+                                type: 'max',
+                                name: 'Max Incidents',
+                                itemStyle: {
+                                    color: "rgba(59, 130, 246, 0.9)",
+                                },
                                 label: {
-                                    show: true,
-                                    formatter: function (params) {
-                                        return params.name + "-" + params.percent + '%\n'
-                                    },
-                                },
-                                labelLine: {
-                                    show: true
-                                },
-                                textStyle: {
-                                    color: '#000'
-                                },
-                                color: (item) => {
-
-                                    let colorStops = [];
-
-                                    if (item.name === "Male") {
-                                        colorStops = [
-                                            { offset: 0, color: 'rgba(55, 162, 255)' },
-                                            { offset: 1, color: 'rgba(116, 21, 219)' }
-                                        ]
-                                    } else if (item.name === "Female") {
-                                        colorStops = [
-                                            { offset: 0, color: 'rgba(255, 0, 135)' },
-                                            { offset: 1, color: 'rgba(135, 0, 157)' }
-                                        ]
-                                    }
-
-                                    return {
-                                        type: 'linear',
-                                        x: 0,
-                                        y: 0,
-                                        x2: 0,
-                                        y2: 1,
-                                        colorStops: colorStops
-                                    }
-                                },
-                            },
-
-                            areaStyle: {
-                                opacity: 0.8,
-                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                                    offset: 0,
-                                    color: 'rgba(255, 0, 135)'
-                                }, {
-                                    offset: 1,
-                                    color: 'rgba(135, 0, 157)'
-                                }])
-                            },
-                            emphasis: {
-                                label: {
-                                    show: true,
-                                    position: 'center',
                                     textStyle: {
-                                        fontWeight: 'bold'
+                                        color: '#fff'
                                     }
                                 }
                             }
-                        },
+                        ],
+                    },
+                },
+                {
+                    name: 'Count by announced date', type: 'line', itemStyle: {
+                        color: '#bee3f5'
+                    },
+                    markPoint: {
+                        data: [
+                            {
+                                type: 'max', name: 'Max Incidents',
+                                itemStyle: {
+                                    color: "#FD4040",
+                                },
+                                label: {
+                                    textStyle: {
+                                        color: '#fff'
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    markLine: {
+                        data: [
+                            {
+                                type: 'average', name: 'Average Incidents', itemStyle: {
+                                    color: "##FD4098",
+                                },
+                            }
+                        ]
                     }
+                },
+                {
+                    name: 'Count by incident date', type: 'bar', itemStyle: {
+                        color: '#a75252'
+                    },
+                },
+                {
+                    name: 'Cummulative Gender Wise Data',
+                    type: 'pie',
+                    center: ['20%', '40%'],
+                    radius: '30%',
+                    z: 100,
+                    color: ["#bee3f5", "#fcc3c3"],
+                    itemStyle: {
+                        borderColor: '#293441',
+                        borderWidth: 4,
+                        normal: {
+                            label: {
+                                show: true,
+                                formatter: function (params) {
+                                    return params.name + "-" + params.percent + '%\n'
+                                },
+                            },
+                            labelLine: {
+                                show: true
+                            },
+                            textStyle: {
+                                color: '#000'
+                            },
+                            color: (item) => {
+
+                                let colorStops = [];
+
+                                if (item.name === "Male") {
+                                    colorStops = [
+                                        { offset: 0, color: 'rgba(55, 162, 255)' },
+                                        { offset: 1, color: 'rgba(116, 21, 219)' }
+                                    ]
+                                } else if (item.name === "Female") {
+                                    colorStops = [
+                                        { offset: 0, color: 'rgba(255, 0, 135)' },
+                                        { offset: 1, color: 'rgba(135, 0, 157)' }
+                                    ]
+                                }
+
+                                return {
+                                    type: 'linear',
+                                    x: 0,
+                                    y: 0,
+                                    x2: 0,
+                                    y2: 1,
+                                    colorStops: colorStops
+                                }
+                            },
+                        },
+
+                        areaStyle: {
+                            opacity: 0.8,
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                offset: 0,
+                                color: 'rgba(255, 0, 135)'
+                            }, {
+                                offset: 1,
+                                color: 'rgba(135, 0, 157)'
+                            }])
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                position: 'center',
+                                textStyle: {
+                                    fontWeight: 'bold'
+                                }
+                            }
+                        }
+                    },
+                }
                 ],
                 options: dates.map((d) => {
                     return {
                         title: { text: `Data up to ${d}` },
                         series: [
+                            {
+                                data: filterData
+                            },
                             { data: dataMap.data.report_date_count[`${d}`] },
                             { data: dataMap.data.record_date[`${d}`] },
                             {
@@ -207,7 +303,7 @@ const TotalDeathReport = ({ rawData }) => {
             };
             setChartOptions(option);
         }
-    }, [dataMap]);
+    }, [dataMap, filterData]);
     return (
         <ChartReportCore
             sinhalaText={
@@ -234,6 +330,17 @@ const TotalDeathReport = ({ rawData }) => {
                     "height": "600px"
                 }
             }
+            watermarkPos={
+                {
+                    bottom: 140,
+                    right: 10
+                }
+            }
+            actionBarComponent={<>
+                <ActionBarComponent
+                    onChangeStartDate={setStartDate}
+                    onChangeEndDate={setEndDate} />
+            </>}
         />
     );
 }
