@@ -21,7 +21,10 @@ from werkzeug.utils import secure_filename
 # Let's use Amazon S3
 from app_helper import generate_summery
 
-aws_client = boto3.resource('s3')
+ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY", "")
+SECRET_KEY = os.environ.get("AWS_SECRET_KEY", "")
+aws_client = boto3.resource('s3', aws_access_key_id=ACCESS_KEY,
+                            aws_secret_access_key=SECRET_KEY)
 
 UPLOAD_FOLDER = './upload'
 bucket = "pandemic-info-egy-test"
