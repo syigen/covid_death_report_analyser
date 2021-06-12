@@ -11,7 +11,7 @@ const TotalDeathOccuredReport = ({ rawData }) => {
             const data = rawData.daily_summary_report;
             setDataMap(data);
         }
-    }, [rawData])
+    }, [rawData]);
 
     useEffect(() => {
         if (dataMap) {
@@ -22,7 +22,7 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                     // realtime: false,
                     loop: false,
                     autoPlay: true,
-                    currentIndex: parseInt((dates.length - 1) * 7 / 8),
+                    currentIndex: (dates.length - 5),
                     playInterval: 500,
                     controlStyle: {
                         position: 'left'
@@ -46,9 +46,9 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                 tooltip: {
                 },
                 legend: {
-                    data: ['Reported Count', 'Recorded Count'],
+                    data: ['Incident Date', 'filter', 'Cummulative Gender Wise Data'],
                 },
-                calculable: true,                
+                calculable: true,
                 grid: {
                     top: 80,
                     bottom: 120,
@@ -86,14 +86,18 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                     }
                 }],
                 series: [
+
                     {
-                        name: 'Incident Date', type: 'bar', itemStyle: {
+                        name: 'Incident Date',
+                        type: 'bar', itemStyle: {
                             color: '#a75252'
                         },
                         markPoint: {
                             data: [
                                 {
-                                    type: 'max', name: 'Max Incidents',
+                                    type: 'max',
+                                    // coord: [5, 33.4],
+                                    name: 'Max Incidents',
                                     itemStyle: {
                                         color: "#FD4040",
                                     },
@@ -104,9 +108,6 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                                     }
                                 }
                             ],
-                            legend: {
-                                data: ['Reported Count', 'Recorded Count'],
-                            },
                         },
                         markLine: {
                             data: [
@@ -194,7 +195,6 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                     return {
                         title: { text: `Press Release Date  ${d}` },
 
-
                         series: [
                             {
                                 data: dataMap.data.record_date[`${d}`],
@@ -207,35 +207,39 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                 })
             };
             setChartOption(option);
+            console.log("Update");
         }
     }, [dataMap]);
     return (
-        <ChartReportCore
-            sinhalaText={
-                <>
-                    මරණය සිදුවූ දවස අනුව එකතුව මෙම Bar Chart එක මගින් පෙන්වා ඇත. මෙහි දැක්වෙන අගයන් එම
-                    දිනට අදාලව දැනට නිකුත් වී ඇති වාර්තා පදනම් කරගෙන
-                    නිර්මාණය කර ඇති නිසා මෙහි දක්වා ඇති දිනයන්ට අදාල  අගයන් ඉදිරියේදි ලැබෙන වාර්තා අනුව වෙනස් විය හැක
-                </>
-            }
-            englishText={
-                <>
-                    This chart shows sum of death per day. These values are based on data currently released to public.
-                    This is subject to change upon availability of new data.
-                </>
-            }
-            option={
-                chartOption
-            }
-            className={
-                "w-full"
-            }
-            style={
-                {
-                    "height": "600px"
+        <>
+
+            <ChartReportCore
+                sinhalaText={
+                    <>
+                        මරණය සිදුවූ දවස අනුව එකතුව මෙම Bar Chart එක මගින් පෙන්වා ඇත. මෙහි දැක්වෙන අගයන් එම
+                        දිනට අදාලව දැනට නිකුත් වී ඇති වාර්තා පදනම් කරගෙන
+                        නිර්මාණය කර ඇති නිසා මෙහි දක්වා ඇති දිනයන්ට අදාල  අගයන් ඉදිරියේදි ලැබෙන වාර්තා අනුව වෙනස් විය හැක
+                    </>
                 }
-            }
-        />
+                englishText={
+                    <>
+                        This chart shows sum of death per day. These values are based on data currently released to public.
+                        This is subject to change upon availability of new data.
+                    </>
+                }
+                option={
+                    chartOption
+                }
+                className={
+                    "w-full"
+                }
+                style={
+                    {
+                        "height": "600px"
+                    }
+                }
+            />
+        </>
     );
 }
 
