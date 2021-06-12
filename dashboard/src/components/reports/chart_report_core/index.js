@@ -1,7 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import echarts from '../../../chart_theme';
 import InfoPanel from "../../ui/info_ui";
-
+const useWindowSize = () => {
+    const [size, setSize] = useState([0, 0]);
+    useLayoutEffect(() => {
+        function updateSize() {
+            setSize([window.innerWidth, window.innerHeight]);
+        }
+        window.addEventListener('resize', updateSize);
+        updateSize();
+        return () => window.removeEventListener('resize', updateSize);
+    }, []);
+    return size;
+}
 const ChartReportCore = ({ sinhalaText, englishText, option, style = {}, className = "", actionBarComponent, watermarkPos = {
     bottom: 10,
     right: 10
@@ -9,7 +20,7 @@ const ChartReportCore = ({ sinhalaText, englishText, option, style = {}, classNa
     const chartRef = useRef();
     const [chart, setChart] = useState();
     const [ActionBarComponent, setActionBarComponent] = useState()
-
+    const [width, height] = useWindowSize();
 
     useEffect(() => {
         if (actionBarComponent) {
@@ -29,7 +40,7 @@ const ChartReportCore = ({ sinhalaText, englishText, option, style = {}, classNa
                 myChart.dispose();
             }
         }
-    }, [chartRef]);
+    }, [chartRef, width, height]);
 
     useEffect(() => {
         if (option && chart) {
@@ -72,7 +83,7 @@ const ChartReportCore = ({ sinhalaText, englishText, option, style = {}, classNa
 
             chart.setOption({
                 toolbox: {
-                    top:30,
+                    top: 30,
                     show: true,
                     feature: {
                         dataZoom: {
