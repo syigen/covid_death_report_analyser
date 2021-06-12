@@ -600,7 +600,7 @@ def download_report():
 
 
 @app.route("/upload_summary/<bucket_name>")
-def download_report(bucket_name):
+def download_report_to_bucket(bucket_name):
     _gen_summary_report(bucket_name)
     return "success"
 
