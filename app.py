@@ -23,7 +23,8 @@ from app_helper import generate_summery
 
 ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY", "")
 SECRET_KEY = os.environ.get("AWS_SECRET_KEY", "")
-aws_client = boto3.resource('s3', aws_access_key_id=ACCESS_KEY,
+REGION = os.environ.get("AWS_REGION", "")
+aws_client = boto3.resource('s3', region_name=REGION, aws_access_key_id=ACCESS_KEY,
                             aws_secret_access_key=SECRET_KEY)
 
 UPLOAD_FOLDER = './upload'
@@ -588,7 +589,7 @@ def summary_report_generate():
 def _gen_summary_report(bucket_name=bucket):
     json_data = generate_summery()
     file_name = 'get_json_report.json'
-    s3object = aws_client.Object(bucket, file_name)
+    s3object = aws_client.Object(bucket_name, file_name)
 
     s3object.put(
         Body=(bytes(json.dumps(json_data).encode('UTF-8')))
