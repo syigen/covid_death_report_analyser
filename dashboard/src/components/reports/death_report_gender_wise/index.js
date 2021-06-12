@@ -45,6 +45,8 @@ const DeathReportGenderWise = ({ rawData }) => {
                         }
                     },
                     formatter: (params) => {
+                        if (!params || params.length < 2 || !params[0] || !params[1])
+                            return "";
                         const section1 = params[0];
                         const section2 = params[1];
                         return `<span style="font-weight:bold;margin-bottom:4px;">${title}</span><br />
@@ -146,7 +148,7 @@ const DeathReportGenderWise = ({ rawData }) => {
             };
             setChartOption(option);
         }
-    }, [ dataMap]);
+    }, [dataMap]);
     return (
         <div className="w-full h-full">
             <ChartReportCore
