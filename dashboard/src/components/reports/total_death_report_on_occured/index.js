@@ -1,3 +1,4 @@
+import { data } from 'autoprefixer';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import echarts from '../../../chart_theme';
@@ -41,8 +42,12 @@ const TotalDeathOccuredReport = ({ rawData }) => {
         if (dataMap) {
             let dates = [...dataMap.dates];
             const latestDate = dataMap.dates[dataMap.dates.length - 1];
-            let seriesLastRecodedDataSet = [...dataMap.data.record_date[latestDate]];
-            let seriesLastGenderDataSet = [...dataMap.data.gender[latestDate]];
+            let data = { ...dataMap.data }
+            let optionDataTemp = {}
+            let seriesLastRecodedDataSet = [...data.record_date[latestDate]];
+            let seriesLastAnnouncedDataSet = [...data.announced_date[latestDate]];
+            let seriesLastGenderDataSet = [...data.gender[latestDate]];
+
             if (dateRange && dateRange !== -1) {
                 const endDate = moment(latestDate);
                 const startDate = moment(latestDate).subtract(dateRange, "days");
@@ -53,10 +58,11 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                     return false;
                 });
                 const filterFirstDate = fDates[0];
-                seriesLastRecodedDataSet = [...seriesLastRecodedDataSet.splice(dates.indexOf(filterFirstDate), seriesLastRecodedDataSet.length)]
+                const filterDateIndex = dates.indexOf(filterFirstDate);
+                seriesLastRecodedDataSet = [...seriesLastRecodedDataSet.splice(filterDateIndex, seriesLastRecodedDataSet.length)]
+                seriesLastAnnouncedDataSet = [...seriesLastAnnouncedDataSet.splice(filterDateIndex, seriesLastAnnouncedDataSet.length)]
 
                 const seriesFirstGenderDataSet = [...dataMap.data.gender[filterFirstDate]];
-                console.log(seriesFirstGenderDataSet, seriesLastGenderDataSet);
                 let maleCount = 0;
                 let femaleCount = 0;
 
@@ -81,16 +87,56 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                 ]
 
                 dates = [...fDates];
+                const tempData = {
+                    record_date: {},
+                    announced_date: {},
+                    gender: {},
+                }
+                dates.forEach(d => {
+                    let seriesRecodedDataSet = [...data.record_date[d]];
+                    let seriesAnnouncedDataSet = [...data.announced_date[d]];
+                    let seriesGenderDataSet = [...data.gender[d]];
+
+                    seriesRecodedDataSet = [...seriesRecodedDataSet.splice(filterDateIndex, seriesRecodedDataSet.length)]
+                    seriesAnnouncedDataSet = [...seriesAnnouncedDataSet.splice(filterDateIndex, seriesAnnouncedDataSet.length)]
+                    // seriesGenderDataSet = [...seriesGenderDataSet.splice(filterDateIndex, seriesGenderDataSet.length)]
+
+                    tempData.record_date[d] = seriesRecodedDataSet;
+                    tempData.announced_date[d] = seriesAnnouncedDataSet;
+                    tempData.gender[d] = seriesGenderDataSet;
+                });
+
+                optionDataTemp = { ...tempData }
+            } else {
+                optionDataTemp = { ...data }
             }
+
+            const optionData = [...dates.map((d) => {
+                return {
+                    title: { text: `Press Release Date  ${d}` },
+                    series: [
+                        {
+                            data: optionDataTemp.announced_date[`${d}`],
+                        },
+                        {
+                            data: optionDataTemp.record_date[`${d}`],
+                        },
+                        {
+                            data: optionDataTemp.gender[`${d}`],
+                        }
+                    ]
+                }
+            })]
 
             const timeLineOption = {
                 timeline: {
-                    show: false,
+                    bottom: 30,
+                    show: true,
                     axisType: 'category',
                     // realtime: false,
                     loop: false,
                     autoPlay: true,
-                    currentIndex: (dates.length - 1),
+                    currentIndex: (dates.length - 4),
                     playInterval: 500,
                     controlStyle: {
                         position: 'left'
@@ -115,13 +161,13 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                 tooltip: {
                 },
                 legend: {
-                    bottom: 40,
-                    data: ['Count by incident date', 'Cummulative Gender Wise Data'],
+                    top: 40,
+                    data: ["Count by announced date", 'Count by incident date', 'Cummulative Gender Wise Data'],
                 },
                 calculable: true,
                 grid: {
-                    top: 80,
-                    bottom: 90,
+                    top: 60,
+                    bottom: 100,
                     left: 40,
                     right: 30,
                     tooltip: {
@@ -155,7 +201,36 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                         color: "#white"
                     }
                 }],
+
                 series: [
+                    {
+                        name: "Count by announced date",
+                        type: 'line', itemStyle: {
+                            color: '#FFF'
+                        },
+                        smooth: true,
+                        data: seriesLastAnnouncedDataSet,
+
+                        lineStyle: {
+                            opacity: 0.4
+                        }, markPoint: {
+                            data: [
+                                {
+                                    type: 'max',
+                                    // coord: [5, 33.4],
+                                    name: 'Max Incidents',
+                                    itemStyle: {
+                                        color: "#FD4040",
+                                    },
+                                    label: {
+                                        textStyle: {
+                                            color: '#fff'
+                                        }
+                                    }
+                                }
+                            ],
+                        },
+                    },
                     {
                         name: 'Count by incident date',
                         type: 'bar', itemStyle: {
@@ -262,20 +337,7 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                         data: seriesLastGenderDataSet
                     }
                 ],
-                // options: dateRange === -1 ? dates.map((d) => {
-                //     return {
-                //         title: { text: `Press Release Date  ${d}` },
-
-                //         series: [
-                //             {
-                //                 data: dataMap.data.record_date[`${d}`],
-                //             },
-                //             {
-                //                 data: dataMap.data.gender[`${d}`],
-                //             }
-                //         ]
-                //     }
-                // }) : []
+                options: optionData
             };
             setChartOption(option);
         }
