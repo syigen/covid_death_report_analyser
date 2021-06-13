@@ -53,7 +53,7 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                 const startDate = moment(latestDate).subtract(dateRange, "days");
                 const fDates = dataMap.dates.filter((d) => {
                     const m = moment(d);
-                    if (m.isBetween(startDate, endDate))
+                    if (m.isBetween(startDate, endDate) || m.isSame(endDate) || m.isSame(startDate))
                         return d;
                     return false;
                 });
@@ -244,11 +244,10 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                                 color: 'rgba(255, 255, 255, 0.2)'
                             },
                             data: [[{
-                                name: 'No confirmed area',
                                 xAxis: dates[dates.length - 5]
                             }, {
                                 xAxis: dates[dates.length - 1],
-                                yAxis: seriesLastAnnouncedDataSet[seriesLastAnnouncedDataSet.length-1]
+                                yAxis: seriesLastAnnouncedDataSet[seriesLastAnnouncedDataSet.length - 1]
                             }],]
                         }
                     },
