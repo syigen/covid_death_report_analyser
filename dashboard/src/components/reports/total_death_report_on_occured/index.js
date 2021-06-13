@@ -113,7 +113,7 @@ const TotalDeathOccuredReport = ({ rawData }) => {
 
             const optionData = [...dates.map((d) => {
                 return {
-                    title: { text: `announced Date  ${d}` },
+                    title: { text: `Announced Date  ${d}` },
                     series: [
                         {
                             data: optionDataTemp.announced_date[`${d}`],
@@ -210,7 +210,6 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                         },
                         smooth: true,
                         data: seriesLastAnnouncedDataSet,
-
                         lineStyle: {
                             opacity: 0.4
                         }, markPoint: {
@@ -240,6 +239,18 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                                 }
                             ],
                         },
+                        markArea: {
+                            itemStyle: {
+                                color: 'rgba(255, 255, 255, 0.2)'
+                            },
+                            data: [[{
+                                name: 'No confirmed area',
+                                xAxis: dates[dates.length - 5]
+                            }, {
+                                xAxis: dates[dates.length - 1],
+                                yAxis: seriesLastAnnouncedDataSet[seriesLastAnnouncedDataSet.length-1]
+                            }],]
+                        }
                     },
                     {
                         name: 'Count by incident date',
