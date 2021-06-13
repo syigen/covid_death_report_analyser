@@ -65,8 +65,14 @@
 {% endmacro %}
 {% block title %}
     <div class="text-center mb-3">
-        <h3 class="text-xl items-center">Report Date
+        <h3 class="text-xl items-center">
+            Report Date
             <strong>{{ death_report.date }}</strong>
+            {% if death_report.date != death_report.announced_date %}
+                Announced Date
+                <strong>{{ death_report.announced_date }}</strong>
+            {% endif %}
+
             <small>({{ death_report.release_number }})</small>
         </h3>
     </div>
