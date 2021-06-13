@@ -4,7 +4,8 @@ import report_generator as reg
 def generate_summery():
     data = {
         "about_report": reg.get_about_report(),
-        "daily_summary_report": reg.generate_summary_report(),
+        "daily_summary_report": reg.generate_summary_report(False),
+        "daily_summary_report_based_announced_date": reg.generate_summary_report(True),
         "age_group_summary_report": reg.age_group_summary_report(),
         "age_group_weekly_summary_by_date_report": reg.age_group_summary_by_week_report(),
         "gender_weekly_summary_by_date_report": reg.get_gender_summary_repored_date_weekly(),

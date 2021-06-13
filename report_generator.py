@@ -146,18 +146,15 @@ def get_report_date_distribution_summary(df, dates):
     return data_summary
 
 
-def generate_summary_report():
+def generate_summary_report(based_announced_date):
     df = _read_summary_csv()
-    announced_dates = list(df.announced_date.unique())
     dates = list(df.death_record_date.unique())
-    dates += list(df.report_date.unique())
-    dates += list(df.announced_date.unique())
-
+    if not based_announced_date:
+        dates += list(df.report_date.unique())
+    else:
+        dates += list(df.announced_date.unique())
     dates = list(set(dates))
     dates.sort(key=lambda date: datetime.strptime(date, '%Y-%m-%d'))
-
-    announced_dates = list(set(announced_dates))
-    announced_dates.sort(key=lambda date: datetime.strptime(date, '%Y-%m-%d'))
 
     data_set_report_date = {f"{d}": 0 for d in dates}
     data_set_record_date = {f"{d}": 0 for d in dates}
@@ -191,7 +188,6 @@ def generate_summary_report():
 
     data = {
         "dates": list(dates),
-        "announced_dates": list(announced_dates),
         "data": {
             "report_date_count": report_date_count_summary,
             "report_date": report_date_summary,
