@@ -12,8 +12,9 @@ const ActionComponent = ({ onChangeDateRange }) => {
 
     return (
         <>
-            <div className={"mb-2"}>
-                <span class="text-gray-50 text-xl font-semibold">Daily count based on press release</span>
+            <div className={"mb-2 flex flex-col"}>
+                <span class="text-gray-50 text-xl font-semibold">Daily count based on announced date </span>
+                <small class="text-gray-200 font-semibold">Press release date and announced date can be different</small>
             </div>
             <div className={"mb-2 w-full sm:w-auto grid grid-cols-2 md:grid-cols-4 gap-1"}>
                 <button disabled={selected === -1} className={`py-1 px-3 mx-2 text-gray-50 rounded-md  bg-green-500 hover:bg-green-600 disabled:opacity-50`} onClick={() => setSelected(-1)} >All</button>
@@ -32,7 +33,7 @@ const TotalDeathOccuredReport = ({ rawData }) => {
 
     useEffect(() => {
         if (rawData) {
-            const data = rawData.daily_summary_report;
+            const data = rawData.daily_summary_report_based_announced_date;
             setDataMap(data);
         }
     }, [rawData]);
@@ -112,7 +113,7 @@ const TotalDeathOccuredReport = ({ rawData }) => {
 
             const optionData = [...dates.map((d) => {
                 return {
-                    title: { text: `Press Release Date  ${d}` },
+                    title: { text: `announced Date  ${d}` },
                     series: [
                         {
                             data: optionDataTemp.announced_date[`${d}`],
@@ -152,8 +153,8 @@ const TotalDeathOccuredReport = ({ rawData }) => {
             const option = {
                 ...timeLineOption,
                 title: {
-                    text: `Up to press release ${latestDate}`,
-                    subtext: 'Count by incident date',
+                    text: `Up to announced date ${latestDate}`,
+                    // subtext: 'Count by incident date',
                     sublink: "https://www.dgi.gov.lk/news/press-releases-sri-lanka/covid-19-documents",
                     subTarge: "blank"
                 },
