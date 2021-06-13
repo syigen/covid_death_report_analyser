@@ -94,7 +94,7 @@ const TotalDeathReport = ({ rawData }) => {
                     loop: false,
                     autoPlay: true,
                     currentIndex: dates.length - 1,
-                    playInterval: 100,
+                    playInterval: 1000,
                     controlStyle: {
                         position: 'left'
                     },
@@ -116,7 +116,7 @@ const TotalDeathReport = ({ rawData }) => {
                 },
                 legend: {
                     top: 70,
-                    data: ['Selected anncounded date distribution', 'Count by announced date', 'Count by incident date', 'Cummulative Gender Wise Data'],
+                    data: ['Selected press release date distribution', 'Count by press release date', 'Count by incident date', 'Cummulative Gender Wise Data'],
                     selected: {
 
                     }
@@ -184,7 +184,7 @@ const TotalDeathReport = ({ rawData }) => {
                     },
                 },
                 {
-                    name: 'Count by announced date', type: 'line', itemStyle: {
+                    name: 'Count by press release date', type: 'line', itemStyle: {
                         color: '#bee3f5'
                     },
                     markPoint: {

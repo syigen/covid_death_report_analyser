@@ -136,8 +136,8 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                     // realtime: false,
                     loop: false,
                     autoPlay: true,
-                    currentIndex: (dates.length - 4),
-                    playInterval: 500,
+                    currentIndex: (dates.length - 3),
+                    playInterval: 1000,
                     controlStyle: {
                         position: 'left'
                     },
@@ -214,17 +214,27 @@ const TotalDeathOccuredReport = ({ rawData }) => {
                         lineStyle: {
                             opacity: 0.4
                         }, markPoint: {
+                            symbol: 'diamond',
+                            emphasis: {
+                                itemStyle: {
+                                    color: "#232b3d",
+                                }, label: {
+                                    textStyle: {
+                                        color: '#95b4f7'
+                                    }
+                                }
+                            },
                             data: [
                                 {
                                     type: 'max',
                                     // coord: [5, 33.4],
                                     name: 'Max Incidents',
                                     itemStyle: {
-                                        color: "#FD4040",
+                                        color: "#232b3d",
                                     },
                                     label: {
                                         textStyle: {
-                                            color: '#fff'
+                                            color: '#95b4f7'
                                         }
                                     }
                                 }
