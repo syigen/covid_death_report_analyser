@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import echarts from '../../../chart_theme';
 import { dateFormatter } from '../../../utils';
 import ChartReportCore from '../chart_report_core';

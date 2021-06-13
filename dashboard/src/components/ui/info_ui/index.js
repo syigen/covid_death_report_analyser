@@ -4,7 +4,7 @@ import { useState } from "react";
 const InfoPanel = ({ sinhala, english }) => {
 
     const [isSinhala, setSinhala] = useState(true)
-    const [isOpen, setOpen] = useState(true)
+    const [isOpen] = useState(true)
 
     return (
         <>

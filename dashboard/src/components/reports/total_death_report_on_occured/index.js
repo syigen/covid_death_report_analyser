@@ -1,4 +1,3 @@
-import { data } from 'autoprefixer';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import echarts from '../../../chart_theme';
