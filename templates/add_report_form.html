@@ -84,9 +84,9 @@
                                         details</label>
                                     <input type="checkbox" name="has_full_detail_report" id="has_full_detail_report"
                                            value="true"
-                                            {% if death_report and death_report.has_full_detail_report  %}
+                                            {% if death_report and death_report.has_full_detail_report %}
                                            checked="checked"
-                                            {% elif not death_report.has_summery_detail_report %}
+                                            {% elif death_report and not  death_report.has_summery_detail_report %}
                                            checked="checked"
                                             {% endif %}
                                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block shadow-sm sm:text-sm border-blue-500 rounded-md">
