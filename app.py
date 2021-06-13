@@ -51,9 +51,11 @@ css.build()
 
 db = SQLAlchemy(app)
 
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 class GenderType(enum.Enum):
     Any = "Any"
@@ -514,6 +516,7 @@ def summary_report_generate():
                 report.date,
                 dr.record_number,
                 dr.report_date,
+                report.announced_date,
                 dr.reason,
                 dr.gender,
                 dr.age,
@@ -565,13 +568,16 @@ def summary_report_generate():
         if len(reported_at_locations) != rep_summary.total_count_today:
             raise Exception(f"Invalid Reported Location Count, report ID :{report.id}")
 
-        for record_number, report_date, gender, age, reported_at in zip(range(rep_summary.total_count_today), deaths,
-                                                                        genders,
-                                                                        ages, reported_at_locations):
+        for record_number, report_date, gender, age, reported_at in zip(
+                range(rep_summary.total_count_today), deaths,
+                genders,
+                ages, reported_at_locations):
             csv_data.append((
                 report.date,
                 record_number,
                 report_date,
+
+                report.announced_date,
                 "COVID-19",
                 gender,
                 age,
@@ -585,7 +591,8 @@ def summary_report_generate():
         w = csv.writer(csv_file)
         # write header
         w.writerow(
-            ('report_date', 'record_index', 'death_record_date', 'reason', 'gender', 'age', 'residence_location',
+            ('report_date', 'record_index', 'death_record_date', 'announced_date', 'reason', 'gender', 'age',
+             'residence_location',
              'death_location', 'reported_at', 'artificial'))
 
         # write each log item
@@ -598,6 +605,7 @@ def summary_report_generate():
 
 
 def _gen_summary_report(bucket_name=bucket):
+    generate_summery()
     json_data = generate_summery()
     file_name = 'get_json_report.json'
     s3object = aws_client.Object(bucket_name, file_name)
@@ -607,7 +615,7 @@ def _gen_summary_report(bucket_name=bucket):
     )
     object_acl = aws_client.ObjectAcl(bucket_name, file_name)
     response = object_acl.put(ACL='public-read')
-
+    return jsonify(json_data)
 
 @app.route("/download")
 def download_report():
@@ -616,8 +624,8 @@ def download_report():
 
 @app.route("/upload_summary/<bucket_name>")
 def download_report_to_bucket(bucket_name):
-    _gen_summary_report(bucket_name)
-    return "success"
+    summary_report_generate()
+    return _gen_summary_report(bucket_name)
 
 
 @app.route("/reason_auto_complete", methods=["GET"])
