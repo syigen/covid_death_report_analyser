@@ -58,6 +58,31 @@ def get_report_date_count_summary(df, dates):
     return report_date_count_summary
 
 
+def get_announced_date_count_summary(df, dates):
+    """
+    Get summary of count by considering report date
+    :param df:
+    :param dates:
+    :return:
+    """
+    announced_date_count_summary = {}
+    pre_rec = None
+    for rd in dates:
+        announced_date_data = {f"{d}": 0 for d in dates}
+        for t in df.itertuples():
+            if rd == t.announced_date:
+                announced_date_data[f"{t.announced_date}"] += 1
+        announced_date_data = list(announced_date_data.values())
+
+        if pre_rec:
+            announced_date_data = [sum(x) for x in zip(pre_rec, announced_date_data)]
+
+        announced_date_count_summary[rd] = announced_date_data
+
+        pre_rec = announced_date_data
+    return announced_date_count_summary
+
+
 def get_count_summary_by_considering_record_date(df, dates):
     """
     Get report by considering death record date
@@ -125,14 +150,17 @@ def generate_summary_report():
     df = _read_summary_csv()
     dates = list(df.death_record_date.unique())
     dates += list(df.report_date.unique())
+    dates += list(df.announced_date.unique())
     dates = list(set(dates))
     dates.sort(key=lambda date: datetime.strptime(date, '%Y-%m-%d'))
 
     data_set_report_date = {f"{d}": 0 for d in dates}
     data_set_record_date = {f"{d}": 0 for d in dates}
+    data_set_announced_date = {f"{d}": 0 for d in dates}
 
     report_date_df = df.groupby("report_date").count()
     death_record_date_df = df.groupby("death_record_date").count()
+    announced_date_df = df.groupby("announced_date").count()
 
     for t in report_date_df.itertuples():
         data_set_report_date[f"{t.Index}"] = int(t.death_record_date)
@@ -140,12 +168,18 @@ def generate_summary_report():
     for t in death_record_date_df.itertuples():
         data_set_record_date[f"{t.Index}"] = int(t.report_date)
 
-    dates = data_set_record_date.keys()
+    for t in announced_date_df.itertuples():
+        data_set_announced_date[f"{t.Index}"] = int(t.report_date)
 
-    report_date_summary = get_count_summary_by_reported_and_record_same_date(df, dates)
-    report_date_count_summary = get_report_date_count_summary(df, dates)
-    record_date_summary = get_count_summary_by_considering_record_date(df, dates)
-    report_date_distribution_summary = get_report_date_distribution_summary(df, dates)
+    record_dates = data_set_record_date.keys()
+    report_dates = data_set_report_date.keys()
+    announced_dates = data_set_announced_date.keys()
+
+    report_date_summary = get_count_summary_by_reported_and_record_same_date(df, record_dates)
+    report_date_count_summary = get_report_date_count_summary(df, report_dates)
+    record_date_summary = get_count_summary_by_considering_record_date(df, record_dates)
+    announced_date_summary = get_announced_date_count_summary(df, announced_dates)
+    report_date_distribution_summary = get_report_date_distribution_summary(df, record_dates)
 
     # Gender Summary
     gender_summary = get_gender_summary(df, dates)
@@ -155,6 +189,7 @@ def generate_summary_report():
         "data": {
             "report_date_count": report_date_count_summary,
             "report_date": report_date_summary,
+            "announced_date": announced_date_summary,
             "record_date": record_date_summary,
             "selected_date": report_date_distribution_summary,
             "gender": gender_summary

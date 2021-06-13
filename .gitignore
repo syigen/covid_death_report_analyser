@@ -6,3 +6,4 @@ node_modules
 dist
 .webassets-cache
 *.csv
+file.sql
