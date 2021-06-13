@@ -28,6 +28,8 @@ aws_client = boto3.resource('s3', region_name=REGION, aws_access_key_id=ACCESS_K
                             aws_secret_access_key=SECRET_KEY)
 
 UPLOAD_FOLDER = './upload'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
 bucket = "pandemic-info-egy-test"
 
 app = Flask(__name__)
@@ -49,6 +51,9 @@ css.build()
 
 db = SQLAlchemy(app)
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 class GenderType(enum.Enum):
     Any = "Any"
@@ -66,6 +71,7 @@ class CovidDeathReport(db.Model):
     report_total = db.Column(db.Integer, default=0)
     release_number = db.Column(db.String(50), nullable=True)
     date = db.Column(db.Date, nullable=False)
+    announced_date = db.Column(db.Date, nullable=False)
     has_full_detail_report = db.Column(db.Boolean, default=True)
     has_summery_detail_report = db.Column(db.Boolean, default=False)
     images = db.relationship("ReportImage", backref="covid_death_report", lazy=True)
@@ -121,10 +127,6 @@ class PressReleaseSummary(db.Model):
 
     @hybrid_property
     def is_completed(self):
-        print(f"R {self.total_count_home + self.total_count_hospital + self.total_count_on_admission}")
-        print(f"G {self.total_count_male + self.total_count_female}")
-        print(f"D {sum([d.count for d in self.death_records])}")
-        print(f"A {sum([d.count for d in self.age_groups])}")
         if self.total_count_home + self.total_count_hospital + self.total_count_on_admission == \
                 self.total_count_today and \
                 self.total_count_male + self.total_count_female == self.total_count_today and \
@@ -193,8 +195,16 @@ def create_press_release_recode():
         if 'report_images' not in request.files:
             return 'there is no report_images in form!'
 
-        uploaded_files = request.files.getlist("report_images")
+        uploaded_files = []
+        for f in request.files.getlist("report_images"):
+            if allowed_file(f.filename):
+                uploaded_files.append(f)
         report_date = datetime.datetime.strptime(request.form["report_date"], '%Y-%m-%d')
+        if "announced_date" in request.form:
+            announced_date = datetime.datetime.strptime(request.form["announced_date"], '%Y-%m-%d')
+        else:
+            announced_date = report_date
+
         report_total = request.form["report_total"]
         report_link = request.form["report_link"]
         has_full_detail_report = False
@@ -217,17 +227,19 @@ def create_press_release_recode():
             death_report_id = request.form["death_report_id"]
             death_report = CovidDeathReport.query.get(death_report_id)
             death_report.date = report_date.date()
+            death_report.announced_date = announced_date.date()
             death_report.title = title
             death_report.number = number
             death_report.report_link = report_link
             death_report.report_total = report_total
             death_report.has_full_detail_report = has_full_detail_report
             death_report.has_summery_detail_report = has_summery_detail_report
-            if uploaded_files and len(uploaded_files):
+            if uploaded_files and len(uploaded_files) > 0:
                 for img in death_report.images:
                     db.session.delete(img)
         else:
             death_report = CovidDeathReport(date=report_date.date(),
+                                            announced_date=announced_date.date(),
                                             title=title,
                                             release_number=number,
                                             report_link=report_link,
@@ -235,7 +247,6 @@ def create_press_release_recode():
                                             has_summery_detail_report=has_summery_detail_report,
                                             has_full_detail_report=has_full_detail_report
                                             )
-
         for file in uploaded_files:
             filename = make_unique(secure_filename(file.filename))
             path = os.path.join(app.config['UPLOAD_FOLDER'], filename)

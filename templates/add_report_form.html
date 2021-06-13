@@ -2,7 +2,7 @@
 {% block body %}
 
     <div class="grid grid-cols-12 gap-4">
-        <div class="col-start-5 col-span-4">
+        <div class="col-span-12 md:col-start-5 md:col-span-4">
             <h2 class="text-xl">
                 {% if death_report %}
                     Edit
@@ -13,7 +13,7 @@
                 Corona Death Report  {% if death_report %}
                 {{ death_report.date }}
             {% endif %}</h2>
-            <div class="mt-5 md:mt-0 md:col-span-2">
+            <div class="mt-5 md:mt-0 col-span-12 md:col-span-2">
                 <form method="post" enctype="multipart/form-data" action="{{ url_for("create_press_release_recode") }}">
 
                     {% if death_report %}
@@ -32,7 +32,16 @@
                                             {% endif %}
                                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                 </div>
-                                <div class="col-span-3">
+                                <div class="col-span-6">
+                                    <label for="announced_date" class="block text-sm font-medium text-gray-700">Announced
+                                        Date</label>
+                                    <input type="date" name="announced_date" id="announced_date"
+                                            {% if death_report %}
+                                           value="{{ death_report.announced_date }}"
+                                            {% endif %}
+                                           class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                </div>
+                                <div class="col-span-6">
                                     <label for="report_total" class="block text-sm font-medium text-gray-700">Total
                                         Count</label>
                                     <input type="text" name="report_total" id="report_total"
@@ -41,7 +50,7 @@
                                             {% endif %}
                                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                 </div>
-                                <div class="col-span-3">
+                                <div class="col-span-6">
                                     <label for="release_number" class="block text-sm font-medium text-gray-700">Release
                                         Number</label>
                                     <input type="text" name="release_number" id="release_number"
@@ -75,9 +84,9 @@
                                         details</label>
                                     <input type="checkbox" name="has_full_detail_report" id="has_full_detail_report"
                                            value="true"
-                                            {% if death_report and death_report.has_full_detail_report %}
+                                            {% if death_report and death_report.has_full_detail_report  %}
                                            checked="checked"
-                                            {% else %}
+                                            {% elif not death_report.has_summery_detail_report %}
                                            checked="checked"
                                             {% endif %}
                                            class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block shadow-sm sm:text-sm border-blue-500 rounded-md">

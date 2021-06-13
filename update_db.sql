@@ -33,13 +33,28 @@ alter table press_release_summary
             on update cascade on delete cascade;
 
 -- 6. Add Default 0
-alter table mini_death_record alter column `count` set default 0;
-alter table age_group alter column `start` set default 0;
-alter table age_group alter column `end` set default 0;
-alter table age_group alter column `count` set default 0;
+alter table mini_death_record
+    alter column `count` set default 0;
+alter table age_group
+    alter column `start` set default 0;
+alter table age_group
+    alter column `end` set default 0;
+alter table age_group
+    alter column `count` set default 0;
 
 -- 7. Add Note column to summary
 alter table press_release_summary
-	add note TEXT null;
+    add note TEXT null;
+
+-- 8. Add announced date to covid_death_report
+alter table covid_death_report
+    add announced_date date null;
+
+
+-- 9. Update announced date to have same date of report date
+UPDATE covid_death_report
+SET announced_date= date
+WHERE announced_date is null;
+
 
 
