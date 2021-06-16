@@ -56,5 +56,9 @@ UPDATE covid_death_report
 SET announced_date= date
 WHERE announced_date is null;
 
+-- 10. add report type
+alter table covid_death_report
+	add report_type enum('Type_1', 'Type_2', 'Type_3') null;
+
 
 
