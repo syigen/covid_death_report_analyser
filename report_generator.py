@@ -207,8 +207,10 @@ def age_group_summary_report():
     :return:
     """
     df = _read_summary_csv()
-    age_groups = ['0-10', '10-20', '20-30', '30-40', '40-50', '50-60', '60-70', '70-80', '80-90', '90']
-    age_group_bins = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, np.inf]
+    # age_groups = ['0-10', '10-20', '20-30', '30-40', '40-50', '50-60', '60-70', '70-80', '80-90', '90']
+    # age_group_bins = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, np.inf]
+    age_groups = ['0-30', '30-60', '60']
+    age_group_bins = [0, 30, 60, np.inf]
 
     def get_age_group_summary(_df):
         age_group_df_tot = pd.cut(_df['age'], bins=age_group_bins)
@@ -265,8 +267,11 @@ def age_group_summary_by_date_report():
     dates = list(set(dates))
     dates.sort(key=lambda date: datetime.strptime(date, '%Y-%m-%d'))
 
-    age_groups = ['0-10', '10-20', '20-30', '30-40', '40-50', '50-60', '60-70', '70-80', '80-90', '90']
-    age_group_bins = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, np.inf]
+    # age_groups = ['0-10', '10-20', '20-30', '30-40', '40-50', '50-60', '60-70', '70-80', '80-90', '90']
+    # age_group_bins = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, np.inf]
+
+    age_groups = ['0-30', '30-60', '60']
+    age_group_bins = [0, 30, 60, np.inf]
 
     summary = {}
     data = []
@@ -304,8 +309,10 @@ def age_group_summary_by_week_report():
     wk_dates = list(set(wk_dates))
     wk_dates.sort(key=lambda date: datetime.fromtimestamp(date.item() / 10 ** 9))
 
-    age_groups = ['0-10', '10-20', '20-30', '30-40', '40-50', '50-60', '60-70', '70-80', '80-90', '90']
-    age_group_bins = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, np.inf]
+    # age_groups = ['0-10', '10-20', '20-30', '30-40', '40-50', '50-60', '60-70', '70-80', '80-90', '90']
+    # age_group_bins = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, np.inf]
+    age_groups = ['0-30', '30-60', '60']
+    age_group_bins = [0, 30, 60, np.inf]
     summary = {}
 
     data = []
