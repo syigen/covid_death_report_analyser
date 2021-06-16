@@ -33,7 +33,7 @@
                                 Add a
                             {% endif %}
 
-                            Report Summary</h4>
+                            Report Summary    {{ death_report.report_type.value }}</h4>
                     </div>
 
                     <div class="col-span-6">
@@ -182,7 +182,7 @@
                     <div class="col-span-12">
                         <h4 class="font-bold">Age Groups
 
-                            (<span x-text="ageGroups.reduce((tot,item)=>tot+parseInt(item.count),0)"></span>)
+                            (<span x-text="ageGroups.reduce((tot,item)=>tot+(parseInt(item.maleCount)+parseInt(item.femaleCount)),0)"></span>)
                         </h4>
                     </div>
                     <div class="col-span-3">
@@ -205,11 +205,13 @@
                                 class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
 
                     </div>
+
                     <div class="col-span-2">
                         <label for="age" class="block text-sm font-medium text-gray-700">
-                           Female Count</label>
+                            Female Count</label>
                         <input
-                                x-model="ageGroupModal.femaleCount" type="number" name="today_count"
+                                @keydown.enter="addAgeGroup"
+                                x-model="ageGroupModal.femaleCount" type="number" name="today_female_count"
                                 id="today_count"
                                 class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
                     </div>
@@ -217,8 +219,7 @@
                         <label for="age" class="block text-sm font-medium text-gray-700">
                             Male Count</label>
                         <input
-                                @keydown.enter="addAgeGroup"
-                                x-model="ageGroupModal.maleCount" type="number" name="today_count"
+                                x-model="ageGroupModal.maleCount" type="number" name="today_male_count"
                                 id="today_count"
                                 class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
                     </div>
@@ -260,19 +261,20 @@
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
 
                             </div>
+
                             <div class="col-span-2">
                                 <label for="age" class="block text-sm font-medium text-gray-700">
-                                    Count</label>
+                                    Female count</label>
                                 <input
-                                        x-model="ageGroup.femaleCount" type="number" name="today_count"
+                                        x-model="ageGroup.femaleCount" type="number" name="today_female_count"
                                         id="today_count"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
                             </div>
                             <div class="col-span-2">
                                 <label for="age" class="block text-sm font-medium text-gray-700">
-                                    Count</label>
+                                    Male count</label>
                                 <input
-                                        x-model="ageGroup.maleCount" type="number" name="today_count"
+                                        x-model="ageGroup.maleCount" type="number" name="today_male_count"
                                         id="today_count"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
                             </div>
@@ -292,6 +294,30 @@
                             </div>
                         </div>
                     </template>
+
+                    <div class="col-span-12">
+                        <h4 class="font-bold"> Gender Details
+                            (<span x-text="parseInt(femaleCount)+parseInt(maleCount)"></span>) </h4>
+                    </div>
+
+                    <div class="col-span-6">
+                        <label for="number_of_females" class="block text-sm font-medium text-gray-700">
+                            Female Count</label>
+                        <input
+                                x-model="femaleCount"
+                                data-rules='["required"]' type="number" name="number_of_females"
+                                id="number_of_females"
+                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                    </div>
+                    <div class="col-span-6">
+                        <label for="number_of_male" class="block text-sm font-medium text-gray-700">
+                            Male Count</label>
+                        <input
+                                x-model="maleCount"
+                                data-rules='["required"]' type="number" name="number_of_male"
+                                id="number_of_male"
+                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
+                    </div>
 
                     <div class="col-span-12">
                         <h4 class="font-bold">Place of death
@@ -334,29 +360,6 @@
                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
                     </div>
 
-                    <div class="col-span-12">
-                        <h4 class="font-bold"> Gender Details
-                            (<span x-text="parseInt(femaleCount)+parseInt(maleCount)"></span>) </h4>
-                    </div>
-
-                    <div class="col-span-6">
-                        <label for="number_of_females" class="block text-sm font-medium text-gray-700">
-                            Female Count</label>
-                        <input
-                                x-model="femaleCount"
-                                data-rules='["required"]' type="number" name="number_of_females"
-                                id="number_of_females"
-                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
-                    </div>
-                    <div class="col-span-6">
-                        <label for="number_of_male" class="block text-sm font-medium text-gray-700">
-                            Male Count</label>
-                        <input
-                                x-model="maleCount"
-                                data-rules='["required"]' type="number" name="number_of_male"
-                                id="number_of_male"
-                                class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"/>
-                    </div>
 
                     <div class="col-span-12">
                         <h4 class="font-bold"> Other Details</h4>
@@ -406,11 +409,11 @@
                                     x-show="parseInt(femaleCount)+parseInt(maleCount)!==parseInt(todayTotal)">
                                 Invalid Gender Count
                             </li>
-                            <li
-                                    class="text-red-500"
-                                    x-show="parseInt(hospitalCount)+parseInt(homeCount)+parseInt(onAdmissionCount) !== parseInt(todayTotal)">
-                                Invalid Report Location Count
-                            </li>
+                            {#                            <li#}
+                            {#                                    class="text-red-500"#}
+                            {#                                    x-show="parseInt(hospitalCount)+parseInt(homeCount)+parseInt(onAdmissionCount) !== parseInt(todayTotal)">#}
+                            {#                                Invalid Report Location Count#}
+                            {#                            </li>#}
                         </ul>
                     </div>
 
@@ -433,7 +436,7 @@
 </div>
 
 <script src="{{ url_for("static",filename="moment.js") }}" type="application/javascript"></script>
-<script src="{{ url_for("static",filename="create_summary_form.js") }}" type="application/javascript"></script>
+<script src="{{ url_for("static",filename="create_summary_form_typ_3.js") }}" type="application/javascript"></script>
 <script>
 
 </script>
