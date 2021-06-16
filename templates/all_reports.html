@@ -50,8 +50,10 @@
                                         {{ report.completed_count }}/{{ report.report_total }}
                                     </span>
 
-                                    {% if report.has_summery_detail_report %}
-                                        <span class="bg-indigo-500  text-white rounded-full py-1 px-3 ml-4">Summary</span>
+                                    {% if report.report_type.value in ["type_2"] %}
+                                        <span class="bg-indigo-500  text-white rounded-full py-1 px-5 ml-4">Summary-1</span>
+                                    {% elif report.report_type.value in ["type_3"] %}
+                                        <span class="bg-indigo-500  text-white rounded-full py-1 px-5 ml-4">Summary-2</span>
                                     {% endif %}
 
                                 </td>

@@ -60,5 +60,21 @@ WHERE announced_date is null;
 alter table covid_death_report
 	add report_type enum('Type_1', 'Type_2', 'Type_3') null;
 
+-- 10.5 Set values to report type
+UPDATE covid_death_report
+SET report_type= 'Type_1'
+WHERE has_full_detail_report;
+
+
+UPDATE covid_death_report
+SET report_type= 'Type_2'
+WHERE has_summery_detail_report;
+
+-- 11. remove unwanted data columns
+alter table covid_death_report drop column has_full_detail_report;
+
+alter table covid_death_report drop column has_summery_detail_report;
+
+
 
 

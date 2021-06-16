@@ -86,8 +86,6 @@ class CovidDeathReport(db.Model):
     release_number = db.Column(db.String(50), nullable=True)
     date = db.Column(db.Date, nullable=False)
     announced_date = db.Column(db.Date, nullable=False)
-    has_full_detail_report = db.Column(db.Boolean, default=True)
-    has_summery_detail_report = db.Column(db.Boolean, default=False)
     report_type = db.Column(db.Enum(ReportType), default=ReportType.Type_1)
     images = db.relationship("ReportImage", backref="covid_death_report", lazy=True)
     death_records = db.relationship("DeathRecord", backref="covid_death_report", lazy=True)
@@ -96,9 +94,9 @@ class CovidDeathReport(db.Model):
 
     @hybrid_property
     def completed_count(self):
-        if self.has_full_detail_report:
+        if self.report_type in [ReportType.Type_1]:
             return len(self.death_records)
-        if self.has_summery_detail_report and self.death_report_summary \
+        if self.report_type in [ReportType.Type_2, ReportType.Type_3] and self.death_report_summary \
                 and self.death_report_summary.total_count_today == self.report_total \
                 and self.death_report_summary.is_completed:
             return self.death_report_summary.total_count_today
@@ -106,9 +104,9 @@ class CovidDeathReport(db.Model):
 
     @hybrid_property
     def is_completed(self):
-        if self.has_full_detail_report and len(self.death_records) == self.report_total:
+        if self.report_type in [ReportType.Type_1] and len(self.death_records) == self.report_total:
             return True
-        if self.has_summery_detail_report and self.death_report_summary \
+        if self.report_type in [ReportType.Type_2, ReportType.Type_3] and self.death_report_summary \
                 and self.death_report_summary.total_count_today == self.report_total \
                 and self.death_report_summary.is_completed:
             return True
@@ -142,12 +140,19 @@ class PressReleaseSummary(db.Model):
 
     @hybrid_property
     def is_completed(self):
-        if self.total_count_home + self.total_count_hospital + self.total_count_on_admission == \
+        if self.total_count_male + self.total_count_female == \
                 self.total_count_today and \
                 self.total_count_male + self.total_count_female == self.total_count_today and \
                 sum([d.count for d in self.death_records]) == self.total_count_today and \
                 sum([d.count for d in self.age_groups]) == self.total_count_today:
             return True
+
+        # if self.total_count_home + self.total_count_hospital + self.total_count_on_admission == \
+        #         self.total_count_today and \
+        #         self.total_count_male + self.total_count_female == self.total_count_today and \
+        #         sum([d.count for d in self.death_records]) == self.total_count_today and \
+        #         sum([d.count for d in self.age_groups]) == self.total_count_today:
+        #     return True
         return False
 
 
@@ -223,15 +228,15 @@ def create_press_release_recode():
         report_total = request.form["report_total"]
         report_type = request.form["report_type"]
         report_link = request.form["report_link"]
-        has_full_detail_report = False
-        if "has_full_detail_report" in request.form:
-            has_full_detail_report = request.form["has_full_detail_report"]
-            has_full_detail_report = True if has_full_detail_report == "true" else False
-
-        has_summery_detail_report = False
-        if "has_summery_detail_report" in request.form:
-            has_summery_detail_report = request.form["has_summery_detail_report"]
-            has_summery_detail_report = True if has_summery_detail_report == "true" else False
+        # has_full_detail_report = False
+        # if "has_full_detail_report" in request.form:
+        #     has_full_detail_report = request.form["has_full_detail_report"]
+        #     has_full_detail_report = True if has_full_detail_report == "true" else False
+        #
+        # has_summery_detail_report = False
+        # if "has_summery_detail_report" in request.form:
+        #     has_summery_detail_report = request.form["has_summery_detail_report"]
+        #     has_summery_detail_report = True if has_summery_detail_report == "true" else False
 
         title, number = None, None
         if "report_title" in request.form:
@@ -249,8 +254,6 @@ def create_press_release_recode():
             death_report.report_link = report_link
             death_report.report_total = report_total
             death_report.report_type = ReportType.get_type_from_val(report_type)
-            death_report.has_full_detail_report = has_full_detail_report
-            death_report.has_summery_detail_report = has_summery_detail_report
             if uploaded_files and len(uploaded_files) > 0:
                 for img in death_report.images:
                     db.session.delete(img)
@@ -262,8 +265,6 @@ def create_press_release_recode():
                                             report_link=report_link,
                                             report_total=report_total,
                                             report_type=report_type,
-                                            has_summery_detail_report=has_summery_detail_report,
-                                            has_full_detail_report=has_full_detail_report
                                             )
         for file in uploaded_files:
             filename = make_unique(secure_filename(file.filename))
@@ -299,7 +300,7 @@ def save_death_report_summary():
     total_by_age_group = content["deaths_total_by_age_group"]
     note = content["note"]
     report: CovidDeathReport = CovidDeathReport.query.get(report_id)
-    if report and report.has_summery_detail_report and report.death_report_summary:
+    if report and report.report_type in [ReportType.Type_2, ReportType.Type_3] and report.death_report_summary:
         release_summary = report.death_report_summary
         release_summary.total_count_so_far = total_count_so_far
         release_summary.total_count_today = total_count_today
@@ -347,13 +348,28 @@ def save_death_report_summary():
     for tot_age in total_by_age_group:
         _from = tot_age["from"]
         _to = tot_age["to"]
-        _count = tot_age["count"]
-
-        release_summary.age_groups.append(AgeGroup(
-            start=_from,
-            end=_to,
-            count=_count
-        ))
+        if report.report_type == ReportType.Type_2:
+            _count = tot_age["count"]
+            release_summary.age_groups.append(AgeGroup(
+                start=_from,
+                end=_to,
+                count=_count
+            ))
+        elif report.report_type == ReportType.Type_3:
+            _male_count = tot_age["male_count"]
+            _female_count = tot_age["female_count"]
+            release_summary.age_groups.append(AgeGroup(
+                start=_from,
+                end=_to,
+                count=_male_count,
+                gender=GenderType.Male
+            ))
+            release_summary.age_groups.append(AgeGroup(
+                start=_from,
+                end=_to,
+                count=_female_count,
+                gender=GenderType.Female
+            ))
     # release_summary.age_groups = age_groups
     # release_summary.death_records = death_records
     db.session.add(report)
@@ -372,7 +388,7 @@ def death_report_view(id):
     death_report: CovidDeathReport = CovidDeathReport.query.get(id)
     print(death_report.is_completed)
     summary_report = None
-    if death_report.has_summery_detail_report and death_report.death_report_summary:
+    if death_report.report_type in [ReportType.Type_2, ReportType.Type_3] and death_report.death_report_summary:
         summary: PressReleaseSummary = death_report.death_report_summary
         summary_report = {
             "report_id": death_report.id,
@@ -399,6 +415,7 @@ def death_report_view(id):
         summary_report["deaths_total_by_age_group"] = [{
             "from": ag.start,
             "to": ag.end,
+            "gender": ag.gender.value,
             "count": ag.count
         } for ag in age_groups]
 
@@ -411,7 +428,7 @@ def death_report_view(id):
     selected_record = None
     if "recode_id" in request.args:
         selected_record = DeathRecord.query.get(request.args.get("recode_id"))
-
+    print(summary_report)
     return render_template("death_reports_view.html", death_report=death_report, record_images=record_images,
                            selected_record=selected_record, summary_report=summary_report)
 
@@ -544,9 +561,9 @@ def summary_report_generate():
 
     report_summaries = PressReleaseSummary.query.all()
     for rep_summary in report_summaries:
-
         rep_summary: PressReleaseSummary = rep_summary
         report: CovidDeathReport = CovidDeathReport.query.get(rep_summary.report_id)
+
         # Deaths
         deaths = []
         total_deaths: List[MiniDeathRecord] = rep_summary.death_records
@@ -557,32 +574,41 @@ def summary_report_generate():
             raise Exception(f"Invalid Death Date Count, report ID :{report.id}")
         # Age
         ages = []
+        genders = []
         age_deaths: List[AgeGroup] = rep_summary.age_groups
         for ad in age_deaths:
             avg_age = (int(ad.end) + int(ad.start)) / 2
             for a in range(int(ad.count)):
                 ages.append(avg_age)
+                if report.report_type == ReportType.Type_3:
+                    genders.append(ad.gender.value)
 
         if len(ages) != rep_summary.total_count_today:
             raise Exception(f"Invalid Age Group Count, report ID :{report.id}")
-        # Gender
-        male_count = rep_summary.total_count_male
-        female_count = rep_summary.total_count_female
-        genders = ["male" for m in range(int(male_count))]
-        genders += ["female" for m in range(int(female_count))]
-        if len(genders) != rep_summary.total_count_today:
-            raise Exception(f"Invalid Gender Count, report ID :{report.id}")
 
-        # Residence
-        on_home = rep_summary.total_count_home
-        on_admission = rep_summary.total_count_on_admission
-        on_hospital = rep_summary.total_count_hospital
-        reported_at_locations = ["home" for m in range(on_home)]
-        reported_at_locations += ["on_admission" for m in range(on_admission)]
-        reported_at_locations += ["hospital" for m in range(on_hospital)]
+        reported_at_locations = []
+        if report.report_type == ReportType.Type_2:
+            # Gender
+            male_count = rep_summary.total_count_male
+            female_count = rep_summary.total_count_female
+            genders = ["male" for m in range(int(male_count))]
+            genders += ["female" for m in range(int(female_count))]
+            if len(genders) != rep_summary.total_count_today:
+                raise Exception(f"Invalid Gender Count, report ID :{report.id}")
 
-        if len(reported_at_locations) != rep_summary.total_count_today:
-            raise Exception(f"Invalid Reported Location Count, report ID :{report.id}")
+            # Residence
+            on_home = rep_summary.total_count_home
+            on_admission = rep_summary.total_count_on_admission
+            on_hospital = rep_summary.total_count_hospital
+            reported_at_locations = ["home" for m in range(on_home)]
+            reported_at_locations += ["on_admission" for m in range(on_admission)]
+            reported_at_locations += ["hospital" for m in range(on_hospital)]
+
+            if len(reported_at_locations) != rep_summary.total_count_today:
+                raise Exception(f"Invalid Reported Location Count, report ID :{report.id}")
+
+        elif report.report_type == ReportType.Type_3:
+            reported_at_locations = ["N\A" for m in range(report.report_total)]
 
         for record_number, report_date, gender, age, reported_at in zip(
                 range(rep_summary.total_count_today), deaths,
@@ -592,7 +618,6 @@ def summary_report_generate():
                 report.date,
                 record_number,
                 report_date,
-
                 report.announced_date,
                 "COVID-19",
                 gender,
