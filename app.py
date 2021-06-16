@@ -63,6 +63,18 @@ class GenderType(enum.Enum):
     Female = "Female"
 
 
+class ReportType(enum.Enum):
+    Type_1 = "type_1"
+    Type_2 = "type_2"
+    Type_3 = "type_3"
+
+    @staticmethod
+    def get_type_from_val(val):
+        for rp in [ReportType.Type_1, ReportType.Type_2, ReportType.Type_3]:
+            if val == rp.value:
+                return rp
+
+
 class CovidDeathReport(db.Model):
     __table_args__ = (
         db.UniqueConstraint('date', 'release_number'),
@@ -76,6 +88,7 @@ class CovidDeathReport(db.Model):
     announced_date = db.Column(db.Date, nullable=False)
     has_full_detail_report = db.Column(db.Boolean, default=True)
     has_summery_detail_report = db.Column(db.Boolean, default=False)
+    report_type = db.Column(db.Enum(ReportType), default=ReportType.Type_1)
     images = db.relationship("ReportImage", backref="covid_death_report", lazy=True)
     death_records = db.relationship("DeathRecord", backref="covid_death_report", lazy=True)
     death_report_summary = db.relationship("PressReleaseSummary", uselist=False, backref="covid_death_report",
@@ -208,6 +221,7 @@ def create_press_release_recode():
             announced_date = report_date
 
         report_total = request.form["report_total"]
+        report_type = request.form["report_type"]
         report_link = request.form["report_link"]
         has_full_detail_report = False
         if "has_full_detail_report" in request.form:
@@ -234,6 +248,7 @@ def create_press_release_recode():
             death_report.number = number
             death_report.report_link = report_link
             death_report.report_total = report_total
+            death_report.report_type = ReportType.get_type_from_val(report_type)
             death_report.has_full_detail_report = has_full_detail_report
             death_report.has_summery_detail_report = has_summery_detail_report
             if uploaded_files and len(uploaded_files) > 0:
@@ -246,6 +261,7 @@ def create_press_release_recode():
                                             release_number=number,
                                             report_link=report_link,
                                             report_total=report_total,
+                                            report_type=report_type,
                                             has_summery_detail_report=has_summery_detail_report,
                                             has_full_detail_report=has_full_detail_report
                                             )
@@ -616,6 +632,7 @@ def _gen_summary_report(bucket_name=bucket):
     object_acl = aws_client.ObjectAcl(bucket_name, file_name)
     response = object_acl.put(ACL='public-read')
     return jsonify(json_data)
+
 
 @app.route("/download")
 def download_report():

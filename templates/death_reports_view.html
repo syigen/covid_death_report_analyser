@@ -141,12 +141,8 @@
             </div>
         </div>
         <div class="flex-1 max-h-screen  overflow-y-auto">
-            {% if death_report.has_summery_detail_report %}
-                {% include "forms/death_recode_summery_form/index.html" %}
-            {% else %}
+            {% if death_report.report_type.value=="type_1" %}
                 {% include "forms/death_recode_add_form/index.html" %}
-
-
                 <span class="p-4 text-2xl mt-2">Total Count <strong>{{ death_report.death_records|length }}</strong></span>
                 <ul class="h-1/3  overflow-y-auto">
                     {% for death_record in death_report.death_records|sort(attribute='record_number', reverse = True) %}
@@ -201,6 +197,10 @@
                         </li>
                     {% endfor %}
                 </ul>
+            {% elif death_report.report_type.value=="type_2" %}
+                {% include "forms/death_recode_summery_form/index.html" %}
+            {% elif death_report.report_type.value=="type_3" %}
+                {% include "forms/death_recode_summery_form_type_3/index.html" %}
             {% endif %}
         </div>
     </div>
